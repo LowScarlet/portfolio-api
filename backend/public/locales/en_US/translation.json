@@ -1,0 +1,46 @@
+{
+  "welcome-messages": {
+    "public": "404 - You Found Me :v.",
+    "home": "Server backend telah online."
+  },
+  "validations": {
+    "auth": {
+      "success-login": "Berhasil Login.",
+      "success-logout": "Berhasil Logout.",
+      "success-register": "Berhasil Register.",
+      "success-verify": "Berhasil Verify.",
+
+      "token-not-found": "Token tidak ditemukan.",
+      "token-expired": "Token sudah tidak valid."
+    },
+    "model": {
+      "success-create-data": "Berhasil Membuat Data Baru.",
+      "success-read-all-data": "Berhasil Mendapatkan Semua Data.",
+      "success-read-data": "Berhasil Mendapatkan Data.",
+      "success-update-data": "Berhasil Memperbarui Data.",
+      "success-delete-data": "Berhasil Menghapus Data.",
+
+      "data-not-found": "Data tidak ditemukan."
+    },
+    "invalid": "Tidak Valid.",
+    "required": "Dibutuhkan.",
+    "invalid-type": "Tipe Input tidak Valid.",
+    "already-exist": "Data sudah ada.",
+    "require-length-min-max": "Panjang harus memenuhi persyaratan minimum dan maksimum.",
+    "only-alphanumeric-and-underscore": "Hanya diperbolehkan karakter alfanumerik dan underscore (_).",
+    "pagination-take-safe-max": "Pagination take melebihi batas maksimum yang diizinkan."
+  },
+  "utils": {
+    "exceptions": {
+      "must-unauthorized-user": "Pengguna harus tidak terotorisasi.",
+      "forbidden": "Akses ditolak.",
+      "must-authorized-user": "Pengguna harus terotorisasi.",
+      "validation-exception": "400 - Kesalahan Pengguna.",
+      "role-not-allowed": "Role yang anda miliki tidak di izinkan.",
+      "invalid-credentials": "Kredensial tidak valid."
+    },
+    "middlewares": {
+      "not-found": "Tidak ditemukan."
+    }
+  }
+}

@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+model User {
+  id                String             @id @default(uuid())
+  //
+  username          String             @unique
+  email             String             @unique
+  password          String
+  role              Role               @default(MEMBER)
+  isActive          Boolean            @default(false)
+  //
+  UserProfile       UserProfile?
+  Portfolios        Portfolio[]
+  PortfolioVotes    PortfolioVote[]
+  PortfolioComments PortfolioComment[]
+  RefreshTokens     RefreshToken[]
+  OneTimePasswords  OneTimePassword[]
+  //
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+enum OneTimePasswordType {
+  LOGIN
+  RESET_PASSWORD
+  CHANGE_EMAIL
+}
+
+model OneTimePassword {
+  id        String              @id @default(uuid())
+  //
+  password  String              @unique
+  type      OneTimePasswordType
+  expiredAt DateTime
+  userId    String?
+  //
+  User      User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  //
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  //
+  hashedToken String   @unique
+  revoked     Boolean  @default(false)
+  userId      String?
+  //
+  User        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  //
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model UserProfile {
+  id        String   @id @default(uuid())
+  //
+  avatar    String?
+  firstName String?
+  lastName  String?
+  bio       String?
+  userId    String   @unique
+  //
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  //
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Portfolio {
+  id                String             @id @default(uuid())
+  //
+  title             String
+  desc              String?
+  image             String?
+  banner            String?
+  isPublic          Boolean            @default(false)
+  //
+  name              String?
+  label             String?
+  nickname          String?
+  about             String?
+  country           String?
+  email             String?
+  phone             String?
+  website           String?
+  ownerId           String?
+  //
+  PortfolioVotes    PortfolioVote[]
+  PortfolioComments PortfolioComment[]
+  //
+  Owner             User?              @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  //
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model PortfolioVote {
+  id          String    @id @default(uuid())
+  //
+  isLike      Boolean   @default(true)
+  userId      String?
+  portfolioId String
+  //
+  User        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  Portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  //
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  //
+  @@unique([userId, portfolioId], name: "UserPortfolioVote")
+}
+
+model PortfolioComment {
+  id          String    @id @default(uuid())
+  //
+  content     String?
+  userId      String?
+  portfolioId String
+  //
+  User        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  Portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  //
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
