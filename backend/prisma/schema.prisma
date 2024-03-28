@@ -70,8 +70,7 @@ model UserProfile {
   id        String   @id @default(uuid())
   //
   avatar    String?
-  firstName String?
-  lastName  String?
+  fullName  String?
   bio       String?
   userId    String   @unique
   //
