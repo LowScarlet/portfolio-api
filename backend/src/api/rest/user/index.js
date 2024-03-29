@@ -31,7 +31,7 @@ router.get('/', [
       return next(new ValidationException(result.array()));
     }
 
-    const users = readAllUser(
+    const users = await readAllUser(
       req.user,
       {
         username,
@@ -68,7 +68,7 @@ router.post('/', [
       return next(new ValidationException(result.array()));
     }
 
-    const user = createUser(
+    const user = await createUser(
       req.user,
       {
         username,
@@ -101,7 +101,7 @@ router.get('/:userId', [
       return next(new ValidationException(result.array()));
     }
 
-    const user = readUser(
+    const user = await readUser(
       req.user,
       {
         id: userId
@@ -133,7 +133,7 @@ router.put('/:userId', [
       return next(new ValidationException(result.array()));
     }
 
-    const user = updateUser(
+    const user = await updateUser(
       req.user,
       {
         id: userId,
@@ -168,7 +168,7 @@ router.delete('/:userId', [
       return next(new ValidationException(result.array()));
     }
 
-    const user = deleteUser(
+    const user = await deleteUser(
       req.user,
       {
         id: userId
