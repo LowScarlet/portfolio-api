@@ -11,6 +11,7 @@ const CreateUserProfileValidator = require('./validators/CreateUserProfileValida
 const ReadUserProfileValidator = require('./validators/ReadUserProfileValidator');
 const WhereUserProfileValidator = require('./validators/WhereUserProfileValidator');
 const UpdateUserProfileValidator = require('./validators/UpdateUserProfileValidator');
+const isAdministrator = require('../user/middlewares/isAdministrator');
 
 const modelDb = db.userProfile;
 
@@ -59,6 +60,7 @@ router.get('/', [
 });
 
 router.post('/', [
+  isAdministrator,
   CreateUserProfileValidator()
 ], async (req, res, next) => {
   const { avatar, fullName, bio, UserId } = req.body;
@@ -124,6 +126,7 @@ router.get('/:userProfileId', [
 });
 
 router.put('/:userProfileId', [
+  isAdministrator,
   ReadUserProfileValidator(),
   UpdateUserProfileValidator()
 ], async (req, res, next) => {
@@ -160,6 +163,7 @@ router.put('/:userProfileId', [
 });
 
 router.delete('/:userProfileId', [
+  isAdministrator,
   ReadUserProfileValidator()
 ], async (req, res, next) => {
   const { userProfileId } = req.params;
