@@ -2,19 +2,20 @@ const { Router } = require('express');
 
 const { validationResult } = require('express-validator');
 const ValidationException = require('../../../utils/exceptions/ValidationException');
-const { db } = require('../../../utils/database');
+require('../../../utils/database');
 const PaginationValidator = require('../../../utils/validators/PaginationValidator');
 
 const router = Router();
-const selectUserField = require('./services/selectUserField');
 const CreateUserValidator = require('./validators/CreateUserValidator');
 const ReadUserValidator = require('./validators/ReadUserValidator');
 const WhereUsersValidator = require('./validators/WhereUsersValidator');
-const stringToBoolean = require('../../../utils/stringToBoolean');
 const UpdateUserValidator = require('./validators/UpdateUserValidator');
 const isAdministrator = require('./middlewares/isAdministrator');
-
-const modelDb = db.user;
+const readAllUser = require('./services/readAllUser');
+const createUser = require('./services/createUser');
+const readUser = require('./services/readUser');
+const updateUser = require('./services/updateUser');
+const deleteUser = require('./services/deleteUser');
 
 router.get('/', [
   PaginationValidator(),
@@ -30,21 +31,17 @@ router.get('/', [
       return next(new ValidationException(result.array()));
     }
 
-    const users = await modelDb.findMany({
-      where: {
-        username: username ? {
-          contains: username
-        } : undefined,
-        email: email ? {
-          contains: email
-        } : email,
-        role: role || undefined,
-        isActive: stringToBoolean(isActive) || undefined
+    const users = readAllUser(
+      req.user,
+      {
+        username,
+        email,
+        role,
+        isActive
       },
-      select: selectUserField(req.user),
       skip,
       take
-    });
+    );
 
     res.json({
       message: req.t('validations.model.success-read-all-data'),
@@ -71,16 +68,16 @@ router.post('/', [
       return next(new ValidationException(result.array()));
     }
 
-    const user = await modelDb.create({
-      data: {
+    const user = createUser(
+      req.user,
+      {
         username,
         email,
         password,
         role,
-        isActive: stringToBoolean(isActive) || undefined
-      },
-      select: selectUserField(req.user),
-    });
+        isActive
+      }
+    );
 
     res.json({
       message: req.t('validations.model.success-create-data'),
@@ -104,12 +101,12 @@ router.get('/:userId', [
       return next(new ValidationException(result.array()));
     }
 
-    const user = await modelDb.findUnique({
-      where: {
-        id: userId,
-      },
-      select: selectUserField(req.user)
-    });
+    const user = readUser(
+      req.user,
+      {
+        id: userId
+      }
+    );
 
     res.json({
       message: req.t('validations.model.success-read-data'),
@@ -136,19 +133,17 @@ router.put('/:userId', [
       return next(new ValidationException(result.array()));
     }
 
-    const user = await modelDb.update({
-      data: {
-        username: username || undefined,
-        email: email || undefined,
-        password: password || undefined,
-        role: role || undefined,
-        isActive: stringToBoolean(isActive) || undefined
-      },
-      where: {
+    const user = updateUser(
+      req.user,
+      {
         id: userId,
-      },
-      select: selectUserField(req.user)
-    });
+        username,
+        email,
+        password,
+        role,
+        isActive
+      }
+    );
 
     res.json({
       message: req.t('validations.model.success-update-data'),
@@ -173,12 +168,12 @@ router.delete('/:userId', [
       return next(new ValidationException(result.array()));
     }
 
-    const user = await modelDb.delete({
-      where: {
-        id: userId,
-      },
-      select: selectUserField(req.user)
-    });
+    const user = deleteUser(
+      req.user,
+      {
+        id: userId
+      }
+    );
 
     res.json({
       message: req.t('validations.model.success-delete-data'),

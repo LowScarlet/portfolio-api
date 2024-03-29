@@ -47,8 +47,7 @@ CREATE TABLE "RefreshToken" (
 CREATE TABLE "UserProfile" (
     "id" TEXT NOT NULL,
     "avatar" TEXT,
-    "firstName" TEXT,
-    "lastName" TEXT,
+    "fullName" TEXT,
     "bio" TEXT,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
