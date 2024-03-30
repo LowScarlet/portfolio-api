@@ -7,19 +7,16 @@ const { db } = require('../../../../utils/database');
 function CreateUserProfileValidator() {
   return [
     body('avatar')
-      .notEmpty()
-      .withMessage('validations.required'),
+      .optional(),
     body('fullName')
       .isLength({ min: 6, max: 100 })
       .withMessage(() => i18next.t('validations.require-length-min-max', { min: 6, max: 100 }))
-      .notEmpty()
-      .withMessage('validations.required'),
+      .optional(),
     body('bio')
       .isLength({ min: 15, max: 255 })
       .withMessage(() => i18next.t('validations.require-length-min-max', { min: 15, max: 255 }))
-      .notEmpty()
-      .withMessage('validations.required'),
-    body('UserId')
+      .optional(),
+    body('userId')
       .custom(async (userId) => {
         const userProfile = await db.userProfile.findUnique({
           where: {

@@ -18,7 +18,7 @@ router.post('/', [
   isAdministrator,
   CreateUserProfileValidator()
 ], async (req, res, next) => {
-  const { fullName, bio } = req.body;
+  const { avatar, fullName, bio, userId } = req.body;
   try {
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -28,8 +28,10 @@ router.post('/', [
     const { handler } = req;
 
     const userProfile = await handler.create({
+      avatar,
       fullName,
-      bio
+      bio,
+      userId
     });
 
     res.json({
@@ -113,7 +115,7 @@ router.put('/:userProfileId', [
   UpdateUserProfileValidator()
 ], async (req, res, next) => {
   const { userProfileId } = req.params;
-  const { fullName, bio } = req.body;
+  const { avatar, fullName, bio, userId } = req.body;
   try {
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -124,8 +126,10 @@ router.put('/:userProfileId', [
 
     const userProfile = await handler.update({
       id: userProfileId,
+      avatar,
       fullName,
-      bio
+      bio,
+      userId
     });
 
     res.json({

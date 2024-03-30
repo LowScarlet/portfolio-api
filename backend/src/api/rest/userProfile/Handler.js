@@ -28,9 +28,9 @@ class UserProfileHandler {
     const { avatar, fullName, bio, userId } = data;
     const output = await dbModel.create({
       data: {
-        avatar,
-        fullName,
-        bio,
+        avatar: avatar || undefined,
+        fullName: fullName || undefined,
+        bio: bio || undefined,
         User: {
           connect: {
             id: userId
@@ -71,11 +71,13 @@ class UserProfileHandler {
   }
 
   async update(data) {
-    const { id, fullName, bio } = data;
+    const { id, avatar, fullName, bio, userId } = data;
     const output = await dbModel.update({
       data: {
+        avatar: avatar || undefined,
         fullName: fullName || undefined,
         bio: bio || undefined,
+        User: userId ? { connect: { id: userId } } : undefined
       },
       where: {
         id,
