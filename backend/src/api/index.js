@@ -6,6 +6,7 @@ const router = express.Router();
 
 const auth = require('./auth');
 const rest = require('./rest');
+const isAuthenticated = require('./auth/model/middlewares/isAuthenticated');
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minutes
@@ -19,7 +20,12 @@ const limiter = rateLimit({
   }
 });
 
-router.use('/auth', [limiter], auth);
-router.use('/rest', rest);
+router.use('/auth', [
+  limiter
+], auth);
+
+router.use('/rest', [
+  isAuthenticated
+], rest);
 
 module.exports = router;
