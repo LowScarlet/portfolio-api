@@ -3,4 +3,6 @@ function RoleNotAllowedException() {
   this.message = 'utils.exceptions.role-not-allowed';
 }
 
-module.exports = RoleNotAllowedException;
+module.exports = {
+  RoleNotAllowedException
+};

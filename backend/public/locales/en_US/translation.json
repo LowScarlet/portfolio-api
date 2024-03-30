@@ -40,7 +40,8 @@
       "invalid-credentials": "Kredensial tidak valid."
     },
     "middlewares": {
-      "not-found": "Tidak ditemukan."
+      "not-found": "Tidak ditemukan.",
+      "rate-limit": "Request Rate Limit."
     }
   }
 }

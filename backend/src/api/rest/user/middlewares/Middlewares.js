@@ -1,6 +1,6 @@
 const { Role } = require('@prisma/client');
 const { db } = require('../../../../utils/database');
-const RoleNotAllowedException = require('../exceptions/RoleNotAllowedException');
+const { RoleNotAllowedException } = require('../exceptions/Exceptions');
 
 async function isAdministrator(req, res, next) {
   if (process.env.DEV_MODE === 'true') return next();
@@ -24,4 +24,6 @@ async function isAdministrator(req, res, next) {
   return next();
 }
 
-module.exports = isAdministrator;
+module.exports = {
+  isAdministrator
+};

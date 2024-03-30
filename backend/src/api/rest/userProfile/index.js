@@ -2,22 +2,51 @@ const { Router } = require('express');
 
 const { validationResult } = require('express-validator');
 const ValidationException = require('../../../utils/exceptions/ValidationException');
-const { db } = require('../../../utils/database');
 const PaginationValidator = require('../../../utils/validators/PaginationValidator');
 
 const router = Router();
-const selectUserProfileField = require('./services/selectUserProfileField');
-const CreateUserProfileValidator = require('./validators/CreateUserProfileValidator');
-const ReadUserProfileValidator = require('./validators/ReadUserProfileValidator');
-const WhereUserProfileValidator = require('./validators/WhereUserProfileValidator');
-const UpdateUserProfileValidator = require('./validators/UpdateUserProfileValidator');
-const isAdministrator = require('../user/middlewares/isAdministrator');
+const { isAdministrator } = require('../user/middlewares/Middlewares');
+const { WhereUserProfilesValidator, CreateUserProfileValidator, ReadUserProfileValidator, UpdateUserProfileValidator, DeleteUserProfileValidator } = require('./validators/Validators');
+const UserProfileHandler = require('./Handler');
 
-const modelDb = db.userProfile;
+router.use((req, res, next) => {
+  req.handler = new UserProfileHandler(req.user);
+  next();
+});
+
+router.post('/', [
+  isAdministrator,
+  CreateUserProfileValidator()
+], async (req, res, next) => {
+  const { fullName, bio } = req.body;
+  try {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return next(new ValidationException(result.array()));
+    }
+
+    const { handler } = req;
+
+    const userProfile = await handler.create({
+      fullName,
+      bio
+    });
+
+    res.json({
+      message: req.t('validations.model.success-create-data'),
+      data: {
+        userProfile
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+  return null;
+});
 
 router.get('/', [
   PaginationValidator(),
-  WhereUserProfileValidator(),
+  WhereUserProfilesValidator(),
 ], async (req, res, next) => {
   let { skip, take } = req.query;
   const { fullName, bio } = req.query;
@@ -29,21 +58,12 @@ router.get('/', [
       return next(new ValidationException(result.array()));
     }
 
-    const userProfiles = await modelDb.findMany({
-      where: {
-        fullName: fullName ? {
-          contains: fullName,
-          mode: 'insensitive'
-        } : undefined,
-        bio: bio ? {
-          contains: bio,
-          mode: 'insensitive'
-        } : undefined
-      },
-      select: selectUserProfileField(req.user),
-      skip,
-      take
-    });
+    const { handler } = req;
+
+    const userProfiles = await handler.readAll({
+      fullName,
+      bio
+    }, skip, take);
 
     res.json({
       message: req.t('validations.model.success-read-all-data'),
@@ -51,43 +71,6 @@ router.get('/', [
         userProfiles,
         skip,
         take
-      }
-    });
-  } catch (err) {
-    next(err);
-  }
-  return null;
-});
-
-router.post('/', [
-  isAdministrator,
-  CreateUserProfileValidator()
-], async (req, res, next) => {
-  const { avatar, fullName, bio, UserId } = req.body;
-  try {
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-      return next(new ValidationException(result.array()));
-    }
-
-    const userProfile = await modelDb.create({
-      data: {
-        avatar,
-        fullName,
-        bio,
-        User: {
-          connect: {
-            id: UserId
-          }
-        }
-      },
-      select: selectUserProfileField(req.user),
-    });
-
-    res.json({
-      message: req.t('validations.model.success-create-data'),
-      data: {
-        userProfile
       }
     });
   } catch (err) {
@@ -106,11 +89,10 @@ router.get('/:userProfileId', [
       return next(new ValidationException(result.array()));
     }
 
-    const userProfile = await modelDb.findUnique({
-      where: {
-        id: userProfileId,
-      },
-      select: selectUserProfileField(req.user)
+    const { handler } = req;
+
+    const userProfile = await handler.read({
+      id: userProfileId
     });
 
     res.json({
@@ -131,23 +113,19 @@ router.put('/:userProfileId', [
   UpdateUserProfileValidator()
 ], async (req, res, next) => {
   const { userProfileId } = req.params;
-  const { avatar, fullName, bio } = req.body;
+  const { fullName, bio } = req.body;
   try {
     const result = validationResult(req);
     if (!result.isEmpty()) {
       return next(new ValidationException(result.array()));
     }
 
-    const userProfile = await modelDb.update({
-      data: {
-        avatar: avatar || undefined,
-        fullName: fullName || undefined,
-        bio: bio || undefined,
-      },
-      where: {
-        id: userProfileId,
-      },
-      select: selectUserProfileField(req.user)
+    const { handler } = req;
+
+    const userProfile = await handler.update({
+      id: userProfileId,
+      fullName,
+      bio
     });
 
     res.json({
@@ -164,7 +142,8 @@ router.put('/:userProfileId', [
 
 router.delete('/:userProfileId', [
   isAdministrator,
-  ReadUserProfileValidator()
+  ReadUserProfileValidator(),
+  DeleteUserProfileValidator()
 ], async (req, res, next) => {
   const { userProfileId } = req.params;
   try {
@@ -173,11 +152,10 @@ router.delete('/:userProfileId', [
       return next(new ValidationException(result.array()));
     }
 
-    const userProfile = await modelDb.delete({
-      where: {
-        id: userProfileId,
-      },
-      select: selectUserProfileField(req.user)
+    const { handler } = req;
+
+    const userProfile = await handler.delete({
+      id: userProfileId
     });
 
     res.json({
