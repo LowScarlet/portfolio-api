@@ -2,7 +2,7 @@ const { db } = require('../../../utils/database');
 
 const dbModel = db.user;
 
-class UserHandler {
+class Handler {
   constructor(client) {
     this.client = client;
   }
@@ -76,4 +76,4 @@ class UserHandler {
   }
 }
 
-module.exports = UserHandler;
+module.exports = Handler;

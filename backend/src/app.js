@@ -18,7 +18,7 @@ const errorHandlerMiddleware = require('./utils/middlewares/errorHandler');
 const app = express();
 
 // Import Routes
-const api = require('./api');
+const api = require('./api/Routes');
 const checkPayload = require('./api/auth/model/middlewares/checkPayload');
 
 // Use .env

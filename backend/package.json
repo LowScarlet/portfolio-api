@@ -1,11 +1,11 @@
 {
   "name": "backend",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "Start.js",
   "scripts": {
     "vercel-build": "prisma generate && prisma migrate deploy",
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
+    "start": "node src/Start.js",
+    "dev": "nodemon src/Start.js",
     "lint": "eslint --fix src",
     "test": "mocha --exit",
     "postinstall": "prisma generate"

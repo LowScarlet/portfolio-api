@@ -2,8 +2,8 @@ const { body, param, query } = require('express-validator');
 
 const i18next = require('i18next');
 const { Role } = require('@prisma/client');
-const { db } = require('../../../../utils/database');
-const validateValidationChain = require('../../../../utils/middlewares/validateValidationChain');
+const { db } = require('../../../utils/database');
+const validateValidationChain = require('../../../utils/middlewares/validateValidationChain');
 
 function CreateValidator() {
   return validateValidationChain([

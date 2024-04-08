@@ -3,8 +3,8 @@ const { Router } = require('express');
 const PaginationValidator = require('../../../utils/validators/PaginationValidator');
 
 const router = Router();
-const { isAdministrator } = require('./middlewares/Middlewares');
-const { WhereUsersValidator, CreateUserValidator, ReadUserValidator, UpdateUserValidator, DeleteUserValidator } = require('./validators/Validators');
+const { isAdministrator } = require('./Middlewares');
+const { WhereUsersValidator, CreateUserValidator, ReadUserValidator, UpdateUserValidator, DeleteUserValidator } = require('./Validators');
 const UserHandler = require('./Handler');
 
 router.use((req, res, next) => {
