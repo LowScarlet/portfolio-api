@@ -1,5 +1,4 @@
 const { db } = require('../../../utils/database');
-const stringToBoolean = require('../../../utils/stringToBoolean');
 
 const dbModel = db.user;
 
@@ -8,60 +7,46 @@ class UserHandler {
     this.client = client;
   }
 
-  selectUserField() {
+  viewField() {
     const { client } = this;
-    if (!client || client.role === 'MEMBER') {
-      return {
+    const scheme = {
+      ADMIN: undefined,
+      MEMBER: {
         id: true,
         username: true,
+        password: false,
         role: true,
         isActive: true,
         createdAt: true,
         updatedAt: true
-      };
-    }
+      }
+    };
 
-    return undefined;
+    return client ? scheme[client.role] : scheme.MEMBER;
   }
 
   async create(data) {
-    const { username, email, password, role, isActive } = data;
     const output = await dbModel.create({
-      data: {
-        username: username || undefined,
-        email: email || undefined,
-        password: password || undefined,
-        role: role || undefined,
-        isActive: stringToBoolean(isActive) || undefined
-      },
-      select: this.selectUserField(),
+      data,
+      select: this.viewField(),
     });
 
     return output;
   }
 
-  async read(where) {
-    const { id } = where;
+  async read(id) {
     const output = await dbModel.findUnique({
-      where: {
-        id,
-      },
-      select: this.selectUserField()
+      where: { id },
+      select: this.viewField()
     });
 
     return output;
   }
 
-  async readAll(where, skip, take) {
-    const { username, email, role, isActive } = where;
+  async reads(where, skip, take) {
     const output = await dbModel.findMany({
-      where: {
-        username: username ? { contains: username } : undefined,
-        email: email ? { contains: email } : email,
-        role: role || undefined,
-        isActive: stringToBoolean(isActive) || undefined
-      },
-      select: this.selectUserField(),
+      where,
+      select: this.viewField(),
       skip,
       take
     });
@@ -69,32 +54,22 @@ class UserHandler {
     return output;
   }
 
-  async update(data) {
-    const { id, username, email, password, role, isActive } = data;
+  async update(id, data) {
     const output = await dbModel.update({
-      data: {
-        username: username || undefined,
-        email: email || undefined,
-        password: password || undefined,
-        role: role || undefined,
-        isActive: stringToBoolean(isActive) || undefined
-      },
-      where: {
-        id,
-      },
-      select: this.selectUserField()
+      data,
+      where: { id },
+      select: this.viewField()
     });
 
     return output;
   }
 
-  async delete(where) {
-    const { id } = where;
+  async delete(id) {
     const output = await dbModel.delete({
       where: {
         id,
       },
-      select: this.selectUserField()
+      select: this.viewField()
     });
 
     return output;

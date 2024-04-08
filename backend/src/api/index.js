@@ -20,12 +20,22 @@ const limiter = rateLimit({
   }
 });
 
+router.use((req, res, next) => {
+  req.scarlet = {
+    param: {},
+    query: {},
+    body: {},
+    pagination: { skip: 0, take: 10 }
+  };
+  next();
+});
+
 router.use('/auth', [
   limiter
 ], auth);
 
 router.use('/rest', [
-  isAuthenticated
+  // isAuthenticated
 ], rest);
 
 module.exports = router;

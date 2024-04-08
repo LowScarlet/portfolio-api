@@ -1,7 +1,5 @@
 const { Router } = require('express');
 
-const { validationResult } = require('express-validator');
-const ValidationException = require('../../../utils/exceptions/ValidationException');
 const PaginationValidator = require('../../../utils/validators/PaginationValidator');
 
 const router = Router();
@@ -18,164 +16,90 @@ router.post('/', [
   isAdministrator,
   CreateUserValidator()
 ], async (req, res, next) => {
-  const { username, email, password, role, isActive } = req.body;
-  try {
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-      return next(new ValidationException(result.array()));
-    }
+  const { handler, scarlet } = req;
+  const { body } = scarlet;
 
-    const { handler } = req;
+  const data = await handler.create(body);
 
-    const user = await handler.create({
-      username,
-      email,
-      password,
-      role,
-      isActive
-    });
+  res.json({
+    message: req.t('validations.model.success-create-data'),
+    data
+  });
 
-    res.json({
-      message: req.t('validations.model.success-create-data'),
-      data: {
-        user
-      }
-    });
-  } catch (err) {
-    next(err);
-  }
-  return null;
+  next();
 });
 
 router.get('/', [
   PaginationValidator(),
   WhereUsersValidator(),
 ], async (req, res, next) => {
-  let { skip, take } = req.query;
-  const { username, email, role, isActive } = req.query;
-  skip = parseInt(skip, 10) || 0;
-  take = parseInt(take, 10) || 10;
-  try {
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-      return next(new ValidationException(result.array()));
-    }
+  const { handler, scarlet } = req;
+  const { query } = scarlet;
+  const { skip, take } = scarlet.pagination;
 
-    const { handler } = req;
+  const data = await handler.reads(query, skip, take);
 
-    const users = await handler.readAll({
-      username,
-      email,
-      role,
-      isActive
-    }, skip, take);
+  res.json({
+    message: req.t('validations.model.success-read-all-data'),
+    data,
+    skip,
+    take
+  });
 
-    res.json({
-      message: req.t('validations.model.success-read-all-data'),
-      data: {
-        users,
-        skip,
-        take
-      }
-    });
-  } catch (err) {
-    next(err);
-  }
-  return null;
+  next();
 });
 
-router.get('/:userId', [
+router.get('/:id', [
   ReadUserValidator()
 ], async (req, res, next) => {
-  const { userId } = req.params;
-  try {
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-      return next(new ValidationException(result.array()));
-    }
+  const { handler, scarlet } = req;
+  const { id } = scarlet.param;
 
-    const { handler } = req;
+  const data = await handler.read(id);
 
-    const user = await handler.read({
-      id: userId
-    });
+  res.json({
+    message: req.t('validations.model.success-read-data'),
+    data
+  });
 
-    res.json({
-      message: req.t('validations.model.success-read-data'),
-      data: {
-        user
-      }
-    });
-  } catch (err) {
-    next(err);
-  }
-  return null;
+  next();
 });
 
-router.put('/:userId', [
+router.put('/:id', [
   isAdministrator,
   ReadUserValidator(),
   UpdateUserValidator()
 ], async (req, res, next) => {
-  const { userId } = req.params;
-  const { username, email, password, role, isActive } = req.body;
-  try {
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-      return next(new ValidationException(result.array()));
-    }
+  const { handler, scarlet } = req;
+  const { body } = scarlet;
+  const { id } = scarlet.param;
 
-    const { handler } = req;
+  const data = await handler.update(id, body);
 
-    const user = await handler.update({
-      id: userId,
-      username,
-      email,
-      password,
-      role,
-      isActive
-    });
+  res.json({
+    message: req.t('validations.model.success-update-data'),
+    data
+  });
 
-    res.json({
-      message: req.t('validations.model.success-update-data'),
-      data: {
-        user
-      }
-    });
-  } catch (err) {
-    next(err);
-  }
-  return null;
+  next();
 });
 
-router.delete('/:userId', [
+router.delete('/:id', [
   isAdministrator,
   ReadUserValidator(),
   DeleteUserValidator()
 ], async (req, res, next) => {
-  const { userId } = req.params;
-  try {
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-      return next(new ValidationException(result.array()));
-    }
+  const { handler, scarlet } = req;
+  const { id } = scarlet.param;
 
-    const { handler } = req;
+  const data = await handler.delete({ id });
 
-    const user = await handler.delete({
-      id: userId
-    });
+  res.json({
+    message: req.t('validations.model.success-delete-data'),
+    data
+  });
 
-    res.json({
-      message: req.t('validations.model.success-delete-data'),
-      data: {
-        user
-      }
-    });
-  } catch (err) {
-    next(err);
-  }
-  return null;
+  next();
 });
 
 module.exports = router;

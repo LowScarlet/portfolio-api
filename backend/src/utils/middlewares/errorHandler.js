@@ -11,10 +11,7 @@ module.exports = (err, req, res, next) => {
   res.header('Content-Type', 'application/json');
   res.status(status || 500);
   res.json({
-    status: status || 500,
     message: req.t(message),
-    timestamp: Date.now(),
-    path: req.originalUrl,
     validationErrors,
     stack,
   });
