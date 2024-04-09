@@ -4,9 +4,9 @@ const PaginationValidator = require('../../../utils/validators/PaginationValidat
 
 const router = Router();
 const CrudHandler = require('../CrudHandler');
-const { isAdministrator } = require('./Middlewares');
 const { CreateValidator, WheresValidator, ReadValidator, UpdateValidator, DeleteValidator } = require('./Validators');
 const { dbModel, viewField } = require('./Services');
+const { isAdministrator } = require('../user/Middlewares');
 
 const handler = new CrudHandler(dbModel);
 

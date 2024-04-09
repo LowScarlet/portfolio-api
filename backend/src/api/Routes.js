@@ -6,6 +6,7 @@ const router = express.Router();
 
 const isAuthenticated = require('./auth/model/middlewares/isAuthenticated');
 
+// Still Testing
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minutes
   max: 60,

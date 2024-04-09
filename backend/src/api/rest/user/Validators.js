@@ -2,14 +2,14 @@ const { body, param, query } = require('express-validator');
 
 const i18next = require('i18next');
 const { Role } = require('@prisma/client');
-const { db } = require('../../../utils/database');
+const { dbModel } = require('./Services');
 const validateValidationChain = require('../../../utils/middlewares/validateValidationChain');
 
 function CreateValidator() {
   return validateValidationChain([
     body('username')
       .custom(async (username, { req }) => {
-        const user = await db.user.findUnique({ where: { username } });
+        const user = await dbModel.findUnique({ where: { username } });
         if (user) throw new Error('validations.already-exist');
 
         req.scarlet.body.username = username;
@@ -24,7 +24,7 @@ function CreateValidator() {
     body('email')
       .custom(async (email, { req }) => {
         if (!email) return;
-        const user = await db.user.findUnique({ where: { email } });
+        const user = await dbModel.findUnique({ where: { email } });
         if (user) throw new Error('validations.already-exist');
 
         req.scarlet.body.email = email;
@@ -65,24 +65,23 @@ function CreateValidator() {
 }
 
 function ReadValidator() {
-  return [
+  return validateValidationChain([
     param('id')
       .if(param('id').exists())
       .custom(async (id, { req }) => {
-        const user = await db.user.findUnique({ where: { id } });
+        const user = await dbModel.findUnique({ where: { id } });
         if (!user) throw new Error('validations.model.data-not-found');
 
         req.scarlet.param.id = id;
       })
-      .optional()
-  ];
+  ]);
 }
 
 function UpdateValidator() {
-  return [
+  return validateValidationChain([
     body('username')
       .custom(async (username, { req }) => {
-        const user = await db.user.findUnique({ where: { username } });
+        const user = await dbModel.findUnique({ where: { username } });
         if (user) throw new Error('validations.already-exist');
 
         req.scarlet.body.username = username;
@@ -96,7 +95,7 @@ function UpdateValidator() {
     body('email')
       .custom(async (email, { req }) => {
         if (!email) return;
-        const user = await db.user.findUnique({ where: { email } });
+        const user = await dbModel.findUnique({ where: { email } });
         if (user) throw new Error('validations.already-exist');
 
         req.scarlet.body.email = email;
@@ -129,15 +128,15 @@ function UpdateValidator() {
       .isBoolean()
       .withMessage('validations.invalid-type')
       .optional(),
-  ];
+  ]);
 }
 
 function DeleteValidator() {
-  return [];
+  return validateValidationChain([]);
 }
 
 function WheresValidator() {
-  return [
+  return validateValidationChain([
     query('username')
       .custom(async (username, { req }) => {
         req.scarlet.query.username = { contains: username };
@@ -163,7 +162,7 @@ function WheresValidator() {
       .isBoolean()
       .withMessage('validations.invalid-type')
       .optional(),
-  ];
+  ]);
 }
 
 module.exports = {
