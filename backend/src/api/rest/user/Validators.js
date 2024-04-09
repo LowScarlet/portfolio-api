@@ -139,12 +139,12 @@ function WheresValidator() {
   return validateValidationChain([
     query('username')
       .custom(async (username, { req }) => {
-        req.scarlet.query.username = { contains: username };
+        req.scarlet.query.username = { contains: username, mode: 'insensitive' };
       })
       .optional(),
     query('email')
       .custom(async (email, { req }) => {
-        req.scarlet.query.email = { contains: email };
+        req.scarlet.query.email = { contains: email, mode: 'insensitive' };
       })
       .optional(),
     query('role')

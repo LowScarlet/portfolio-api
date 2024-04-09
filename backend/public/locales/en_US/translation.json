@@ -20,6 +20,7 @@
       "success-update-data": "Berhasil Memperbarui Data.",
       "success-delete-data": "Berhasil Menghapus Data.",
 
+      "data-has-relation": "Data sudah memiliki relasi.",
       "data-not-found": "Data tidak ditemukan."
     },
     "invalid": "Tidak Valid.",

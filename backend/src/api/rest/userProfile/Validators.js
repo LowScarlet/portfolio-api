@@ -3,6 +3,7 @@ const { body, param, query } = require('express-validator');
 const i18next = require('i18next');
 const validateValidationChain = require('../../../utils/middlewares/validateValidationChain');
 const { dbModel } = require('./Services');
+const { db } = require('../../../utils/database');
 
 function CreateValidator() {
   return validateValidationChain([
@@ -30,7 +31,11 @@ function CreateValidator() {
 
     body('userId')
       .custom(async (userId, { req }) => {
-        req.scarlet.body.User = { connect: { id: userId } };
+        const user = await db.user.findUnique({ where: { id: userId }, include: { UserProfile: true } });
+        if (!user) throw new Error('validations.model.data-not-found');
+        if (user.UserProfile) throw new Error('validations.model.data-has-relation');
+
+        req.scarlet.body.userId = userId;
       })
       .notEmpty()
       .withMessage('validations.required'),
@@ -47,7 +52,6 @@ function ReadValidator() {
 
         req.scarlet.param.id = id;
       })
-      .optional()
   ];
 }
 
@@ -78,8 +82,11 @@ function UpdateValidator() {
     body('userId')
       .toBoolean()
       .custom(async (userId, { req }) => {
+        const user = await db.user.findUnique({ where: { id: userId }, include: { UserProfile: true } });
+        if (!user) throw new Error('validations.model.data-not-found');
+        if (user.UserProfile) throw new Error('validations.model.data-has-relation');
+
         req.scarlet.body.userId = userId;
-        req.scarlet.body.User = { connect: { id: userId } };
       })
       .optional(),
   ];
@@ -98,12 +105,12 @@ function WheresValidator() {
       .optional(),
     query('fullName')
       .custom(async (fullName, { req }) => {
-        req.scarlet.query.fullName = { contains: fullName };
+        req.scarlet.query.fullName = { contains: fullName, mode: 'insensitive' };
       })
       .optional(),
     query('bio')
       .custom(async (bio, { req }) => {
-        req.scarlet.query.bio = { contains: bio };
+        req.scarlet.query.bio = { contains: bio, mode: 'insensitive' };
       })
       .optional(),
     query('userId')

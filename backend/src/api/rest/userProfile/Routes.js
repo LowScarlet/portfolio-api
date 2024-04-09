@@ -23,6 +23,8 @@ router.post('/', [
     const { scarlet } = req;
     const { body } = scarlet;
 
+    console.log(body);
+
     const data = await handler.create(body);
 
     res.json({
@@ -30,6 +32,7 @@ router.post('/', [
       data
     });
   } catch (err) {
+    console.log(err);
     next();
   }
 });
