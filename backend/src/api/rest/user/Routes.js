@@ -30,7 +30,7 @@ router.post('/', [
       data
     });
   } catch (err) {
-    next();
+    next(err);
   }
 });
 
@@ -52,7 +52,7 @@ router.get('/', [
       take
     });
   } catch (err) {
-    next();
+    next(err);
   }
 });
 
@@ -70,7 +70,7 @@ router.get('/:id', [
       data
     });
   } catch (err) {
-    next();
+    next(err);
   }
 });
 
@@ -91,7 +91,7 @@ router.put('/:id', [
       data
     });
   } catch (err) {
-    next();
+    next(err);
   }
 });
 
@@ -111,7 +111,7 @@ router.delete('/:id', [
       data
     });
   } catch (err) {
-    next();
+    next(err);
   }
 });
 

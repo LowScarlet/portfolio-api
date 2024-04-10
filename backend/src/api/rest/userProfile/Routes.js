@@ -23,8 +23,6 @@ router.post('/', [
     const { scarlet } = req;
     const { body } = scarlet;
 
-    console.log(body);
-
     const data = await handler.create(body);
 
     res.json({
@@ -32,8 +30,7 @@ router.post('/', [
       data
     });
   } catch (err) {
-    console.log(err);
-    next();
+    next(err);
   }
 });
 
@@ -55,7 +52,7 @@ router.get('/', [
       take
     });
   } catch (err) {
-    next();
+    next(err);
   }
 });
 
@@ -73,7 +70,7 @@ router.get('/:id', [
       data
     });
   } catch (err) {
-    next();
+    next(err);
   }
 });
 
@@ -94,7 +91,7 @@ router.put('/:id', [
       data
     });
   } catch (err) {
-    next();
+    next(err);
   }
 });
 
@@ -114,7 +111,7 @@ router.delete('/:id', [
       data
     });
   } catch (err) {
-    next();
+    next(err);
   }
 });
 

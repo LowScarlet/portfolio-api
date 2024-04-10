@@ -5,7 +5,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "/src/app.js",
+      "src": "/src/App.js",
       "use": "@vercel/node"
     },
     {
@@ -16,7 +16,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/src/app.js"
+      "dest": "/src/App.js"
     }
   ],
   "regions": [
