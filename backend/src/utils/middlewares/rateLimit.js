@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const { rateLimit } = require('express-rate-limit');
 
-const rateLimitByRole = rateLimit({
+const RateLimitByRole = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minutes
   max: 60,
   standardHeaders: true,
@@ -14,5 +14,5 @@ const rateLimitByRole = rateLimit({
 });
 
 module.exports = {
-  rateLimitByRole
+  RateLimitByRole
 };

@@ -1,12 +1,12 @@
 const { body, param, query } = require('express-validator');
 
 const i18next = require('i18next');
-const validateValidationChain = require('../../../utils/middlewares/validateValidationChain');
 const { dbModel } = require('./Services');
 const { db } = require('../../../utils/database');
+const ValidatorHandler = require('../../../utils/services/ValidatorHandler');
 
 function CreateValidator() {
-  return validateValidationChain([
+  return ValidatorHandler([
     body('avatar')
       .custom(async (avatar, { req }) => {
         req.scarlet.body.avatar = avatar;
@@ -43,7 +43,7 @@ function CreateValidator() {
 }
 
 function ReadValidator() {
-  return [
+  return ValidatorHandler([
     param('id')
       .if(param('id').exists())
       .custom(async (id, { req }) => {
@@ -52,11 +52,11 @@ function ReadValidator() {
 
         req.scarlet.param.id = id;
       })
-  ];
+  ]);
 }
 
 function UpdateValidator() {
-  return [
+  return ValidatorHandler([
     body('avatar')
       .custom(async (avatar, { req }) => {
         req.scarlet.body.avatar = avatar;
@@ -89,7 +89,7 @@ function UpdateValidator() {
         req.scarlet.body.userId = userId;
       })
       .optional(),
-  ];
+  ]);
 }
 
 function DeleteValidator() {
@@ -97,7 +97,7 @@ function DeleteValidator() {
 }
 
 function WheresValidator() {
-  return [
+  return ValidatorHandler([
     query('avatar')
       .custom(async (avatar, { req }) => {
         req.scarlet.query.avatar = avatar;
@@ -118,7 +118,7 @@ function WheresValidator() {
         req.scarlet.query.userId = userId;
       })
       .optional(),
-  ];
+  ]);
 }
 
 module.exports = {

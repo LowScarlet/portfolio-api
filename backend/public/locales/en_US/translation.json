@@ -10,7 +10,12 @@
       "success-register": "Berhasil Register.",
       "success-verify": "Berhasil Verify.",
 
-      "token-not-found": "Token tidak ditemukan.",
+      "username-exist": "Username telah digunakan.",
+      "email-exist": "Email telah digunakan.",
+      "user-not-found": "User tidak ditemukan.",
+      "wrong-password": "Password salah.",
+
+      "invalid-refresh-token": "Refresh Token tidak valid.",
       "token-expired": "Token sudah tidak valid."
     },
     "model": {

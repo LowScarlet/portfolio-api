@@ -6,7 +6,7 @@ const router = express.Router();
 
 const isAuthenticated = require('./auth/model/middlewares/isAuthenticated');
 
-// Still Testing
+// Still Testing (really need this?)
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minutes
   max: 60,
@@ -19,6 +19,7 @@ const limiter = rateLimit({
   }
 });
 
+// Initial Custom Request :<
 router.use((req, res, next) => {
   req.scarlet = {
     param: {},
@@ -31,7 +32,7 @@ router.use((req, res, next) => {
 
 router.use('/auth', [
   limiter
-], require('./auth'));
+], require('./auth/Routes'));
 
 router.use('/rest', [
   isAuthenticated

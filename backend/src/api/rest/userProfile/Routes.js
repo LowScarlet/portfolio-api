@@ -3,10 +3,10 @@ const { Router } = require('express');
 const PaginationValidator = require('../../../utils/validators/PaginationValidator');
 
 const router = Router();
-const CrudHandler = require('../CrudHandler');
 const { CreateValidator, WheresValidator, ReadValidator, UpdateValidator, DeleteValidator } = require('./Validators');
 const { dbModel, viewField } = require('./Services');
 const { isAdministrator } = require('../user/Middlewares');
+const CrudHandler = require('../../../utils/services/CrudHandler');
 
 const handler = new CrudHandler(dbModel);
 

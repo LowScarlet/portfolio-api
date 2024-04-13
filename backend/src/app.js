@@ -9,17 +9,16 @@ const favicon = require('serve-favicon');
 const i18next = require('i18next');
 const i18nextBackend = require('i18next-fs-backend');
 const i18nextMiddleware = require('i18next-http-middleware');
-
-// Custom Middlewares
-const notFoundMiddleware = require('./utils/middlewares/notFound');
-const errorHandlerMiddleware = require('./utils/middlewares/errorHandler');
-
 // The App
 const app = express();
 
 // Import Routes
 const api = require('./api/Routes');
 const checkPayload = require('./api/auth/model/middlewares/checkPayload');
+
+// Custom Middlewares
+const Error = require('./utils/middlewares/Error');
+const NotFound = require('./utils/middlewares/NotFound');
 
 // Use .env
 require('dotenv').config();
@@ -74,8 +73,8 @@ app.get('/', (req, res) => {
 app.use('/api', api);
 
 // Custom Middlewares Setup
-app.use(notFoundMiddleware);
-app.use(errorHandlerMiddleware);
+app.use(NotFound);
+app.use(Error);
 
 // Module Exports
 module.exports = app;

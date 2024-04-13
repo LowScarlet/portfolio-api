@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-vars */
 
-module.exports = (err, req, res, next) => {
+const Error = (err, req, res, next) => {
   const { status, message, errors } = err;
   let validationErrors;
   if (errors) {
     validationErrors = {};
-    errors.forEach((error) => (validationErrors[error.path] = req.t(error.msg)));
+    errors.forEach((error) => (
+      validationErrors[error.path] = req.t(error.msg)
+    ));
   }
   const stack = process.env.NODE_ENV === 'production' ? undefined : err.stack;
   res.header('Content-Type', 'application/json');
@@ -16,3 +18,5 @@ module.exports = (err, req, res, next) => {
     stack,
   });
 };
+
+module.exports = Error;

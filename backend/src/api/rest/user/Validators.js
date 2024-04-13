@@ -3,10 +3,10 @@ const { body, param, query } = require('express-validator');
 const i18next = require('i18next');
 const { Role } = require('@prisma/client');
 const { dbModel } = require('./Services');
-const validateValidationChain = require('../../../utils/middlewares/validateValidationChain');
+const ValidatorHandler = require('../../../utils/services/ValidatorHandler');
 
 function CreateValidator() {
-  return validateValidationChain([
+  return ValidatorHandler([
     body('username')
       .custom(async (username, { req }) => {
         const user = await dbModel.findUnique({ where: { username } });
@@ -65,7 +65,7 @@ function CreateValidator() {
 }
 
 function ReadValidator() {
-  return validateValidationChain([
+  return ValidatorHandler([
     param('id')
       .if(param('id').exists())
       .custom(async (id, { req }) => {
@@ -78,7 +78,7 @@ function ReadValidator() {
 }
 
 function UpdateValidator() {
-  return validateValidationChain([
+  return ValidatorHandler([
     body('username')
       .custom(async (username, { req }) => {
         const user = await dbModel.findUnique({ where: { username } });
@@ -132,11 +132,11 @@ function UpdateValidator() {
 }
 
 function DeleteValidator() {
-  return validateValidationChain([]);
+  return ValidatorHandler([]);
 }
 
 function WheresValidator() {
-  return validateValidationChain([
+  return ValidatorHandler([
     query('username')
       .custom(async (username, { req }) => {
         req.scarlet.query.username = { contains: username, mode: 'insensitive' };
