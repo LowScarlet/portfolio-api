@@ -1,10 +1,9 @@
 /* eslint-disable no-unused-vars */
 const { rateLimit } = require('express-rate-limit');
 const express = require('express');
+const { IsAuthenticated } = require('./auth/Middlewares');
 
 const router = express.Router();
-
-const isAuthenticated = require('./auth/model/middlewares/isAuthenticated');
 
 // Still Testing (really need this?)
 const limiter = rateLimit({
@@ -35,7 +34,7 @@ router.use('/auth', [
 ], require('./auth/Routes'));
 
 router.use('/rest', [
-  isAuthenticated
+  IsAuthenticated
 ], require('./rest/Routes'));
 
 module.exports = router;

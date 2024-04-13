@@ -14,11 +14,11 @@ const app = express();
 
 // Import Routes
 const api = require('./api/Routes');
-const checkPayload = require('./api/auth/model/middlewares/checkPayload');
 
 // Custom Middlewares
 const Error = require('./utils/middlewares/Error');
 const NotFound = require('./utils/middlewares/NotFound');
+const { CheckPayload } = require('./api/auth/Middlewares');
 
 // Use .env
 require('dotenv').config();
@@ -60,7 +60,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Index Routes
-app.use('/', checkPayload);
+app.use('/', CheckPayload);
 
 app.get('/', (req, res) => {
   res.header('Content-Type', 'application/json');
