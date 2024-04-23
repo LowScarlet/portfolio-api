@@ -7,6 +7,7 @@ const { CreateValidator, WheresValidator, ReadValidator, UpdateValidator, Delete
 const { dbModel, viewField } = require('./Services');
 const { isAdministrator } = require('../user/Middlewares');
 const CrudHandler = require('../../../utils/services/CrudHandler');
+const ImageUploads = require('../../../utils/middlewares/ImageUploads');
 
 const handler = new CrudHandler(dbModel);
 
@@ -17,7 +18,13 @@ router.use((req, res, next) => {
 
 router.post('/', [
   isAdministrator,
-  CreateValidator()
+  CreateValidator(),
+  ImageUploads({
+    avatar: {
+      dir: '/avatars',
+      resize: { width: 300 }
+    }
+  })
 ], async (req, res, next) => {
   try {
     const { scarlet } = req;
@@ -77,7 +84,13 @@ router.get('/:id', [
 router.put('/:id', [
   isAdministrator,
   ReadValidator(),
-  UpdateValidator()
+  UpdateValidator(),
+  ImageUploads({
+    avatar: {
+      dir: '/avatars',
+      resize: { width: 300 }
+    }
+  })
 ], async (req, res, next) => {
   try {
     const { scarlet } = req;

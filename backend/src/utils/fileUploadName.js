@@ -1,8 +1,9 @@
-function fileUploadName(file, dir = '') {
-  const extArray = file.mimetype.split('/');
-  const extension = extArray[extArray.length - 1];
-  const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-  return `${dir}${file.fieldname}-${uniqueSuffix}.${extension}`;
+const { v4: uuidv4 } = require('uuid');
+
+function fileUploadName(file) {
+  const uuid = uuidv4();
+  const fileExtension = file.originalname.split('.').pop();
+  return `${Date.now()}-${uuid}.${fileExtension}`;
 }
 
 module.exports = fileUploadName;
