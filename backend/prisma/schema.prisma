@@ -84,22 +84,12 @@ model UserProfile {
 model Portfolio {
   id                String             @id @default(uuid())
   //
-  title             String
-  desc              String?
-  image             String?
-  banner            String?
-  isPublic          Boolean            @default(false)
-  //
-  name              String?
-  label             String?
-  nickname          String?
-  about             String?
-  country           String?
-  email             String?
-  phone             String?
-  website           String?
+  name              String
+  description       String?
+  isPublic          Boolean            @default(true)
   ownerId           String?
   //
+  PorfolioProfile   PortfolioProfile?
   PortfolioVotes    PortfolioVote[]
   PortfolioComments PortfolioComment[]
   //
@@ -107,6 +97,27 @@ model Portfolio {
   //
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
+}
+
+model PortfolioProfile {
+  id         String    @id @default(uuid())
+  //
+  logo       String?
+  banner     String?
+  fullName   String?
+  label      String?
+  nickname   String?
+  about      String?
+  country    String?
+  email      String[]
+  phone      String[]
+  website    String[]
+  porfolioId String    @unique
+  //
+  Porfolio   Portfolio @relation(fields: [porfolioId], references: [id], onDelete: Cascade)
+  //
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model PortfolioVote {
