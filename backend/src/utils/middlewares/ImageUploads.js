@@ -1,4 +1,5 @@
 const sharp = require('sharp');
+const { supabase } = require('../supabase');
 
 const ImageUploads = (param) => async (req, res, next) => {
   const { files } = req;
@@ -7,12 +8,35 @@ const ImageUploads = (param) => async (req, res, next) => {
     return next();
   }
 
-  Object.values(files).forEach((file) => {
-    if (param[file.fieldname]) {
-      const { dir, resize } = param[file.fieldname];
-      sharp(file.buffer).resize(resize).toFile(`./public/uploads/images/${dir}/${file.originalname}`, (err) => { if (err) console.error(err); });
-    }
-  });
+  try {
+    await Promise.all(Object.values(files).map(async (file) => {
+      if (param[file.fieldname]) {
+        const { dir, resize } = param[file.fieldname];
+        if (process.env.NODE_ENV === 'production') {
+          const processedImage = await sharp(file.buffer)
+            .resize(resize)
+            .toBuffer();
+
+          // eslint-disable-next-line no-unused-vars
+          const { data, error } = await supabase.storage.from('portfolio_bucket').upload(`./public/uploads/images/${dir}/${file.originalname}`, processedImage);
+
+          if (error) {
+            throw error;
+          }
+        } else {
+          sharp(file.buffer).resize(resize).toFile(`./public/uploads/images/${dir}/${file.originalname}`, (err) => {
+            if (err) {
+              console.error(err);
+            }
+          });
+        }
+      }
+    }));
+  } catch (error) {
+    // Handle the error appropriately, e.g., send an error response
+    console.error('Image upload error:', error);
+    return res.status(500).json({ error: 'Image upload failed' });
+  }
 
   return next();
 };

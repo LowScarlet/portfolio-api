@@ -28,6 +28,13 @@
       "data-has-relation": "Data sudah memiliki relasi.",
       "data-not-found": "Data tidak ditemukan."
     },
+    "file-upload": {
+      "max-size": "File melebihi batas limit yang ditentukan.",
+      "images": {
+        "invalid-type": "Hanya menerima File Foto.",
+        "ratio-1-1": "Foto harus memiliki aspect ratio 1:1."
+      }
+    },
     "invalid": "Tidak Valid.",
     "required": "Dibutuhkan.",
     "invalid-type": "Tipe Input tidak Valid.",

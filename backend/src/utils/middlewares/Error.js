@@ -9,6 +9,9 @@ const Error = (err, req, res, next) => {
       validationErrors[error.path] = req.t(error.msg)
     ));
   }
+  if (err.stack) {
+    console.error(err.stack);
+  }
   const stack = process.env.NODE_ENV === 'production' ? undefined : err.stack;
   res.header('Content-Type', 'application/json');
   res.status(status || 500);
