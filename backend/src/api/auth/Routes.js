@@ -4,6 +4,7 @@ const { db } = require('../../utils/database');
 const { generateAccessToken, hashToken, hashPassword, verifyRefreshToken, createToken } = require('./Services');
 const { LoginValidator, RegisterValidator, VerifyValidator, LogoutValidator } = require('./Validators');
 const { IsNotAuthenticated, IsAuthenticated } = require('./Middlewares');
+const { viewField } = require('../rest/user/Services');
 
 const router = Router();
 
@@ -16,13 +17,14 @@ router.post('/login', [
     const { id } = scarlet.body;
 
     const jti = uuidv4();
-    const user = await db.user.findUnique({ where: { id } });
+    const user = await db.user.findUnique({ where: { id }, select: viewField() });
 
     const { accessToken, refreshToken } = await createToken(user, jti);
 
     res.json({
       message: req.t('validations.auth.success-login'),
       data: {
+        user,
         accessToken: {
           token: accessToken.token,
           expiredAt: accessToken.expirationDate
@@ -54,7 +56,8 @@ router.post('/register', [
         email,
         password: hashPassword(password),
         UserProfile: { create: {} }
-      }
+      },
+      select: viewField()
     });
 
     const { accessToken, refreshToken } = await createToken(user, jti);
@@ -62,6 +65,7 @@ router.post('/register', [
     res.json({
       message: req.t('validations.auth.success-login'),
       data: {
+        user,
         accessToken: {
           token: accessToken.token,
           expiredAt: accessToken.expirationDate
