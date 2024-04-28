@@ -24,7 +24,10 @@ router.use((req, res, next) => {
     param: {},
     query: {},
     body: {},
-    pagination: { skip: 0, take: 10 }
+    pagination: {
+      skip: 0,
+      take: 10
+    }
   };
   next();
 });
