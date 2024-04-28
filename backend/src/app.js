@@ -46,9 +46,13 @@ app.get('/public', (req, res) => {
   });
 });
 
-app.get('/public/:path2', (req, res) => {
-  const { path2 } = req.params;
-  res.sendFile(path.join(__dirname, `../public/${path2}`));
+app.get('/public/:path*', (req, res) => {
+  const fullPath = req.params.path + req.params[0];
+  if (process.env.NODE_ENV === 'production' && req.params.path.startsWith('uploads')) {
+    res.redirect(`https://fxwapmiixdqrpbfoavkc.supabase.co/storage/v1/object/public/portfolio_bucket/public/${fullPath}`);
+  } else {
+    res.sendFile(path.join(__dirname, `../public/${fullPath}`));
+  }
 });
 
 // Default Configuration
