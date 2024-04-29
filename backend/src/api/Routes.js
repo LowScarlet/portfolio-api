@@ -2,21 +2,10 @@
 const { rateLimit } = require('express-rate-limit');
 const express = require('express');
 const { IsAuthenticated } = require('./auth/Middlewares');
+const { DefaultReadRateLimit } = require('../utils/middlewares/RateLimit');
+const { AuthRateLimit } = require('./auth/Services');
 
 const router = express.Router();
-
-// Still Testing (really need this?)
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minutes
-  max: 60,
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req, res, next, options) => {
-    res.json({
-      message: req.t('utils.middlewares.rate-limit')
-    });
-  }
-});
 
 // Initial Custom Request :<
 router.use((req, res, next) => {
@@ -33,10 +22,11 @@ router.use((req, res, next) => {
 });
 
 router.use('/auth', [
-  limiter
+  AuthRateLimit
 ], require('./auth/Routes'));
 
 router.use('/rest', [
+  DefaultReadRateLimit,
   IsAuthenticated
 ], require('./rest/Routes'));
 

@@ -12,13 +12,13 @@ const ImageUploads = (param) => async (req, res, next) => {
     await Promise.all(Object.values(files).map(async (file) => {
       if (param[file.fieldname]) {
         const { dir, resize } = param[file.fieldname];
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' || !supabase) {
           const processedImage = await sharp(file.buffer)
             .resize(resize)
             .toBuffer();
 
           // eslint-disable-next-line no-unused-vars
-          const { data, error } = await supabase.storage.from('portfolio_bucket').upload(`./public/uploads/images/${dir}/${file.originalname}`, processedImage);
+          const { data, error } = await supabase.storage.from(process.env.SUPABASE_STORAGE_BUCKET).upload(`./public/uploads/images/${dir}/${file.originalname}`, processedImage);
 
           if (error) {
             throw error;
