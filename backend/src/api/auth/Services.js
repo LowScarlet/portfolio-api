@@ -1,16 +1,30 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const { default: rateLimit } = require('express-rate-limit');
 const { db } = require('../../utils/database');
 
 const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
 
-const accessExpiresIn = 5 * 60; // 15 menit
+const accessExpiresIn = 15 * 60; // 15 menit
 const refreshExpiresIn = 48 * 3600; // 48 jam
 
 const hashSalt = 12;
 const hashAlgorithm = 'sha512';
 const hashDigest = 'hex';
+
+const AuthRateLimit = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minutes
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  // eslint-disable-next-line no-unused-vars
+  handler: (req, res, next, options) => {
+    res.json({
+      message: req.t('utils.middlewares.rate-limit')
+    });
+  }
+});
 
 function generateAccessToken(user) {
   const token = jwt.sign({ userId: user.id }, JWT_ACCESS_SECRET, { expiresIn: accessExpiresIn });
@@ -78,6 +92,8 @@ async function verifyRefreshToken(token) {
 }
 
 module.exports = {
+  AuthRateLimit,
+
   generateAccessToken,
   generateRefreshToken,
   hashPassword,
