@@ -21,9 +21,13 @@ To run this project, you will need to add the following environment variables to
 # NODE BRANCH
 NODE_ENV                  = "production" # production OR dev
 
+# GOOGLE OAUTH
+GOOGLE_AUTH_CLIENT_ID     = "xXXxxXXxx.apps.googleusercontent.com" # Change This
+GOOGLE_AUTH_CLIENT_SECRET = "xXXxxXXxx" # Change This
+
 # JSON WEB TOKEN 
-JWT_ACCESS_SECRET         = 9A836A5E753E465B1781C8D448272 # Change This
-JWT_REFRESH_SECRET        = F8C131AAK784F1311AC4F73B15557 # Change This
+JWT_ACCESS_SECRET         = "xXXxxXXxx" # Change This
+JWT_REFRESH_SECRET        = "xXXxxXXxx" # Change This
 
 # DATABASE
 DATABASE_URL              = "postgres://postgres:password@host:port/database"

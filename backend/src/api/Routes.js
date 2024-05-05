@@ -25,6 +25,10 @@ router.use('/auth', [
   AuthRateLimit
 ], require('./auth/Routes'));
 
+router.use('/oauth', [
+  //
+], require('./oauth/Routes'));
+
 router.use('/rest', [
   DefaultReadRateLimit,
   IsAuthenticated
