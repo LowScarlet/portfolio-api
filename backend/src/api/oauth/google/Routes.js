@@ -2,7 +2,6 @@ const { Router } = require('express');
 const { v4: uuidv4 } = require('uuid');
 const passport = require('passport');
 const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
-const { IsNotAuthenticated } = require('../../auth/Middlewares');
 const { db } = require('../../../utils/database');
 const { viewField } = require('../../rest/user/Services');
 const { createToken, hashPassword } = require('../../auth/Services');
@@ -21,24 +20,22 @@ function generateShortUid(length = 6) {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_AUTH_CLIENT_ID,
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-  callbackURL: '/api/oauth/google/callback'
+  callbackURL: 'http://localhost:3000/api/oauth/google/callback'
 }, (accessToken, refreshToken, profile, done) => {
   const data = {
     id: profile.id,
     fullName: profile.displayName,
     email: profile.emails[0].value,
-    accessToken
   };
 
   return done(null, data);
 }));
 
 router.get('/', [
-  IsNotAuthenticated,
   passport.authenticate('google', { scope: ['profile', 'email'] })
 ]);
 
-router.get('/callback', [
+router.get('/exchange', [
   passport.authenticate('google', { session: false })
 ], async (req, res, next) => {
   try {
@@ -49,6 +46,7 @@ router.get('/callback', [
       data: {
         username: `user_${generateShortUid()}`,
         email,
+        isActive: true,
         password: hashPassword(jti),
         UserProfile: {
           create: {

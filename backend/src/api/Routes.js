@@ -26,7 +26,7 @@ router.use('/auth', [
 ], require('./auth/Routes'));
 
 router.use('/oauth', [
-  //
+  AuthRateLimit
 ], require('./oauth/Routes'));
 
 router.use('/rest', [
