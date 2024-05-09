@@ -1,5 +1,5 @@
+import { UserInterface } from "@/app/_interface/UserInterface"
 import { TokenInterface } from "./TokenInterface"
-import { UserInterface } from "./UserInterface"
 
 export interface ResponseInterface {
   "message": string,

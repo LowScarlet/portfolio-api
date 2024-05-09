@@ -82,7 +82,6 @@ router.post('/register', [
 });
 
 router.post('/verify', [
-  IsAuthenticated,
   VerifyValidator()
 ], async (req, res, next) => {
   try {

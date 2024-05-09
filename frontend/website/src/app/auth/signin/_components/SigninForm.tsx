@@ -9,9 +9,12 @@ import { FaCircleNotch } from "react-icons/fa6"
 import { FaUser } from "react-icons/fa";
 import { MdEmail, MdPassword } from 'react-icons/md'
 import Link from 'next/link'
+import { useUser } from '@/app/_context/UserContext'
 
 const SigninForm = () => {
   const router = useRouter()
+
+  const {user, setUser} = useUser()
 
   const defaultFormData = { username: '', email: '', password: '' }
   const defaultBadError = { username: '', email: '', password: '' }
@@ -69,6 +72,8 @@ const SigninForm = () => {
     }
 
     const { data } = response
+
+    setUser(data.user)
 
     setToken(data).then(() => router.push('/dashboard'))
   }

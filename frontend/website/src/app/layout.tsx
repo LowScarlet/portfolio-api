@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { UserProvider } from "./_context/UserContext";
+import { CookiesProvider } from 'next-client-cookies/server';
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +19,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <CookiesProvider>
+        <UserProvider>
+          <body className={inter.className}>
+            <NextTopLoader />
+            {children}
+          </body>
+        </UserProvider>
+      </CookiesProvider>
     </html>
   );
 }
