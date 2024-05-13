@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, FormEvent } from 'react'
-import { setToken } from '@/app/auth/_utils/setToken'
+import { setToken } from '@/app/auth/_utils/token'
 
 interface TokenInterface {
   token: string,

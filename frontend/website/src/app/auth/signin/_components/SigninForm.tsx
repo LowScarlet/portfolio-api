@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, FormEvent } from 'react'
-import { setToken } from '@/app/auth/_utils/setToken'
+import { setToken } from '@/app/auth/_utils/token'
 import { useRouter } from 'next/navigation'
 import { ResponseInterface } from '@/app/auth/_interface/ResponseInterface'
 import AltButtons from './AltButtons'
@@ -10,11 +10,12 @@ import { FaUser } from "react-icons/fa";
 import { MdEmail, MdPassword } from 'react-icons/md'
 import Link from 'next/link'
 import { useUser } from '@/app/_context/UserContext'
+import { useAuth } from '../../_context/AuthContext'
 
 const SigninForm = () => {
   const router = useRouter()
 
-  const {user, setUser} = useUser()
+  const { auth, setAuth } = useAuth()
 
   const defaultFormData = { username: '', email: '', password: '' }
   const defaultBadError = { username: '', email: '', password: '' }
@@ -73,9 +74,14 @@ const SigninForm = () => {
 
     const { data } = response
 
-    setUser(data.user)
-
-    setToken(data).then(() => router.push('/dashboard'))
+    // Kalo setToken tidak async function nanti pas mau push ke dashboard cookies tidak terdeteksi karena cookiesnya belum ke set tapi sudah langsung di push
+    setToken(data).then(() => {
+      setAuth({
+        isAuthenticated: true,
+        user: data.user
+      })
+      router.push('/dashboard')
+    })
   }
 
   return (

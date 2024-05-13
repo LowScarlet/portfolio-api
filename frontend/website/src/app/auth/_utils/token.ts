@@ -19,19 +19,29 @@ async function setToken({
 
   if (accessToken) {
     cookies().set('accessToken', accessToken.token, {
+      httpOnly: true,
       secure: true,
-      maxAge: (Date.parse(accessToken.expiredAt) - currentTime) / 1000
+      maxAge: (Date.parse(accessToken.expiredAt) - currentTime) / 1000,
     })
   }
   
   if (refreshToken) {
     cookies().set('refreshToken', refreshToken.token, {
+      httpOnly: true,
       secure: true,
       maxAge: (Date.parse(refreshToken.expiredAt) - currentTime) / 1000
     })
   }
 }
 
+async function deleteToken() {
+  const refreshToken = cookies().get('refreshToken')
+
+  cookies().delete("accessToken")
+  cookies().delete("refreshToken")
+}
+
 export {
-  setToken
+  setToken,
+  deleteToken
 };
