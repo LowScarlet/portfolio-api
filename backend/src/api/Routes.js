@@ -2,7 +2,6 @@
 const { rateLimit } = require('express-rate-limit');
 const express = require('express');
 const { IsAuthenticated } = require('./auth/Middlewares');
-const { DefaultReadRateLimit } = require('../utils/middlewares/RateLimit');
 const { AuthRateLimit } = require('./auth/Services');
 
 const router = express.Router();
@@ -30,12 +29,10 @@ router.use('/oauth', [
 ], require('./oauth/Routes'));
 
 router.use('/client', [
-  DefaultReadRateLimit,
   IsAuthenticated
 ], require('./client/Routes'));
 
 router.use('/rest', [
-  DefaultReadRateLimit,
   IsAuthenticated
 ], require('./rest/Routes'));
 

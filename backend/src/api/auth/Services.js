@@ -6,7 +6,7 @@ const { db } = require('../../utils/database');
 
 const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
 
-const accessExpiresIn = 1 * 60; // 1 menit
+const accessExpiresIn = 15 * 60; // 15 menit
 const refreshExpiresIn = 48 * 3600; // 48 jam
 
 const hashSalt = 12;

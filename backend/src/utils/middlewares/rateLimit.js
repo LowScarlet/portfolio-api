@@ -14,6 +14,10 @@ const DefaultReadRateLimit = rateLimit({
     res.json({
       message: req.t('utils.middlewares.rate-limit')
     });
+  },
+  keyGenerator(req) {
+    const { user } = req;
+    return user.id;
   }
 });
 
@@ -25,6 +29,10 @@ const DefaultModifyRateLimit = rateLimit({
     res.json({
       message: req.t('utils.middlewares.rate-limit')
     });
+  },
+  keyGenerator(req) {
+    const { user } = req;
+    return user.id;
   }
 });
 
