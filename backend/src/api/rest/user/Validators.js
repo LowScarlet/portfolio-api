@@ -1,171 +1,216 @@
-const { body, param, query } = require('express-validator');
+const { checkSchema } = require('express-validator');
 
 const i18next = require('i18next');
 const { Role } = require('@prisma/client');
 const { dbModel } = require('./Services');
-const ValidatorHandler = require('../../../utils/services/ValidatorHandler');
+const SchemaValidatorHandler = require('../../../utils/services/SchemaValidatorHandler');
+const { hashPassword } = require('../../auth/Services');
+
+const config = {
+  username: {
+    isLength: { min: 6, max: 24 },
+    matches: /^[a-zA-Z][a-zA-Z0-9_]*$/
+  },
+  password: {
+    isLength: { min: 6, max: 128 },
+  }
+};
+
+const FilterSchema = () => ({
+  username: {
+    in: ['query'],
+    custom: { options: async (username, { req }) => { req.scarlet.query.username = { contains: username, mode: 'insensitive' }; }, },
+    optional: true,
+  },
+  email: {
+    in: ['query'],
+    custom: { options: async (email, { req }) => { req.scarlet.query.email = { contains: email, mode: 'insensitive' }; }, },
+    optional: true,
+  },
+  role: {
+    in: ['query'],
+    custom: { options: async (role, { req }) => { if (!Role[role]) throw new Error('validations.invalid-type'); req.scarlet.query.role = role; }, },
+    optional: true,
+  },
+  isActive: {
+    in: ['query'],
+    custom: { options: async (isActive, { req }) => { req.scarlet.query.isActive = isActive; }, },
+    isBoolean: { errorMessage: 'validations.invalid-type' },
+    optional: true,
+  },
+});
+
+const ModelSchema = (options) => {
+  const { checkIn } = options;
+  return {
+    // Id
+    id: {
+      in: checkIn,
+      custom: {
+        options: async (id, { req }) => {
+          const user = await dbModel.findUnique({ where: { id } });
+          if (!user) throw new Error('validations.model.data-not-found');
+
+          for (let i = 0; i < checkIn.length; i += 1) {
+            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
+            req.scarlet[checkIn[i]].id = id;
+          }
+        }
+      }
+    },
+
+    // Username
+    username: {
+      in: checkIn,
+      custom: {
+        options: async (username, { req }) => {
+          const user = await dbModel.findUnique({ where: { username } });
+          if (user) throw new Error('validations.already-exist');
+
+          for (let i = 0; i < checkIn.length; i += 1) {
+            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
+            req.scarlet[checkIn[i]].username = username;
+          }
+        },
+      },
+      isLength: {
+        options: config.username.isLength,
+        errorMessage: () => i18next.t('validations.require-length-min-max', config.username.isLength),
+      },
+      matches: {
+        options: config.username.matches,
+        errorMessage: 'validations.only-alphanumeric-and-underscore',
+      }
+    },
+
+    // Email
+    email: {
+      in: checkIn,
+      custom: {
+        options: async (email, { req }) => {
+          if (!email) return;
+          const user = await dbModel.findUnique({ where: { email } });
+          if (user) throw new Error('validations.already-exist');
+
+          for (let i = 0; i < checkIn.length; i += 1) {
+            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
+            req.scarlet[checkIn[i]].email = email;
+          }
+        }
+      },
+      isEmail: { errorMessage: 'validations.invalid-type', }
+    },
+
+    // Password
+    password: {
+      in: checkIn,
+      custom: {
+        options: async (password, { req }) => {
+          for (let i = 0; i < checkIn.length; i += 1) {
+            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
+            req.scarlet[checkIn[i]].password = hashPassword(password);
+          }
+        },
+      },
+      isLength: {
+        options: config.password.isLength,
+        errorMessage: () => i18next.t('validations.require-length-min-max', config.password.isLength),
+      }
+    },
+
+    // Role
+    role: {
+      in: checkIn,
+      custom: {
+        options: async (role, { req }) => {
+          if (!Role[role]) throw new Error('validations.invalid-type');
+
+          for (let i = 0; i < checkIn.length; i += 1) {
+            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
+            req.scarlet[checkIn[i]].role = role;
+          }
+        },
+        errorMessage: 'validations.invalid-type',
+      }
+    },
+
+    // IsActive
+    isActive: {
+      in: checkIn,
+      toBoolean: true,
+      custom: {
+        options: async (isActive, { req }) => {
+          for (let i = 0; i < checkIn.length; i += 1) {
+            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
+            req.scarlet[checkIn[i]].isActive = isActive;
+          }
+        },
+      },
+      isBoolean: { errorMessage: 'validations.invalid-type' }
+    },
+  };
+};
 
 function CreateValidator() {
-  return ValidatorHandler([
-    body('username')
-      .custom(async (username, { req }) => {
-        const user = await dbModel.findUnique({ where: { username } });
-        if (user) throw new Error('validations.already-exist');
+  const { username, email, password, role, isActive } = ModelSchema({
+    checkIn: ['body']
+  });
 
-        req.scarlet.body.username = username;
-      })
-      .isLength({ min: 6, max: 24 })
-      .withMessage(() => i18next.t('validations.require-length-min-max', { min: 6, max: 24 }))
-      .matches(/^[a-zA-Z][a-zA-Z0-9_]*$/)
-      .withMessage('validations.only-alphanumeric-and-underscore')
-      .notEmpty()
-      .withMessage('validations.required'),
+  const input = {
+    username: { ...username, notEmpty: { errorMessage: 'validations.required' } },
+    email: { ...email, notEmpty: { errorMessage: 'validations.required', } },
+    password: { ...password, notEmpty: { errorMessage: 'validations.required', } },
+    role: { ...role, notEmpty: { errorMessage: 'validations.required', } },
+    isActive: { ...isActive, notEmpty: { errorMessage: 'validations.required', } },
+  };
 
-    body('email')
-      .custom(async (email, { req }) => {
-        if (!email) return;
-        const user = await dbModel.findUnique({ where: { email } });
-        if (user) throw new Error('validations.already-exist');
-
-        req.scarlet.body.email = email;
-      })
-      .isEmail()
-      .withMessage('validations.invalid-type')
-      .notEmpty()
-      .withMessage('validations.required'),
-
-    body('password')
-      .custom(async (password, { req }) => {
-        req.scarlet.body.password = password;
-      })
-      .isLength({ min: 6, max: 128 })
-      .withMessage(() => i18next.t('validations.require-length-min-max', { min: 6, max: 128 }))
-      .notEmpty()
-      .withMessage('validations.required'),
-
-    body('role')
-      .custom(async (role, { req }) => {
-        if (!Role[role]) throw new Error('validations.invalid-type');
-
-        req.scarlet.body.role = role;
-      })
-      .notEmpty()
-      .withMessage('validations.required'),
-
-    body('isActive')
-      .toBoolean()
-      .custom(async (isActive, { req }) => {
-        req.scarlet.body.isActive = isActive;
-      })
-      .isBoolean()
-      .withMessage('validations.invalid-type')
-      .notEmpty()
-      .withMessage('validations.required'),
-  ]);
+  return SchemaValidatorHandler([checkSchema(input)]);
 }
 
 function ReadValidator() {
-  return ValidatorHandler([
-    param('id')
-      .if(param('id').exists())
-      .custom(async (id, { req }) => {
-        const user = await dbModel.findUnique({ where: { id } });
-        if (!user) throw new Error('validations.model.data-not-found');
+  const { id } = ModelSchema({
+    checkIn: ['params']
+  });
 
-        req.scarlet.param.id = id;
-      })
-  ]);
+  const input = {
+    id: { ...id, exists: { errorMessage: 'validations.required', } }
+  };
+
+  return SchemaValidatorHandler([checkSchema(input)]);
 }
 
 function UpdateValidator() {
-  return ValidatorHandler([
-    body('username')
-      .custom(async (username, { req }) => {
-        const user = await dbModel.findUnique({ where: { username } });
-        if (user) throw new Error('validations.already-exist');
+  const { username, email, password, role, isActive } = ModelSchema({
+    checkIn: ['body']
+  });
 
-        req.scarlet.body.username = username;
-      })
-      .isLength({ min: 6, max: 24 })
-      .withMessage(() => i18next.t('validations.require-length-min-max', { min: 6, max: 24 }))
-      .matches(/^[a-zA-Z][a-zA-Z0-9_]*$/)
-      .withMessage('validations.only-alphanumeric-and-underscore')
-      .optional(),
+  const input = {
+    username: { ...username, optional: true },
+    email: { ...email, optional: true },
+    password: { ...password, optional: true },
+    role: { ...role, optional: true },
+    isActive: { ...isActive, optional: true },
+  };
 
-    body('email')
-      .custom(async (email, { req }) => {
-        if (!email) return;
-        const user = await dbModel.findUnique({ where: { email } });
-        if (user) throw new Error('validations.already-exist');
-
-        req.scarlet.body.email = email;
-      })
-      .isEmail()
-      .withMessage('validations.invalid-type')
-      .optional(),
-
-    body('password')
-      .custom(async (password, { req }) => {
-        req.scarlet.body.password = password;
-      })
-      .isLength({ min: 6, max: 128 })
-      .withMessage(() => i18next.t('validations.require-length-min-max', { min: 6, max: 128 }))
-      .optional(),
-
-    body('role')
-      .custom(async (role, { req }) => {
-        if (!Role[role]) throw new Error('validations.invalid-type');
-
-        req.scarlet.body.role = role;
-      })
-      .optional(),
-
-    body('isActive')
-      .toBoolean()
-      .custom(async (isActive, { req }) => {
-        req.scarlet.body.isActive = isActive;
-      })
-      .isBoolean()
-      .withMessage('validations.invalid-type')
-      .optional(),
-  ]);
+  return SchemaValidatorHandler([checkSchema(input)]);
 }
 
 function DeleteValidator() {
-  return ValidatorHandler([]);
+  return SchemaValidatorHandler([]);
 }
 
 function WheresValidator() {
-  return ValidatorHandler([
-    query('username')
-      .custom(async (username, { req }) => {
-        req.scarlet.query.username = { contains: username, mode: 'insensitive' };
-      })
-      .optional(),
-    query('email')
-      .custom(async (email, { req }) => {
-        req.scarlet.query.email = { contains: email, mode: 'insensitive' };
-      })
-      .optional(),
-    query('role')
-      .custom(async (role, { req }) => {
-        if (!Role[role]) throw new Error('validations.invalid-type');
+  const input = FilterSchema();
 
-        req.scarlet.query.role = role;
-      })
-      .optional(),
-    query('isActive')
-      .toBoolean()
-      .custom(async (isActive, { req }) => {
-        req.scarlet.query.isActive = isActive;
-      })
-      .isBoolean()
-      .withMessage('validations.invalid-type')
-      .optional(),
-  ]);
+  return SchemaValidatorHandler([checkSchema(input)]);
 }
 
 module.exports = {
+  // Config
+  config,
+  ModelSchema,
+  FilterSchema,
+
   // CRUD
   CreateValidator,
   ReadValidator,

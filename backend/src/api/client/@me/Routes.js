@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const { DefaultReadRateLimit } = require('../../../utils/middlewares/RateLimit');
 
 const router = Router();
 
@@ -16,5 +15,7 @@ router.get('/', [
     next(err);
   }
 });
+
+router.use('/profile', require('./profile/Routes'));
 
 module.exports = router;

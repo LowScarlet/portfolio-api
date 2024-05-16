@@ -9,7 +9,7 @@ const router = express.Router();
 // Initial Custom Request :<
 router.use((req, res, next) => {
   req.scarlet = {
-    param: {},
+    params: {},
     query: {},
     body: {},
     pagination: {

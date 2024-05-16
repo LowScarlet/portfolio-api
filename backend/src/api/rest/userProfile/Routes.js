@@ -68,7 +68,7 @@ router.get('/:id', [
 ], async (req, res, next) => {
   try {
     const { scarlet } = req;
-    const { id } = scarlet.param;
+    const { id } = scarlet.params;
 
     const data = await handler.read(id);
 
@@ -95,7 +95,7 @@ router.put('/:id', [
   try {
     const { scarlet } = req;
     const { body } = scarlet;
-    const { id } = scarlet.param;
+    const { id } = scarlet.params;
 
     const data = await handler.update(id, body);
 
@@ -115,7 +115,7 @@ router.delete('/:id', [
 ], async (req, res, next) => {
   try {
     const { scarlet } = req;
-    const { id } = scarlet.param;
+    const { id } = scarlet.params;
 
     const data = await handler.delete({ id });
 
