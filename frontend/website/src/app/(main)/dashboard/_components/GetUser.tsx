@@ -1,4 +1,4 @@
-import { UserInterface } from "@/app/_interface/UserInterface";
+import { UserInterface } from "@/app/_interface/models/UserInterface";
 import { cookies } from "next/headers";
 
 export default async function GetUser() {

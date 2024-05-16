@@ -2,7 +2,6 @@
 
 import React, { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from "react"
 
-import { useCookies } from "next-client-cookies"
 import { AuthContextInterface } from "../_interface/AuthContextInterface"
 
 interface AuthContextType {

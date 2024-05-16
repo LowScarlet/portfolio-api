@@ -45,43 +45,46 @@ const SigninForm = () => {
 
     setSigninLoading(true)
 
-    const res = await fetch('http://localhost:5000/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-
-    const response: ResponseInterface = await res.json()
-
-    const { message } = response
-
-    setSigninLoading(false)
-
-    if (!res.ok) {
-      setBadError(defaultBadError)
-
-      const { validationErrors } = response
-
-      Object.entries(validationErrors).forEach(([key, value]) => {
-        setBadError((prevData) => ({
-          ...prevData,
-          [key]: value,
-        }))
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
       })
+
+      const response: ResponseInterface = await res.json()
+
+      const { message } = response
+
+      setSigninLoading(false)
+
+      if (!res.ok) {
+        setBadError(defaultBadError)
+
+        const { validationErrors } = response
+
+        Object.entries(validationErrors).forEach(([key, value]) => {
+          setBadError((prevData) => ({
+            ...prevData,
+            [key]: value,
+          }))
+        })
+      }
+
+      const { data } = response
+
+      setToken(data).then(() => {
+        setAuth({
+          isAuthenticated: true,
+          user: data.user
+        })
+        router.push('/dashboard')
+      })
+    } catch (error) {
+      setSigninLoading(false)
     }
-
-    const { data } = response
-
-    // Kalo setToken tidak async function nanti pas mau push ke dashboard cookies tidak terdeteksi karena cookiesnya belum ke set tapi sudah langsung di push
-    setToken(data).then(() => {
-      setAuth({
-        isAuthenticated: true,
-        user: data.user
-      })
-      router.push('/dashboard')
-    })
   }
 
   return (

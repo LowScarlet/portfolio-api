@@ -1,7 +1,7 @@
 'use client'
 
 import React, { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from "react"
-import { UserInterface } from "../_interface/UserInterface"
+import { UserInterface } from "../_interface/models/UserInterface"
 
 import { useCookies } from "next-client-cookies"
 import { setToken } from "../auth/_utils/token"

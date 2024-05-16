@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import DashboardMiddleware from '@/app/dashboard/_utils/middleware'
 import AuthMiddleware from './app/auth/_utils/middleware';
+import MainPageMiddleware from '@/app/(main)/_utils/middleware';
 
 // Main
 export default async function mainMiddleware(request: NextRequest) {
@@ -11,8 +11,12 @@ export default async function mainMiddleware(request: NextRequest) {
     return AuthMiddleware(request)
   }
 
-  if (url.pathname.startsWith('/dashboard')) {
-    return DashboardMiddleware(request)
+  if (
+    url.pathname.startsWith('/dashboard') ||
+    url.pathname.startsWith('/portfolio') ||
+    url.pathname.startsWith('/account')
+  ) {
+    return MainPageMiddleware(request)
   }
 
   return NextResponse.next();

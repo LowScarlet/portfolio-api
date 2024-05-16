@@ -1,10 +1,10 @@
-import { UserInterface } from "@/app/_interface/UserInterface"
 import { TokenInterface } from "./TokenInterface"
+import { User } from "@/app/(main)/account/_interface/UserInterface"
 
 export interface ResponseInterface {
   "message": string,
   "data": {
-    "user": UserInterface,
+    "user": User,
     "accessToken": TokenInterface,
     "refreshToken": TokenInterface
   },

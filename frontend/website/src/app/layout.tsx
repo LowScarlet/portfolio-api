@@ -4,7 +4,7 @@ import "./globals.css";
 import { CookiesProvider } from 'next-client-cookies/server';
 import NextTopLoader from 'nextjs-toploader';
 import { AuthProvider } from "./auth/_context/AuthContext";
-import { UserInterface } from "./_interface/UserInterface";
+import { UserInterface } from "./_interface/models/UserInterface";
 import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,25 +23,32 @@ export default async function RootLayout({
 
   const accessToken = cookies().get("accessToken")
 
-  const fetchRes = await fetch('http://localhost:5000/api/client/@me', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${accessToken?.value}`,
-      'Content-Type': 'application/json'
-    },
-  })
+  try {
+    const fetchRes = await fetch('http://localhost:5000/api/client/@me', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken?.value}`,
+        'Content-Type': 'application/json'
+      },
+    })
 
-  if (!fetchRes.ok) {
+    if (!fetchRes.ok) {
+      authData = {
+        isAuthenticated: false,
+        user: null
+      }
+    } else {
+      const fetchResOutput: { user: UserInterface } = await fetchRes.json()
+
+      authData = {
+        isAuthenticated: true,
+        user: fetchResOutput.user
+      }
+    }
+  } catch (error) {
     authData = {
       isAuthenticated: false,
       user: null
-    }
-  } else {
-    const fetchResOutput: { user: UserInterface } = await fetchRes.json()
-
-    authData = {
-      isAuthenticated: true,
-      user: fetchResOutput.user
     }
   }
 

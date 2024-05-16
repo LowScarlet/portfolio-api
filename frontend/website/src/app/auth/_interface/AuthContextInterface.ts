@@ -1,6 +1,6 @@
-import { UserInterface } from "@/app/_interface/UserInterface";
+import { User } from "@/app/(main)/account/_interface/UserInterface";
 
 export interface AuthContextInterface {
   "isAuthenticated": boolean,
-  "user": UserInterface | null
+  "user": User | null
 }

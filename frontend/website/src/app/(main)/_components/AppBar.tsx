@@ -1,5 +1,6 @@
 'use client'
 
+import Image from "next/image";
 import { useAuth } from "@/app/auth/_context/AuthContext"
 import { deleteToken } from "@/app/auth/_utils/token"
 import Link from "next/link"
@@ -24,7 +25,7 @@ export default function AppBar() {
   }
 
   return (
-    <div className="top-0 z-50 sticky bg-base-100 navbar">
+    <div className="top-0 z-40 sticky bg-base-100 navbar">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-circle btn-ghost">
@@ -66,18 +67,23 @@ export default function AppBar() {
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="avatar btn btn-circle btn-ghost">
             <div className="rounded-full w-10">
-              <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              <Image
+                width={500}
+                height={500}
+                src={"/images/no-profile.png"}
+                alt={"Avatar"}
+              />
             </div>
           </div>
           <ul tabIndex={0} className="z-[1] bg-base-100 shadow mt-3 p-2 rounded-box w-52 dropdown-content menu menu-sm">
             <li>
-              <Link href={"/profile"}>
-                Profile
+              <Link href={"/account"}>
+                Account
                 <span className="badge">New</span>
               </Link>
             </li>
             <li>
-              <Link href={"/settings"}>
+              <Link href={"/account/settings"}>
                 Settings
               </Link>
             </li>
