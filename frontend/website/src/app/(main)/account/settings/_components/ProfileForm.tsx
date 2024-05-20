@@ -1,26 +1,26 @@
 'use client'
 
+import { UpdateUserProfile } from "@/app/_models/client/@me/profile/MeProfileHandler";
+import { UserProfile } from "@/app/_models/rest/UserProfile/UserProfileInterface";
 import { FormEvent, useState } from "react";
-import { UpdateUserProfile } from "../../_utils/UserProfileHandler";
-
-interface UserProfileInterface {
-  id: string
-  avatar: string
-  fullName: string
-  bio: string
-  userId: string
-  createdAt: string
-  updatedAt: string
-}
+import { toast } from "react-toastify";
 
 export default function ProfileForm({
   userProfile
 }: {
-  userProfile: UserProfileInterface
+  userProfile: UserProfile
 }): JSX.Element {
-  const { id, fullName, bio } = userProfile
-  const defaultFormData = { fullName: '' || fullName, bio: '' || bio }
-  const defaultBadError = { fullName: '' || fullName, bio: '' || bio }
+  const { fullName, bio } = userProfile
+
+  const defaultFormData = {
+    fullName: fullName || '',
+    bio: bio || ''
+  }
+
+  const defaultBadError = {
+    fullName: '',
+    bio: ''
+  }
 
   const [submitLoading, setSubmitLoading] = useState(false)
 
@@ -35,10 +35,22 @@ export default function ProfileForm({
     }))
   }
 
+  const cleanFormData = (data: typeof formData) => {
+    const cleanedData: Partial<UserProfile> = { ...data };
+    Object.keys(cleanedData).forEach((key) => {
+      if (cleanedData[key as keyof UserProfile] === defaultFormData[key as keyof typeof formData]) {
+        cleanedData[key as keyof UserProfile] = undefined;
+      }
+    });
+    return cleanedData;
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const fetchRes = await UpdateUserProfile(formData)
+    const clean = cleanFormData(formData)
+
+    const fetchRes = await UpdateUserProfile(clean)
 
     if (!fetchRes.ok) {
       setBadError(defaultBadError)
@@ -53,46 +65,56 @@ export default function ProfileForm({
       })
     }
 
-    //
+    const { userProfile } = fetchRes.data
+
+    toast.success("Berhasil!")
   }
 
   return (<>
-    <label className="form-control w-full">
-      <div className="label">
-        <span className="label-text">Full Name</span>
-        <span className="label-text-alt">Top Right label</span>
-      </div>
-      <input
-        id="fullName"
-        name="fullName"
-        type="text"
-        placeholder="Type here"
-        className="input-bordered w-full input"
-        onChange={handleFormChange}
-        value={formData.fullName}
-      />
-      <div className="label">
-        <span className="label-text-alt">Bottom Left label</span>
-        <span className="label-text-alt">Bottom Right label</span>
-      </div>
-    </label>
-    <label className="form-control">
-      <div className="label">
-        <span className="label-text">Describe Yourself</span>
-        <span className="label-text-alt">Alt label</span>
-      </div>
-      <textarea
-        id="bio"
-        name="bio"
-        className="textarea-bordered h-24 textarea"
-        placeholder="Bio"
-        onChange={handleFormChange}
-        value={formData.bio}
-      />
-      <div className="label">
-        <span className="label-text-alt">Your bio</span>
-        <span className="label-text-alt">Alt label</span>
-      </div>
-    </label>
+    <form onSubmit={handleSubmit} method="POST">
+      <label className="form-control w-full">
+        <div className="label">
+          <span className="label-text">Full Name</span>
+          <span className="label-text-alt">Top Right label</span>
+        </div>
+        <input
+          id="fullName"
+          name="fullName"
+          type="text"
+          placeholder="Type here"
+          className="input-bordered w-full input"
+          onChange={handleFormChange}
+          value={formData.fullName}
+        />
+        <div className="label">
+          <span className="label-text-alt">Bottom Left label</span>
+          <span className="label-text-alt">Bottom Right label</span>
+        </div>
+      </label>
+      <label className="form-control">
+        <div className="label">
+          <span className="label-text">Describe Yourself</span>
+          <span className="label-text-alt">Alt label</span>
+        </div>
+        <textarea
+          id="bio"
+          name="bio"
+          className="textarea-bordered h-24 textarea"
+          placeholder="Bio"
+          onChange={handleFormChange}
+          value={formData.bio}
+        />
+        <div className="label">
+          <span className="label-text-alt">Your bio</span>
+          <span className="label-text-alt">Alt label</span>
+        </div>
+      </label>
+      <button
+        type="submit"
+        className="btn-block btn btn-primary"
+      >
+        Update
+      </button>
+    </form>
   </>);
 }

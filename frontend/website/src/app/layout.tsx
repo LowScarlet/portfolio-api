@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from "./(authentication)/_context/AuthContext";
+import { GetUser } from "./_models/client/@me/MeHandler";
 import "./globals.css";
-import { CookiesProvider } from 'next-client-cookies/server';
-import NextTopLoader from 'nextjs-toploader';
-import { AuthProvider } from "./auth/_context/AuthContext";
-import { UserInterface } from "./_interface/models/UserInterface";
+import { VerifyRefreshToken } from "./_models/auth/Verify";
 import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,47 +21,50 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  'use server'
+
+  console.log("test")
+
   let authData
 
-  const accessToken = cookies().get("accessToken")
-
   try {
-    const fetchRes = await fetch('http://localhost:5000/api/client/@me', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken?.value}`,
-        'Content-Type': 'application/json'
-      },
-    })
+    const fetchRes2 = await VerifyRefreshToken()
+
+    const fetchRes = await GetUser()
 
     if (!fetchRes.ok) {
       authData = {
         isAuthenticated: false,
         user: null
       }
+      console.log("Error while Getting User!")
     } else {
-      const fetchResOutput: { user: UserInterface } = await fetchRes.json()
+      const fetchResOutput = fetchRes.data
 
       authData = {
         isAuthenticated: true,
         user: fetchResOutput.user
       }
+      console.log("Success Getting User!")
     }
   } catch (error) {
     authData = {
       isAuthenticated: false,
       user: null
     }
+    console.log(error)
   }
 
   return (
     <html lang="en">
-      <AuthProvider initData={authData}>
-        <body className={inter.className}>
+      <body className={inter.className}>
+        <AuthProvider initData={authData}>
+          <ToastContainer />
           <NextTopLoader />
           {children}
-        </body>
-      </AuthProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }

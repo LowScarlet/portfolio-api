@@ -10,7 +10,7 @@ function UpdateValidator() {
   });
 
   const input = {
-    avatar: { ...avatar },
+    avatar: { ...avatar, optional: true },
     fullName: { ...fullName, optional: true },
     bio: { ...bio, optional: true },
   };

@@ -1,15 +1,22 @@
 'use client'
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaHome } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { LuFileJson } from "react-icons/lu";
 import { MdDashboard, MdQuestionAnswer } from "react-icons/md";
+import UserAvatar from "./UserAvatar";
+import { useAuth } from "@/app/(authentication)/_context/AuthContext";
 
 export default function Drawer() {
+  const { auth, setAuth } = useAuth()
+
   const pathname = usePathname()
+  
+  if (!auth) {
+    return <>No Auth!</>
+  }
 
   return (<>
     <div className="lg:flex flex-col gap-4 hidden bg-base-300 p-2 h-full">
@@ -36,17 +43,16 @@ export default function Drawer() {
         <div tabIndex={0} role="button" className="flex justify-between items-center gap-2 px-2 py-1 rounded-md w-full btn-ghost">
           <div className="avatar">
             <div className="rounded-full w-10">
-              <Image
+              <UserAvatar
                 width={500}
                 height={500}
-                src={"/images/no-profile.png"}
-                alt={"Avatar"}
+                src={"1715895005979-eaf799c1-7898-4cd3-b497-f43c52082c19.png"}
               />
             </div>
           </div>
           <div>
-            <h1 className="font-semibold text-base">LowScarlet</h1>
-            <h1 className="text-xs">Member</h1>
+            <h1 className="font-semibold text-base">{auth.user?.username}</h1>
+            <h1 className="text-xs capitalize">{auth.user?.role}</h1>
           </div>
           <div className="pe-4 ps-8">
             <IoMdSettings />

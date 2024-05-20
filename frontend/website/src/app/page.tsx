@@ -1,7 +1,11 @@
+'use client'
+
+import Link from "next/link";
+
 export default function Home() {
   return (
-    <main className="md:flex bg-blue-200">
-      Here we go!
+    <main>
+      <Link href={'/home2'}>Next Page</Link>
     </main>
   );
 }

@@ -1,7 +1,7 @@
 'use client'
 
-import { useAuth } from "@/app/auth/_context/AuthContext";
-import { deleteToken } from "@/app/auth/_utils/token";
+import { useAuth } from "@/app/(authentication)/_context/AuthContext";
+import { deleteToken } from "@/app/(authentication)/_utils/token";
 import { useRouter } from "next/navigation";
 
 export default function TestLogout() {

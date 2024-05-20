@@ -1,9 +1,11 @@
+import VerifyUser from "@/app/_components/VerifyRefreshToken";
 import { FaArrowRightToBracket, FaBatteryThreeQuarters, FaRegThumbsUp } from "react-icons/fa6";
 import { IoStatsChart } from "react-icons/io5";
 import PortfolioList from "../portfolio/_components/PortfolioList";
 
 export default function Dashboard(): JSX.Element {
   return (<>
+    <VerifyUser/>
     <div className="py-4">
       <div className="bg-base-200 collapse collapse-arrow sm:collapse-open">
         <input type="checkbox" />

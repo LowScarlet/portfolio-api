@@ -1,8 +1,8 @@
 'use client'
 
+import { useAuth } from "@/app/(authentication)/_context/AuthContext";
+import { deleteToken } from "@/app/(authentication)/_utils/token";
 import Image from "next/image";
-import { useAuth } from "@/app/auth/_context/AuthContext"
-import { deleteToken } from "@/app/auth/_utils/token"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FaSearch } from "react-icons/fa"

@@ -1,4 +1,4 @@
-import { User } from "@/app/(main)/account/_interface/UserInterface";
+import { User } from "@/app/_models/rest/User/UserInterface";
 
 export interface AuthContextInterface {
   "isAuthenticated": boolean,

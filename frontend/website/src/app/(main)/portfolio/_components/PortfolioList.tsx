@@ -1,12 +1,12 @@
 'use client'
 
+import { useAuth } from "@/app/(authentication)/_context/AuthContext";
 import Image from "next/image";
-import { BsFillPinFill } from "react-icons/bs";
-import { FaEye, FaEyeSlash, FaPen, FaPlus, FaRunning, FaSearch } from "react-icons/fa";
-import { FaArrowRight, FaCrown, FaRegThumbsUp } from "react-icons/fa6";
-import { LuFileJson } from "react-icons/lu";
 import Link from "next/link";
-import { useAuth } from "@/app/auth/_context/AuthContext";
+import { BsFillPinFill } from "react-icons/bs";
+import { FaEye, FaEyeSlash, FaPlus, FaRunning, FaSearch } from "react-icons/fa";
+import { FaArrowRight, FaCrown } from "react-icons/fa6";
+import { LuFileJson } from "react-icons/lu";
 
 interface Card {
   id: string;

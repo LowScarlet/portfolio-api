@@ -1,5 +1,3 @@
-"use client"
-
 import SigninForm from "./_components/SigninForm"
 
 const Page = () => {

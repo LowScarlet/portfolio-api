@@ -1,30 +1,18 @@
-import { cookies } from "next/headers";
+import { UserProfile } from "@/app/_models/rest/UserProfile/UserProfileInterface";
 import Image from "next/image";
 import Link from "next/link";
 import { FaEye } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
-import { GetUserProfile } from "./_utils/UserProfileHandler";
-
-interface UserProfileInterface {
-  id: string
-  avatar: string
-  fullName: string
-  bio: string
-  userId: string
-  createdAt: string
-  updatedAt: string
-}
+import { GetUserProfile } from "../../_models/client/@me/profile/MeProfileHandler";
 
 export default async function Account(): Promise<JSX.Element> {
-  const accessToken = cookies().get("accessToken")
-
   const fetchRes = await GetUserProfile()
 
   if (!fetchRes.ok) {
     return <>Error While Fetching Profile!</>
   }
 
-  const fetchResOutput: { userProfile: UserProfileInterface } = fetchRes.data
+  const fetchResOutput: { userProfile: UserProfile } = fetchRes.data
 
   const { id, avatar, fullName, bio, userId, createdAt, updatedAt } = fetchResOutput.userProfile
 

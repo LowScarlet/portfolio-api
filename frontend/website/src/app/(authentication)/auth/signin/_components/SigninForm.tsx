@@ -1,16 +1,15 @@
 "use client"
 
-import { useState, FormEvent } from 'react'
-import { setToken } from '@/app/auth/_utils/token'
-import { useRouter } from 'next/navigation'
-import { ResponseInterface } from '@/app/auth/_interface/ResponseInterface'
-import AltButtons from './AltButtons'
-import { FaCircleNotch } from "react-icons/fa6"
-import { FaUser } from "react-icons/fa";
-import { MdEmail, MdPassword } from 'react-icons/md'
+import { ResponseInterface } from '@/app/(authentication)/_interface/ResponseInterface'
+import { setToken } from '@/app/(authentication)/_utils/token'
 import Link from 'next/link'
-import { useUser } from '@/app/_context/UserContext'
-import { useAuth } from '../../_context/AuthContext'
+import { useRouter } from 'next/navigation'
+import { FormEvent, useState } from 'react'
+import { FaUser } from "react-icons/fa"
+import { MdEmail, MdPassword } from 'react-icons/md'
+import { toast } from 'react-toastify'
+import { useAuth } from '../../../_context/AuthContext'
+import AltButtons from './AltButtons'
 
 const SigninForm = () => {
   const router = useRouter()
@@ -51,10 +50,13 @@ const SigninForm = () => {
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify(formData)
       })
 
       const response: ResponseInterface = await res.json()
+
+      console.log(response)
 
       const { message } = response
 
@@ -63,7 +65,7 @@ const SigninForm = () => {
       if (!res.ok) {
         setBadError(defaultBadError)
 
-        const { validationErrors } = response
+        const { message, validationErrors } = response
 
         Object.entries(validationErrors).forEach(([key, value]) => {
           setBadError((prevData) => ({
@@ -71,17 +73,21 @@ const SigninForm = () => {
             [key]: value,
           }))
         })
+
+        toast.error(message)
+        return
       }
 
       const { data } = response
 
-      setToken(data).then(() => {
-        setAuth({
-          isAuthenticated: true,
-          user: data.user
-        })
-        router.push('/dashboard')
-      })
+      // setToken(data).then(() => {
+      //   setAuth({
+      //     isAuthenticated: true,
+      //     user: data.user
+      //   })
+      //   router.push('/dashboard')
+      //   toast.success(message)
+      // })
     } catch (error) {
       setSigninLoading(false)
     }
@@ -91,7 +97,7 @@ const SigninForm = () => {
     <div className="hero">
       <div className="sm:flex-row flex-col hero-content">
         <div className="max-w-sm card shrink-0">
-          <form className="card-body" onSubmit={handleSubmit}>
+          <form className="card-body" onSubmit={handleSubmit} method='POST'>
             <div className="mb-3 text-center">
               <h1 className="font-bold text-2xl">Sign-In</h1>
             </div>

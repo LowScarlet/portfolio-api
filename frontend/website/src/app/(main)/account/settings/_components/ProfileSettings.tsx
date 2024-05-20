@@ -5,6 +5,7 @@ import UploadAvatar from "./UploadAvatar";
 import { cookies } from "next/headers";
 import ProfileForm from "./ProfileForm";
 import { FormEvent } from "react";
+import { GetUserProfile } from "@/app/_models/client/@me/profile/MeProfileHandler";
 
 interface UserProfileInterface {
   id: string
@@ -17,21 +18,13 @@ interface UserProfileInterface {
 }
 
 export default async function ProfileSettings(): Promise<JSX.Element> {
-  const accessToken = cookies().get("accessToken")
-
-  const fetchRes = await fetch('http://localhost:5000/api/client/@me/profile', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${accessToken?.value}`,
-      'Content-Type': 'application/json'
-    },
-  })
+  const fetchRes = await GetUserProfile()
 
   if (!fetchRes.ok) {
     return <>Error While Fetching Profile!</>
   }
 
-  const fetchResOutput: { userProfile: UserProfileInterface } = await fetchRes.json()
+  const fetchResOutput = fetchRes.data
 
   const { userProfile } = fetchResOutput
 

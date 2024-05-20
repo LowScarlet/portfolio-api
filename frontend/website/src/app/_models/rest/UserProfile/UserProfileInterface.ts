@@ -8,6 +8,7 @@ export interface UserProfile_Update {
   avatar?: string | null
   fullName?: string | null
   bio?: string | null
+  userId?: string
 }
 
 export interface UserProfile {
