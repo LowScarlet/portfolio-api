@@ -109,7 +109,8 @@ const SigninForm = () => {
       setToken(data).then(() => {
         setAuth({
           isAuthenticated: true,
-          user: data.user
+          user: data.user,
+          userProfile: data.user.UserProfile
         })
         router.push('/dashboard')
         toast.success(message)

@@ -7,6 +7,7 @@ import { IoMdSettings } from "react-icons/io";
 import FetchError from "../_components/FetchError";
 import { GetMe } from "@/app/_models/client/@me/MeHandler";
 import PortfolioList from "../portfolio/_components/PortfolioList";
+import UserAvatar from "../_components/UserAvatar";
 
 export default async function Account(): Promise<JSX.Element> {
   const getMe = await GetMe('account')
@@ -26,7 +27,7 @@ export default async function Account(): Promise<JSX.Element> {
     <div className="py-4">
       <div className="shadow-md h-full card card-compact">
         <figure>
-          <Image width={500} height={500} className="w-full h-36 object-cover" src="/images/portfolio_icon.png" alt="Shoes" />
+          <Image width={1500} height={1500} className="w-full h-36 object-cover" src="/images/portfolio_icon.png" alt="Shoes" />
         </figure>
         <div className="-mt-36">
           <div className="flex justify-end m-4 text-4xl">
@@ -37,7 +38,7 @@ export default async function Account(): Promise<JSX.Element> {
           <div className="flex gap-x-2 mx-4">
             <div className="avatar">
               <div className="rounded-full w-32 ring ring-base-100">
-                <Image width={500} height={500} src={"/images/portfolio_icon.png"} alt={"Icon"} />
+                <UserAvatar width={500} height={500} />
               </div>
             </div>
             <div className="flex justify-between items-end text-xs grow">

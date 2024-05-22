@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from "react"
+import React, { Dispatch, SetStateAction, createContext, useContext, useState } from "react"
 
 import { AuthContextInterface } from "../_interface/AuthContextInterface"
 

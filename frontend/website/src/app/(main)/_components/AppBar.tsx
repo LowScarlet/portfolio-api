@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { FaSearch } from "react-icons/fa"
 import { FaBarsStaggered } from "react-icons/fa6"
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md"
+import UserAvatar from "./UserAvatar";
 
 export default function AppBar() {
   const router = useRouter()
@@ -18,7 +19,8 @@ export default function AppBar() {
     await deleteToken().then(() => {
       setAuth({
         isAuthenticated: false,
-        user: null
+        user: null,
+        userProfile: null
       })
       router.push('/auth')
     })
@@ -67,11 +69,9 @@ export default function AppBar() {
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="avatar btn btn-circle btn-ghost">
             <div className="rounded-full w-10">
-              <Image
+              <UserAvatar
                 width={500}
                 height={500}
-                src={"/images/no-profile.png"}
-                alt={"Avatar"}
               />
             </div>
           </div>

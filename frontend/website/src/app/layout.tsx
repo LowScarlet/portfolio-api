@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from "./(authentication)/_context/AuthContext";
 import { GetMe } from "./_models/client/@me/MeHandler";
 import "./globals.css";
+import { GetMeProfile } from "./_models/client/@me/profile/MeProfileHandler";
+import { AuthContextInterface } from "./(authentication)/_interface/AuthContextInterface";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,28 +21,33 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let authData
+  let authData: AuthContextInterface
 
   try {
     const fetchRes = await GetMe('layout')
+    const fetchRes2 = await GetMeProfile('layout')
 
-    if (!fetchRes.ok) {
+    if (!fetchRes.ok || !fetchRes2.ok) {
       authData = {
         isAuthenticated: false,
-        user: null
+        user: null,
+        userProfile: null
       }
     } else {
       const fetchResOutput = fetchRes.data
+      const fetchResOutput2 = fetchRes2.data
 
       authData = {
         isAuthenticated: true,
-        user: fetchResOutput.user
+        user: fetchResOutput.user,
+        userProfile: fetchResOutput2.userProfile
       }
     }
   } catch (error) {
     authData = {
       isAuthenticated: false,
-      user: null
+      user: null,
+      userProfile: null
     }
   }
 

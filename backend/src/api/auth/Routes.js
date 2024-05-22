@@ -17,7 +17,13 @@ router.post('/login', [
     const { id } = scarlet.body;
 
     const jti = uuidv4();
-    const user = await db.user.findUnique({ where: { id }, select: viewField() });
+    const user = await db.user.findUnique({
+      where: { id },
+      select: {
+        ...viewField(),
+        UserProfile: true
+      }
+    });
 
     const { accessToken, refreshToken } = await createToken(user, jti);
 
@@ -57,7 +63,10 @@ router.post('/register', [
         password: hashPassword(password),
         UserProfile: { create: {} }
       },
-      select: viewField()
+      select: {
+        ...viewField(),
+        UserProfile: true
+      }
     });
 
     const { accessToken, refreshToken } = await createToken(user, jti);

@@ -13,7 +13,8 @@ export default function TestLogout() {
     await deleteToken().then(() => {
       setAuth({
         isAuthenticated: false,
-        user: null
+        user: null,
+        userProfile: null
       })
       router.push('/auth')
     })

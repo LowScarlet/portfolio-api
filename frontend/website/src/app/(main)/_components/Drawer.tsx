@@ -46,7 +46,6 @@ export default function Drawer() {
               <UserAvatar
                 width={500}
                 height={500}
-                src={"1716391888667-2e92ff1f-5176-4f44-aaae-771f38ed656b.png"}
               />
             </div>
           </div>
