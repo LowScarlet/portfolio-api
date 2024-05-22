@@ -11,6 +11,7 @@ const DefaultReadRateLimit = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minutes
   max: 100,
   handler: (req, res, next, options) => {
+    res.status(429);
     res.json({
       message: req.t('utils.middlewares.rate-limit')
     });
@@ -26,6 +27,7 @@ const DefaultModifyRateLimit = rateLimit({
   windowMs: 0.5 * 60 * 1000, // 30 seconds
   max: 30,
   handler: (req, res, next, options) => {
+    res.status(429);
     res.json({
       message: req.t('utils.middlewares.rate-limit')
     });

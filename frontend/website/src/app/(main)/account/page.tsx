@@ -1,20 +1,25 @@
+import { GetMeProfile } from "@/app/_models/client/@me/profile/MeProfileHandler";
 import { UserProfile } from "@/app/_models/rest/UserProfile/UserProfileInterface";
 import Image from "next/image";
 import Link from "next/link";
 import { FaEye } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
-import { GetUserProfile } from "../../_models/client/@me/profile/MeProfileHandler";
+import FetchError from "../_components/FetchError";
+import { GetMe } from "@/app/_models/client/@me/MeHandler";
 
 export default async function Account(): Promise<JSX.Element> {
-  const fetchRes = await GetUserProfile()
+  const getMe = await GetMe('account')
+  const getMeProfile = await GetMeProfile('account')
 
-  if (!fetchRes.ok) {
-    return <>Error While Fetching Profile!</>
+  if (!getMeProfile.ok || !getMe.ok) {
+    return <FetchError />
   }
 
-  const fetchResOutput: { userProfile: UserProfile } = fetchRes.data
+  const getMeOutput = getMe.data
+  const getMeProfileOutput = getMeProfile.data
 
-  const { id, avatar, fullName, bio, userId, createdAt, updatedAt } = fetchResOutput.userProfile
+  const { username } = getMeOutput.user
+  const { avatar, fullName, bio } = getMeProfileOutput.userProfile
 
   return (<>
     <div className="py-4">
@@ -34,18 +39,20 @@ export default async function Account(): Promise<JSX.Element> {
                 <Image width={500} height={500} src={"/images/portfolio_icon.png"} alt={"Icon"} />
               </div>
             </div>
-            <div className="flex items-end gap-2 text-xs grow">
-              <div className="gap-2 badge badge-primary">
-                <FaEye />
-              </div>
-              <div className="gap-2 badge badge-primary">
-                <FaEye />
+            <div className="flex justify-between items-end text-xs grow">
+              <div className="flex gap-2">
+                {/* <div className="gap-2 badge badge-primary">
+                  <FaEye />
+                </div>
+                <div className="gap-2 badge badge-primary">
+                  <FaEye />
+                </div> */}
               </div>
             </div>
           </div>
         </div>
         <div className="mb-4 card-body">
-          <h2 className="card-title">{fullName || "Anonymous User"}</h2>
+          <h2 className="card-title">{`${fullName || username} (${username})` || ``}</h2>
           <p className="overflow-hidden">
             {bio || "What a Week, Huh?"}
           </p>

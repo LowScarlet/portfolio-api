@@ -19,8 +19,8 @@ async function setToken({
 
   if (accessToken) {
     cookies().set('accessToken', accessToken.token, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
       maxAge: (Date.parse(accessToken.expiredAt) - currentTime) / 1000,
     })
   }

@@ -3,38 +3,21 @@
 import { ResponseInterface } from '@/app/(authentication)/_interface/ResponseInterface'
 import { setToken } from '@/app/(authentication)/_utils/token'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { FormEvent, useState } from 'react'
 import { FaUser } from "react-icons/fa"
 import { MdEmail, MdPassword } from 'react-icons/md'
 import { toast } from 'react-toastify'
 import { useAuth } from '../../../_context/AuthContext'
-import AltButtons from './AltButtons'
-import { revalidatePath } from 'next/cache'
+import AltButtons from '../../signin/_components/AltButtons'
 
-function calculateCooldown(resetTime: Date): string {
-  const now = new Date();
-  const diffMs = resetTime.getTime() - now.getTime();
-
-  if (diffMs <= 0) {
-    return "0 minutes";
-  }
-
-  const diffMinutes = Math.floor(diffMs / (1000 * 60));
-  const diffSeconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-
-  return `${diffMinutes} minutes and ${diffSeconds} seconds`;
-}
-
-const SigninForm = () => {
+const SignupForm = () => {
   const router = useRouter()
 
   const { auth, setAuth } = useAuth()
 
   const defaultFormData = { username: '', email: '', password: '' }
   const defaultBadError = { username: '', email: '', password: '' }
-
-  const [formBy, setFormBy] = useState(true)
 
   const [signinLoading, setSigninLoading] = useState(false)
 
@@ -49,11 +32,6 @@ const SigninForm = () => {
     }))
   }
 
-  const handleFormBy = () => {
-    setFormBy(!formBy);
-    setFormData(defaultFormData)
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -61,7 +39,7 @@ const SigninForm = () => {
     setBadError(defaultBadError)
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -70,7 +48,7 @@ const SigninForm = () => {
       })
 
       const response: ResponseInterface = await res.json()
-
+      
       setSigninLoading(false)
 
       if (res.status === 429) {
@@ -78,11 +56,11 @@ const SigninForm = () => {
 
         const now = new Date();
         const diffMs = new Date(resetTime).getTime() - now.getTime();
-
+      
         if (diffMs <= 0) {
           return
         }
-
+      
         const diffMinutes = Math.floor(diffMs / (1000 * 60));
         const diffSeconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
@@ -125,37 +103,53 @@ const SigninForm = () => {
         <div className="max-w-sm card shrink-0">
           <form className="card-body" onSubmit={handleSubmit} method='POST'>
             <div className="mb-3 text-center">
-              <h1 className="font-bold text-2xl">Sign-In</h1>
+              <h1 className="font-bold text-2xl">Sign-Up</h1>
             </div>
             <div>
               <label className="form-control w-full">
                 <div className="label">
-                  <span className="label-text">{formBy ? <><FaUser className='inline' /> Username</> : <><MdEmail className='inline' /> Email</>}</span>
+                  <span className="label-text"><FaUser className='inline' /> Username</span>
                   <span className="label-text-alt"></span>
                 </div>
-                <div className='flex gap-x-3'>
-                  <input
-                    id={formBy ? 'username' : 'email'}
-                    name={formBy ? 'username' : 'email'}
-                    type={formBy ? 'text' : 'email'}
-                    value={formBy ? formData.username : formData.email}
-                    onChange={handleFormChange}
-                    required
-                    placeholder={formBy ? 'Username...' : 'Email...'}
-                    className="input-bordered w-full input"
-                  />
-                  <button
-                    type='button'
-                    onClick={handleFormBy}
-                    className="btn btn-primary"
-                  >
-                    {formBy ? <MdEmail /> : <FaUser />}
-                  </button>
-                </div>
+                <input
+                  id='username'
+                  name="username"
+                  type="text"
+                  value={formData.username}
+                  onChange={handleFormChange}
+                  required
+                  placeholder="Username.."
+                  className="input-bordered w-full input"
+                />
                 {
-                  badError.username || badError.email ? (
+                  badError.username ? (
                     <div className="label">
-                      <span className="label-text-alt">{formBy ? badError.username : badError.email}</span>
+                      <span className="label-text-alt">{badError.username}</span>
+                    </div>
+                  ) : undefined
+                }
+              </label>
+            </div>
+            <div>
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text"><MdEmail className='inline' /> Email</span>
+                  <span className="label-text-alt"></span>
+                </div>
+                <input
+                  id='email'
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleFormChange}
+                  required
+                  placeholder="Email.."
+                  className="input-bordered w-full input"
+                />
+                {
+                  badError.email ? (
+                    <div className="label">
+                      <span className="label-text-alt">{badError.email}</span>
                     </div>
                   ) : undefined
                 }
@@ -197,17 +191,17 @@ const SigninForm = () => {
                 className="btn-block btn btn-primary"
                 disabled={signinLoading}
               >
-                {signinLoading ? <span className="loading loading-spinner" /> : undefined} Sign-In
+                {signinLoading ? <span className="loading loading-spinner" /> : undefined} Sign-Up
               </button>
-              <span className='block text-center text-xs'>Doesnt have Account?</span>
+              <span className='block text-center text-xs'>Already Have Account?</span>
               <Link
-                href={'/auth/signup'}
+                href={'/auth/signin'}
                 className="btn-block btn btn-neutral"
               >
-                Sign-Up
+                Sign-In
               </Link>
               <div className="lg:hidden">
-                <span className='block py-3 text-center text-xs'>Or Sign-in with a Third Party Account</span>
+                <span className='block py-3 text-center text-xs'>Or Sign-up with a Third Party Account</span>
                 <AltButtons />
               </div>
             </div>
@@ -217,7 +211,7 @@ const SigninForm = () => {
         <div className="card">
           <div className="lg:block hidden card-body">
             <div className='py-3 text-center'>
-              <h1 className='font-bold text-xl'>Sign-in</h1>
+              <h1 className='font-bold text-xl'>Sign-up</h1>
               <span className='block text-xs'>With a Third Party Account</span>
             </div>
             <AltButtons />
@@ -228,4 +222,4 @@ const SigninForm = () => {
   )
 }
 
-export default SigninForm
+export default SignupForm

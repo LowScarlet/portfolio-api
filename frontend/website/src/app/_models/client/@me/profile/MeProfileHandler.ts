@@ -11,11 +11,11 @@ interface BadRequest {
 
 const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/@me/profile`
 
-export async function GetUserProfile() {
+export async function GetMeProfile(query = '') {
   const accessToken = cookies().get("accessToken")
 
-  const fetchRes = await fetch(url, {
-    next: { tags: ['getMeProfile'] },
+  const fetchRes = await fetch(url + '?' + query, {
+    next: { tags: ['client', 'getMeProfile'] },
     method: 'GET',
     headers: {
       Authorization: `Bearer ${accessToken?.value}`,
@@ -32,9 +32,9 @@ export async function GetUserProfile() {
   }
 }
 
-export async function UpdateUserProfile(body: UserProfile_Update) {
+export async function UpdateMeProfile(body: UserProfile_Update) {
   const accessToken = cookies().get("accessToken")
-  
+
   const fetchRes = await fetch(url, {
     method: 'POST',
     headers: {

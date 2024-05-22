@@ -35,8 +35,8 @@ export const verifyRefreshToken = async ({
     const res = NextResponse.next()
 
     res.cookies.set('accessToken', token, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
       maxAge: (Date.parse(expiredAt) - currentTime) / 1000
     })
 

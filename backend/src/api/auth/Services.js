@@ -6,7 +6,7 @@ const { db } = require('../../utils/database');
 
 const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
 
-const accessExpiresIn = 5 * 60; // 15 menit
+const accessExpiresIn = 1 * 60; // 15 menit
 const refreshExpiresIn = 48 * 3600; // 48 jam
 
 const hashSalt = 12;
@@ -14,14 +14,17 @@ const hashAlgorithm = 'sha512';
 const hashDigest = 'hex';
 
 const AuthRateLimit = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minutes
-  max: 60,
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 3,
   standardHeaders: true,
   legacyHeaders: false,
-  // eslint-disable-next-line no-unused-vars
-  handler: (req, res, next, options) => {
-    res.json({
-      message: req.t('utils.middlewares.rate-limit')
+  handler: (req, res, /* next */) => {
+    const retryAfter = req.rateLimit.resetTime || (Date.now() + req.rateLimit.windowMs);
+    const resetTime = new Date(retryAfter).toISOString();
+
+    res.status(429).json({
+      message: req.t('utils.middlewares.rate-limit'),
+      resetTime
     });
   }
 });

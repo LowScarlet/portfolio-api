@@ -20,7 +20,7 @@ function generateShortUid(length = 6) {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_AUTH_CLIENT_ID,
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-  callbackURL: 'http://localhost:3000/api/oauth/google/callback'
+  callbackURL: `${process.env.FRONTEND_URL}/api/oauth/google`
 }, (accessToken, refreshToken, profile, done) => {
   const data = {
     id: profile.id,

@@ -1,11 +1,5 @@
-'use client'
-
 import Link from "next/link";
 
-export default function Home() {
-  return (
-    <main>
-      <Link href={'/home2'}>Next Page</Link>
-    </main>
-  );
+export default async function Home() {
+  return (<>Cok</>)
 }

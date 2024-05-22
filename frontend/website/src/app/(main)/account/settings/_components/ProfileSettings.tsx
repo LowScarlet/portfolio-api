@@ -1,27 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { IoMdSettings } from "react-icons/io";
 import UploadAvatar from "./UploadAvatar";
-import { cookies } from "next/headers";
 import ProfileForm from "./ProfileForm";
-import { FormEvent } from "react";
-import { GetUserProfile } from "@/app/_models/client/@me/profile/MeProfileHandler";
-
-interface UserProfileInterface {
-  id: string
-  avatar: string
-  fullName: string
-  bio: string
-  userId: string
-  createdAt: string
-  updatedAt: string
-}
+import { GetMeProfile } from "@/app/_models/client/@me/profile/MeProfileHandler";
+import FetchError from "@/app/(main)/_components/FetchError";
+import { FaPen } from "react-icons/fa";
 
 export default async function ProfileSettings(): Promise<JSX.Element> {
-  const fetchRes = await GetUserProfile()
+  const fetchRes = await GetMeProfile('account/settings')
 
   if (!fetchRes.ok) {
-    return <>Error While Fetching Profile!</>
+    return <FetchError />
   }
 
   const fetchResOutput = fetchRes.data
@@ -36,7 +25,7 @@ export default async function ProfileSettings(): Promise<JSX.Element> {
       <div className="-mt-36">
         <div className="flex justify-end m-4 text-4xl">
           <Link href={"/account/settings"} className="text-2xl btn btn-circle">
-            <IoMdSettings />
+            <FaPen />
           </Link>
         </div>
         <div className="flex justify-center gap-x-2 mx-4">

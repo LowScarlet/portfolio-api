@@ -11,5 +11,6 @@ export interface ResponseInterface {
   "validationErrors": {
     "username": string,
     "password": string
-  }
+  },
+  "resetTime": string
 }

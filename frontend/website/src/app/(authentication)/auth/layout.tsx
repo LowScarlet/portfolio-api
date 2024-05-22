@@ -1,8 +1,8 @@
 'use client'
 
-import { redirect } from "next/navigation";
-import { useAuth } from "../_context/AuthContext";
 import { useEffect } from "react";
+import { useAuth } from "../_context/AuthContext";
+import { redirect } from "next/navigation";
 
 export default function RootLayout({
   children,

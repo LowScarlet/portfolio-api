@@ -1,4 +1,5 @@
 import { setToken } from "@/app/(authentication)/_utils/token"
+import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
 interface BadRequest {
@@ -10,11 +11,10 @@ interface BadRequest {
 
 const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/verify`
 
-export async function VerifyRefreshToken() {
-  'use server'
+export async function Verify(query = '') {
   const refreshToken = cookies().get("refreshToken")
 
-  const fetchRes = await fetch(url, {
+  const fetchRes = await fetch(url + '?' + query, {
     next: { tags: ['verifyRefreshToken'] },
     method: 'POST',
     headers: {
@@ -30,6 +30,8 @@ export async function VerifyRefreshToken() {
   if (fetchRes.ok) {
     await setToken({
       accessToken: fetchResOutput.data
+    }).then(() => {
+      revalidateTag('client')
     })
   }
 

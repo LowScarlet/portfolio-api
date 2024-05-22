@@ -4,10 +4,8 @@ import NextTopLoader from "nextjs-toploader";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from "./(authentication)/_context/AuthContext";
-import { GetUser } from "./_models/client/@me/MeHandler";
+import { GetMe } from "./_models/client/@me/MeHandler";
 import "./globals.css";
-import { VerifyRefreshToken } from "./_models/auth/Verify";
-import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,24 +19,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  'use server'
-
-  console.log("test")
-
   let authData
 
   try {
-    const fetchRes2 = await VerifyRefreshToken()
-
-    const fetchRes = await GetUser()
+    const fetchRes = await GetMe('layout')
 
     if (!fetchRes.ok) {
       authData = {
         isAuthenticated: false,
         user: null
       }
-      console.log("Error while Getting User!")
     } else {
       const fetchResOutput = fetchRes.data
 
@@ -46,14 +36,12 @@ export default async function RootLayout({
         isAuthenticated: true,
         user: fetchResOutput.user
       }
-      console.log("Success Getting User!")
     }
   } catch (error) {
     authData = {
       isAuthenticated: false,
       user: null
     }
-    console.log(error)
   }
 
   return (

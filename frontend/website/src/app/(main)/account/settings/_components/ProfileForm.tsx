@@ -1,6 +1,6 @@
 'use client'
 
-import { UpdateUserProfile } from "@/app/_models/client/@me/profile/MeProfileHandler";
+import { UpdateMeProfile } from "@/app/_models/client/@me/profile/MeProfileHandler";
 import { UserProfile } from "@/app/_models/rest/UserProfile/UserProfileInterface";
 import { FormEvent, useState } from "react";
 import { toast } from "react-toastify";
@@ -48,12 +48,18 @@ export default function ProfileForm({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
+    setSubmitLoading(true)
+    setBadError(defaultBadError)
+
     const clean = cleanFormData(formData)
 
-    const fetchRes = await UpdateUserProfile(clean)
+    const fetchRes = await UpdateMeProfile(clean)
+    setSubmitLoading(false)
 
     if (!fetchRes.ok) {
-      setBadError(defaultBadError)
+      if (fetchRes.status === 403) {
+        return toast.warn("The session is over! Renewing a Session (Please Try Again!)")
+      }
 
       const { validationErrors } = fetchRes.data
 
@@ -63,11 +69,10 @@ export default function ProfileForm({
           [key]: value,
         }))
       })
+      return toast.error("The server is unable to comprehend the request due to incorrect syntax.")
     }
 
-    const { userProfile } = fetchRes.data
-
-    toast.success("Berhasil!")
+    toast.success("Successfully updated your profile!")
   }
 
   return (<>
@@ -86,10 +91,13 @@ export default function ProfileForm({
           onChange={handleFormChange}
           value={formData.fullName}
         />
-        <div className="label">
-          <span className="label-text-alt">Bottom Left label</span>
-          <span className="label-text-alt">Bottom Right label</span>
-        </div>
+        {
+          badError.fullName ? (
+            <div className="label">
+              <span className="label-text-alt">{badError.fullName}</span>
+            </div>
+          ) : undefined
+        }
       </label>
       <label className="form-control">
         <div className="label">
@@ -104,10 +112,13 @@ export default function ProfileForm({
           onChange={handleFormChange}
           value={formData.bio}
         />
-        <div className="label">
-          <span className="label-text-alt">Your bio</span>
-          <span className="label-text-alt">Alt label</span>
-        </div>
+        {
+          badError.bio ? (
+            <div className="label">
+              <span className="label-text-alt">{badError.bio}</span>
+            </div>
+          ) : undefined
+        }
       </label>
       <button
         type="submit"
