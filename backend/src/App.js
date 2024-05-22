@@ -49,7 +49,7 @@ app.get('/public', (req, res) => {
 app.get('/public/:path*', (req, res) => {
   const fullPath = req.params.path + req.params[0];
   if (process.env.NODE_ENV === 'production' && req.params.path.startsWith('uploads')) {
-    res.redirect(`${process.env.SUPABASE_URL}/storage/v1/object/public/${process.env.SUPABASE_STORAGE_BUCKET}/public/${fullPath}`);
+    res.redirect(`${process.env.SUPABASE_URL}/storage/v1/object/public/${process.env.SUPABASE_STORAGE_BUCKET}/${fullPath}`);
   } else {
     res.sendFile(path.join(__dirname, `../public/${fullPath}`));
   }

@@ -18,7 +18,7 @@ const ImageUploads = (param) => async (req, res, next) => {
             .toBuffer();
 
           // eslint-disable-next-line no-unused-vars
-          const { data, error } = await supabase.storage.from(process.env.SUPABASE_STORAGE_BUCKET).upload(`./images/${dir}/${file.originalname}`, processedImage);
+          const { data, error } = await supabase.storage.from(process.env.SUPABASE_STORAGE_BUCKET).upload(`./uploads/images/${dir}/${file.originalname}`, processedImage);
 
           if (error) {
             throw error;

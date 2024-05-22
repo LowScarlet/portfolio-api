@@ -6,6 +6,7 @@ import { FaEye } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import FetchError from "../_components/FetchError";
 import { GetMe } from "@/app/_models/client/@me/MeHandler";
+import PortfolioList from "../portfolio/_components/PortfolioList";
 
 export default async function Account(): Promise<JSX.Element> {
   const getMe = await GetMe('account')
@@ -41,12 +42,9 @@ export default async function Account(): Promise<JSX.Element> {
             </div>
             <div className="flex justify-between items-end text-xs grow">
               <div className="flex gap-2">
-                {/* <div className="gap-2 badge badge-primary">
-                  <FaEye />
-                </div>
                 <div className="gap-2 badge badge-primary">
                   <FaEye />
-                </div> */}
+                </div>
               </div>
             </div>
           </div>
@@ -56,6 +54,13 @@ export default async function Account(): Promise<JSX.Element> {
           <p className="overflow-hidden">
             {bio || "What a Week, Huh?"}
           </p>
+        </div>
+      </div>
+      <div className="shadow-md h-full card card-compact">
+        <div className="mb-4 card-body">
+          <div className="py-4">
+            <PortfolioList />
+          </div>
         </div>
       </div>
     </div>

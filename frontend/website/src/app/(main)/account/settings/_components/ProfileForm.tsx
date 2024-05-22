@@ -80,7 +80,6 @@ export default function ProfileForm({
       <label className="form-control w-full">
         <div className="label">
           <span className="label-text">Full Name</span>
-          <span className="label-text-alt">Top Right label</span>
         </div>
         <input
           id="fullName"
@@ -102,7 +101,6 @@ export default function ProfileForm({
       <label className="form-control">
         <div className="label">
           <span className="label-text">Describe Yourself</span>
-          <span className="label-text-alt">Alt label</span>
         </div>
         <textarea
           id="bio"
@@ -122,9 +120,10 @@ export default function ProfileForm({
       </label>
       <button
         type="submit"
-        className="btn-block btn btn-primary"
+        className="btn-block my-4 btn btn-primary"
+        disabled={submitLoading}
       >
-        Update
+        {submitLoading ? <span className="loading loading-spinner" /> : undefined} Update
       </button>
     </form>
   </>);

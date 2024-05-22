@@ -12,6 +12,7 @@ export default function UserAvatar({
   height: number,
 }) {
   const fullSrc = `${process.env.NEXT_PUBLIC_BACKEND_URL}/public/uploads/images/avatars/${src}`
+  console.log(fullSrc)
   return (<>
     <Image
       width={width}

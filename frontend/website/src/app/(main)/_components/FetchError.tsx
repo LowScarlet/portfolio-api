@@ -8,5 +8,5 @@ export default function FetchError() {
 
   useEffect(() => {router.refresh()})
 
-  return (<></>);
+  return (<>Please Refresh this Manual Page if you still dont automatically Refresh!</>);
 }
