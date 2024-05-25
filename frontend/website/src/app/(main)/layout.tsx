@@ -28,7 +28,7 @@ export default function RootLayout({
         {/* AppBar */}
         <AppBar />
         {/* Context */}
-        <div className="px-4 grow py">
+        <div className="px-2 sm:px-4 grow py">
           {children}
         </div>
         {/* Footer */}

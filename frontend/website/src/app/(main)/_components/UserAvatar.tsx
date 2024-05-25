@@ -5,9 +5,11 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 
 export default function UserAvatar({
+  className,
   width,
   height,
 }: {
+  className?: string,
   width: number,
   height: number,
 }) {
@@ -28,6 +30,7 @@ export default function UserAvatar({
 
   return (
     <Image
+      className={className}
       width={width}
       height={height}
       src={src}
