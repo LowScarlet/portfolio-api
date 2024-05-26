@@ -2,6 +2,7 @@ const { body } = require('express-validator');
 
 const i18next = require('i18next');
 const bcrypt = require('bcryptjs');
+const { OneTimePasswordType } = require('@prisma/client');
 const ValidatorHandler = require('../../utils/services/ValidatorHandler');
 const { db } = require('../../utils/database');
 const { verifyRefreshToken, hashToken } = require('./Services');
@@ -88,6 +89,47 @@ function VerifyValidator() {
   ]);
 }
 
+function RecoveryValidator() {
+  return ValidatorHandler([
+    body('email')
+      .custom(async (email, { req }) => {
+        const user = await db.user.findUnique({ where: { email } });
+
+        if (!user) throw new Error('validations.auth.email-not-found');
+
+        req.scarlet.body.email = email;
+      })
+      .isEmail()
+      .withMessage('validations.invalid-type')
+      .notEmpty()
+      .withMessage('validations.required'),
+  ]);
+}
+
+function RecoveryResetValidator() {
+  return ValidatorHandler([
+    body('otp')
+      .custom(async (otp, { req }) => {
+        const OneTomePassword = await db.oneTimePassword.findUnique({ where: { password: otp, type: OneTimePasswordType.RESET_PASSWORD } });
+
+        if (!OneTomePassword) throw new Error('validations.auth.otp-not-found');
+
+        req.scarlet.body.otp = otp;
+        req.scarlet.body.userId = OneTomePassword.userId;
+      })
+      .notEmpty()
+      .withMessage('validations.required'),
+    body('password')
+      .custom(async (password, { req }) => {
+        req.scarlet.body.password = password;
+      })
+      .isLength({ min: 6, max: 128 })
+      .withMessage(() => i18next.t('validations.require-length-min-max', { min: 6, max: 128 }))
+      .notEmpty()
+      .withMessage('validations.required'),
+  ]);
+}
+
 function LogoutValidator() {
   return ValidatorHandler([
     body('refreshToken')
@@ -111,5 +153,7 @@ module.exports = {
   LoginValidator,
   RegisterValidator,
   VerifyValidator,
+  RecoveryValidator,
+  RecoveryResetValidator,
   LogoutValidator
 };

@@ -1,5 +1,3 @@
-'use client'
-
 import { useAuth } from "@/app/(authentication)/_context/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,55 +5,19 @@ import { BsFillPinFill } from "react-icons/bs";
 import { FaEye, FaEyeSlash, FaPlus, FaRunning, FaSearch } from "react-icons/fa";
 import { FaArrowRight, FaCrown } from "react-icons/fa6";
 import { LuFileJson } from "react-icons/lu";
+import FetchError from "../../_components/FetchError";
+import { GetMePortfolio } from "@/app/_models/client/@me/portfolio/MePortfolioHandler";
 
-interface Card {
-  id: string;
-  name: string;
-  description?: string;
-  isPublic: boolean;
-  ownerId?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export default async function PortfolioList(): Promise<JSX.Element> {
+  const getMePortfolio = await GetMePortfolio('portfolioComponents')
 
-export default function PortfolioList(): JSX.Element {
-  const { auth, setAuth } = useAuth()
-
-  if (!(auth && auth.isAuthenticated && auth.user)) {
-    return <>Invalid User!</>
+  if (!getMePortfolio.ok || !getMePortfolio.ok) {
+    return <FetchError />
   }
 
-  const { user } = auth
+  const getMePortfolioOutput = getMePortfolio.data
 
-  const portfolios: Card[] = [
-    {
-      id: 'cdb79796-fb0c-454a-8c95-79328d689438',
-      name: "Card Title 1Card Title 1Card Title 1",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      isPublic: true,
-      ownerId: "cdb79796-fb0c-454a-8c95-79328d689438",
-      createdAt: "2024-05-07T11:21:54.368Z",
-      updatedAt: "2024-05-07T11:21:54.368Z",
-    },
-    {
-      id: 'cdb79796-fb0c-454a-8c95-79328d689438',
-      name: "Card Title 2",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Pellentesque nec nam aliquam sem et tortor consequat. Diam phasellus vestibulum lorem sed risus ultricies. Dignissim sodales ut eu sem integer vitae justo eget. Mi bibendum neque egestas congue quisque egestas diam. Sit amet dictum sit amet. Ultrices tincidunt arcu non sodales neque sodales ut. Interdum varius sit amet mattis. Porttitor lacus luctus accumsan tortor posuere. Lobortis feugiat vivamus at augue eget arcu dictum. Scelerisque eleifend donec pretium vulputate sapien nec. Posuere sollicitudin aliquam ultrices sagittis orci a scelerisque purus semper. Senectus et netus et malesuada fames ac. Pharetra vel turpis nunc eget lorem dolor sed viverra.",
-      isPublic: true,
-      ownerId: "cdb79796-fb0c-454a-8c95-79328d689438",
-      createdAt: "2024-05-07T11:21:54.368Z",
-      updatedAt: "2024-05-07T11:21:54.368Z",
-    },
-    {
-      id: 'cdb79796-fb0c-454a-8c95-79328d689438',
-      name: "Card Title 3",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      isPublic: true,
-      ownerId: "cdb79796-fb0c-454a-8c95-79328d689438",
-      createdAt: "2024-05-07T11:21:54.368Z",
-      updatedAt: "2024-05-07T11:21:54.368Z",
-    },
-  ];
+  const portfolios = getMePortfolioOutput.portfolio
 
   return (<>
     <div className="flex sm:flex-row flex-col justify-between mb-6">
@@ -104,12 +66,12 @@ export default function PortfolioList(): JSX.Element {
                             </div>
                           )
                         }
-                        {
+                        {/* {
                           portfolio.ownerId === user.id &&
                           <div className="gap-2 badge badge-primary">
                             <FaCrown />
                           </div>
-                        }
+                        } */}
                       </div>
                     </div>
                   </div>

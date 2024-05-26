@@ -1,10 +1,12 @@
 const { Router } = require('express');
 const { v4: uuidv4 } = require('uuid');
+const { OneTimePasswordType } = require('@prisma/client');
 const { db } = require('../../utils/database');
 const { generateAccessToken, hashToken, hashPassword, verifyRefreshToken, createToken } = require('./Services');
-const { LoginValidator, RegisterValidator, VerifyValidator, LogoutValidator } = require('./Validators');
+const { LoginValidator, RegisterValidator, VerifyValidator, LogoutValidator, RecoveryValidator, RecoveryResetValidator } = require('./Validators');
 const { IsNotAuthenticated, IsAuthenticated } = require('./Middlewares');
 const { viewField } = require('../rest/user/Services');
+const { generateShortUid } = require('../../utils/services/shortUid');
 
 const router = Router();
 
@@ -107,6 +109,62 @@ router.post('/verify', [
         token: accessToken.token,
         expiredAt: accessToken.expirationDate
       }
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/recovery', [
+  RecoveryValidator()
+], async (req, res, next) => {
+  try {
+    const { scarlet } = req;
+    const { email } = scarlet.body;
+
+    const currentTime = new Date();
+    const oneHourLater = new Date(currentTime.getTime() + 60 * 60 * 1000); // 60 minutes * 60 seconds * 1000 milliseconds
+
+    const otp = generateShortUid();
+
+    await db.oneTimePassword.create({
+      data: {
+        password: otp,
+        type: OneTimePasswordType.RESET_PASSWORD,
+        expiredAt: oneHourLater,
+        User: {
+          connect: {
+            email
+          }
+        }
+      }
+    });
+
+    res.json({
+      message: req.t('validations.auth.success-send-recovery'),
+      exampleOtp: otp
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/recovery/reset', [
+  RecoveryResetValidator()
+], async (req, res, next) => {
+  try {
+    const { scarlet } = req;
+    const { userId, password } = scarlet.body;
+
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        password: hashPassword(password)
+      }
+    });
+
+    res.json({
+      message: req.t('validations.auth.success-reset-password')
     });
   } catch (err) {
     next(err);

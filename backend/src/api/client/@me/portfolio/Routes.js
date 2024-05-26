@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { db } = require('../../../../utils/database');
 
 const router = Router();
 
@@ -8,15 +9,16 @@ router.get('/', [
   try {
     const { user } = req;
 
+    const portfolio = await db.portfolio.findMany({
+      where: { ownerId: user.id }
+    });
+
     res.json({
-      user,
+      portfolio,
     });
   } catch (err) {
     next(err);
   }
 });
-
-router.use('/profile', require('./profile/Routes'));
-router.use('/portfolio', require('./portfolio/Routes'));
 
 module.exports = router;
