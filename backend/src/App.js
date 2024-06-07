@@ -17,7 +17,7 @@ const api = require('./api/Routes');
 
 // Custom Middlewares
 const Error = require('./utils/middlewares/Error');
-const NotFound = require('./utils/middlewares/NotFound');
+const NotFound = require('./utils/NotFound');
 const { CheckPayload } = require('./api/auth/Middlewares');
 
 // Use .env
