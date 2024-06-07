@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "Start.js",
   "scripts": {
-    "vercel-build": "prisma generate && prisma migrate deploy",
+    "vercel-build": "prisma generate",
     "start": "node src/Start.js",
     "dev": "nodemon src/Start.js",
     "lint": "eslint --fix src",
