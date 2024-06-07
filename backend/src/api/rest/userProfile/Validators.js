@@ -188,7 +188,7 @@ function UpdateValidator() {
     email: { ...email, optional: true },
     phone: { ...phone, optional: true },
     website: { ...website, optional: true },
-    portfolioId: { ...portfolioId, optoonal: true },
+    portfolioId: { ...portfolioId, optional: true },
   };
 
   return [
