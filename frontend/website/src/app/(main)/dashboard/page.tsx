@@ -25,16 +25,16 @@ export default function Dashboard(): JSX.Element {
                 <FaArrowRightToBracket />
               </div>
               <div className="stat-title">API Requests</div>
-              <div className="stat-value">4,200</div>
-              <div className="stat-desc">↗︎ 400 (22%)</div>
+              <div className="stat-value">0</div>
+              <div className="stat-desc">↗︎ 0 (0%)</div>
             </div>
             <div className="stat">
               <div className="text-3xl text-secondary stat-figure">
                 <FaRegThumbsUp />
               </div>
               <div className="stat-title">User Interactions</div>
-              <div className="stat-value">1,200</div>
-              <div className="stat-desc">↘︎ 90 (14%)</div>
+              <div className="stat-value">0</div>
+              <div className="stat-desc">↘︎ 0 (0%)</div>
             </div>
           </div>
         </div>

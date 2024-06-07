@@ -1,6 +1,6 @@
 const { Router } = require('express');
-const { db } = require('../../../utils/database');
-const { viewField } = require('../../rest/user/Services');
+const { viewField } = require('../../../../rest/portfolio/Services');
+const { db } = require('../../../../../utils/database');
 
 const router = Router();
 
@@ -8,25 +8,26 @@ router.get('/', [
   //
 ], async (req, res, next) => {
   try {
-    const { user: client } = req;
+    const { scarlet, user: client } = req;
+    const { id } = scarlet.params;
 
     const selectFields = viewField(client);
-    const user = await db.user.findUnique({
-      where: { id: client.id },
+    const portfolio = await db.portfolio.findUnique({
+      where: { ownerId: client.id, id },
       ...(selectFields ? {
         select: {
           ...selectFields,
-          UserProfile: true
+          PorfolioProfile: true
         }
       } : {
         include: {
-          UserProfile: true
+          PorfolioProfile: true
         }
       })
     });
 
     res.json({
-      user,
+      portfolio,
     });
   } catch (err) {
     next(err);
@@ -34,6 +35,5 @@ router.get('/', [
 });
 
 router.use('/profile', require('./profile/Routes'));
-router.use('/portfolio', require('./portfolios/Routes'));
 
 module.exports = router;

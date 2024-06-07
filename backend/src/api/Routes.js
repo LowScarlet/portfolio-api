@@ -33,7 +33,7 @@ router.use('/client', [
 ], require('./client/Routes'));
 
 router.use('/rest', [
-  IsAuthenticated
+  // IsAuthenticated // Test Only
 ], require('./rest/Routes'));
 
 module.exports = router;

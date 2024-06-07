@@ -3,9 +3,9 @@ const { Router } = require('express');
 const PaginationValidator = require('../../../utils/validators/PaginationValidator');
 
 const router = Router();
-const { isAdministrator } = require('./Middlewares');
 const { CreateValidator, WheresValidator, ReadValidator, UpdateValidator, DeleteValidator } = require('./Validators');
 const { dbModel, viewField } = require('./Services');
+const { isAdministrator } = require('../user/Middlewares');
 const CrudHandler = require('../../../utils/services/CrudHandler');
 
 const handler = new CrudHandler(dbModel);
@@ -16,8 +16,8 @@ router.use((req, res, next) => {
 });
 
 router.post('/', [
-  // isAdministrator,
-  CreateValidator()
+  isAdministrator,
+  CreateValidator(),
 ], async (req, res, next) => {
   try {
     const { scarlet } = req;
@@ -44,7 +44,7 @@ router.get('/', [
     const { skip, take } = scarlet.pagination;
 
     const data = await handler.reads(query, skip, take);
-    // res.json(data);
+
     res.json({
       message: req.t('validations.model.success-read-all-data'),
       data,
@@ -75,9 +75,9 @@ router.get('/:id', [
 });
 
 router.put('/:id', [
-  // isAdministrator,
+  isAdministrator,
   ReadValidator(),
-  UpdateValidator()
+  UpdateValidator(),
 ], async (req, res, next) => {
   try {
     const { scarlet } = req;
@@ -96,7 +96,7 @@ router.put('/:id', [
 });
 
 router.delete('/:id', [
-  // isAdministrator,
+  isAdministrator,
   ReadValidator(),
   DeleteValidator()
 ], async (req, res, next) => {

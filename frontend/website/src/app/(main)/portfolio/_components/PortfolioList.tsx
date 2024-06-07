@@ -7,6 +7,7 @@ import { FaArrowRight, FaCrown } from "react-icons/fa6";
 import { LuFileJson } from "react-icons/lu";
 import FetchError from "../../_components/FetchError";
 import { GetMePortfolio } from "@/app/_models/client/@me/portfolio/MePortfolioHandler";
+import PortfolioLogo from "./PortfolioLogo";
 
 export default async function PortfolioList(): Promise<JSX.Element> {
   const getMePortfolio = await GetMePortfolio('portfolioComponents')
@@ -51,7 +52,7 @@ export default async function PortfolioList(): Promise<JSX.Element> {
                     <div className="flex gap-x-2 mx-4">
                       <div className="avatar">
                         <div className="rounded-full w-20 ring ring-base-100">
-                          <Image width={128} height={128} src={"/images/portfolio_icon.png"} alt={"Icon"} />
+                          <PortfolioLogo width={500} height={500} value={portfolio.PorfolioProfile.logo} />
                         </div>
                       </div>
                       <div className="flex items-end gap-2 text-xs grow">

@@ -10,10 +10,12 @@ router.get('/', [
   // DefaultReadRateLimit
 ], async (req, res, next) => {
   try {
-    const { user } = req;
+    const { user: client } = req;
 
+    const selectFields = viewField(client);
     const userProfile = await db.userProfile.findUnique({
-      where: { userId: user.id }
+      select: selectFields,
+      where: { userId: client.id }
     });
 
     res.json({
@@ -34,12 +36,13 @@ router.post('/', [
   })
 ], async (req, res, next) => {
   try {
-    const { user, scarlet } = req;
+    const { user: client, scarlet } = req;
     const { body } = scarlet;
 
+    const selectFields = viewField(client);
     const userProfile = await db.userProfile.update({
-      select: viewField(user),
-      where: { userId: user.id },
+      select: selectFields,
+      where: { userId: client.id },
       data: body
     });
 

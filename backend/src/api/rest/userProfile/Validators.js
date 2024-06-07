@@ -4,10 +4,8 @@ const sharp = require('sharp');
 const i18next = require('i18next');
 const { dbModel } = require('./Services');
 const { db } = require('../../../utils/database');
-const FileValidatorHandler = require('../../../utils/services/FileValidatorHandler');
 const fileUploadName = require('../../../utils/fileUploadName');
 const SchemaValidatorHandler = require('../../../utils/services/SchemaValidatorHandler');
-const multerHandler = require('../../../utils/multerHandler');
 
 const config = {
   fullName: {
@@ -143,35 +141,23 @@ const ModelSchema = (options) => {
 };
 
 function CreateValidator() {
-  const { avatar, fullName, bio, userId } = ModelSchema({
+  const { fullName, label, nickname, about, country, email, phone, website, portfolioId } = ModelSchema({
     checkIn: ['body']
   });
 
   const input = {
-    avatar: {
-      custom: {
-        options: async (x, { req }) => {
-          const { files } = req;
-
-          const uploadedFile = files[0];
-
-          if (!uploadedFile) {
-            throw new Error('validations.required');
-          }
-        },
-      },
-      ...avatar,
-      optional: true
-    },
     fullName: { ...fullName, optional: true },
-    bio: { ...bio, optional: true },
-    userId: { ...userId, notEmpty: { errorMessage: 'validations.required' } },
+    label: { ...label, optional: true },
+    nickname: { ...nickname, optional: true },
+    about: { ...about, optional: true },
+    country: { ...country, optional: true },
+    email: { ...email, optional: true },
+    phone: { ...phone, optional: true },
+    website: { ...website, optional: true },
+    portfolioId: { ...portfolioId, notEmpty: { errorMessage: 'validations.required' } },
   };
 
   return [
-    FileValidatorHandler([
-      multerHandler.array('avatar', 1),
-    ]),
     SchemaValidatorHandler([checkSchema(input)])
   ];
 }
@@ -189,21 +175,23 @@ function ReadValidator() {
 }
 
 function UpdateValidator() {
-  const { avatar, fullName, bio, userId } = ModelSchema({
+  const { fullName, label, nickname, about, country, email, phone, website, portfolioId } = ModelSchema({
     checkIn: ['body']
   });
 
   const input = {
-    avatar: { ...avatar },
     fullName: { ...fullName, optional: true },
-    bio: { ...bio, optional: true },
-    userId: { ...userId, optional: true },
+    label: { ...label, optional: true },
+    nickname: { ...nickname, optional: true },
+    about: { ...about, optional: true },
+    country: { ...country, optional: true },
+    email: { ...email, optional: true },
+    phone: { ...phone, optional: true },
+    website: { ...website, optional: true },
+    portfolioId: { ...portfolioId, optoonal: true },
   };
 
   return [
-    FileValidatorHandler([
-      multerHandler.array('avatar', 1),
-    ]),
     SchemaValidatorHandler([checkSchema(input)])
   ];
 }

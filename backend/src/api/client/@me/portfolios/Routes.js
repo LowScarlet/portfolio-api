@@ -1,6 +1,7 @@
 const { Router } = require('express');
-const { db } = require('../../../utils/database');
-const { viewField } = require('../../rest/user/Services');
+const { db } = require('../../../../utils/database');
+const { ReadValidator } = require('../../../rest/portfolio/Validators');
+const { viewField } = require('../../../rest/portfolio/Services');
 
 const router = Router();
 
@@ -11,29 +12,30 @@ router.get('/', [
     const { user: client } = req;
 
     const selectFields = viewField(client);
-    const user = await db.user.findUnique({
-      where: { id: client.id },
+    const portfolio = await db.portfolio.findMany({
+      where: { ownerId: client.id },
       ...(selectFields ? {
         select: {
           ...selectFields,
-          UserProfile: true
+          PorfolioProfile: true
         }
       } : {
         include: {
-          UserProfile: true
+          PorfolioProfile: true
         }
       })
     });
 
     res.json({
-      user,
+      portfolio,
     });
   } catch (err) {
     next(err);
   }
 });
 
-router.use('/profile', require('./profile/Routes'));
-router.use('/portfolio', require('./portfolios/Routes'));
+router.use('/:id', [
+  ReadValidator()
+], require('./portfolio/Routes'));
 
 module.exports = router;

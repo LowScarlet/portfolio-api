@@ -1,3 +1,5 @@
+import { PortfolioProfile } from "../PortfolioProfile/PortfolioProfileInterface"
+
 export interface Portfolio_ValidationErrors {
   // 
 }
@@ -14,4 +16,5 @@ export interface Portfolio {
   ownerId: string
   createdAt: string
   updatedAt: string
+  PorfolioProfile: PortfolioProfile
 }

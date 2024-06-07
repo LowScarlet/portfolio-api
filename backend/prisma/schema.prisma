@@ -23,8 +23,10 @@ model User {
   role              Role               @default(MEMBER)
   isActive          Boolean            @default(false)
   //
+  pinnedPortfolios  Portfolio[]        @relation("PinnedByUser")
+  //
   UserProfile       UserProfile?
-  Portfolios        Portfolio[]
+  Portfolios        Portfolio[]        @relation("UserPortfolio")
   PortfolioVotes    PortfolioVote[]
   PortfolioComments PortfolioComment[]
   RefreshTokens     RefreshToken[]
@@ -82,24 +84,25 @@ model UserProfile {
 }
 
 model Portfolio {
-  id                String             @id @default(uuid())
+  id              String             @id @default(uuid())
   //
-  name              String
-  description       String?
-  isPublic          Boolean            @default(true)
-  ownerId           String?
+  name            String
+  description     String?
+  isPublic        Boolean            @default(true)
+  pinnedBy        User[]             @relation("PinnedByUser")
+  ownerId         String?
   //
-  PorfolioProfile   PortfolioProfile?
-  PortfolioVotes    PortfolioVote[]
-  PortfolioComments PortfolioComment[]
+  PorfolioProfile PortfolioProfile?
+  Votes           PortfolioVote[]
+  Comments        PortfolioComment[]
 
-  PortfolioConnect        PortfolioConnect[]
-  PortfolioTechincalSkill PortfolioTechincalSkill[]
+  Connect        PortfolioConnect[]
+  TechincalSkill TechincalSkill[]
   //
-  Owner                   User?                     @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  Owner          User?              @relation("UserPortfolio", fields: [ownerId], references: [id], onDelete: SetNull)
   //
-  createdAt               DateTime                  @default(now())
-  updatedAt               DateTime                  @updatedAt
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
 }
 
 model PortfolioProfile {
@@ -112,9 +115,9 @@ model PortfolioProfile {
   nickname   String?
   about      String?
   country    String?
-  email      String[]
-  phone      String[]
-  website    String[]
+  email      String?
+  phone      String?
+  website    String?
   porfolioId String    @unique
   //
   Porfolio   Portfolio @relation(fields: [porfolioId], references: [id], onDelete: Cascade)
@@ -155,15 +158,15 @@ model PortfolioComment {
 }
 
 model SocialMedia {
-  id               Int                @id @default(autoincrement())
+  id        Int                @id @default(autoincrement())
   //
-  name             String
-  url              String
+  name      String
+  url       String
   //
-  PortfolioConnect PortfolioConnect[]
+  Connect   PortfolioConnect[]
   //
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 }
 
 model PortfolioConnect {
@@ -173,14 +176,14 @@ model PortfolioConnect {
   socialMediaId Int
   portfolioId   String
   //
-  socialMedia   SocialMedia? @relation(fields: [socialMediaId], references: [id])
+  SocialMedia   SocialMedia? @relation(fields: [socialMediaId], references: [id])
   Porfolio      Portfolio    @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
   //
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 }
 
-model PortfolioTechincalSkill {
+model TechincalSkill {
   id          Int         @id @default(autoincrement())
   //
   name        String
@@ -190,4 +193,29 @@ model PortfolioTechincalSkill {
   //
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+}
+
+model Institution {
+  id          Int                  @id @default(autoincrement())
+  //
+  name        String
+  description String
+  website     String
+  //
+  Education   PortfolioEducation[]
+  //
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+}
+
+model PortfolioEducation {
+  id            Int         @id @default(autoincrement())
+  //
+  score         Float
+  institutionId Int
+  //
+  Institution   Institution @relation(fields: [institutionId], references: [id])
+  //
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
