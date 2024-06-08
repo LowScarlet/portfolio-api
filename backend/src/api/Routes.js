@@ -25,7 +25,10 @@ router.get('/', [
 ], async (req, res, next) => {
   try {
     res.json({
-      NODE_ENV: process.env.NODE_ENV
+      PUBLIC_ENV: {
+        NODE_ENV: process.env.NODE_ENV,
+        FRONTEND_URL: process.env.FRONTEND_URL
+      },
     });
   } catch (err) {
     next(err);
