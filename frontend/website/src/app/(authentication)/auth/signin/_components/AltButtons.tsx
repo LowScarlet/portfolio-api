@@ -35,7 +35,7 @@ const AltButtons = () => {
           className="col-span-2 lg:col-span-1 btn btn-primary grow"
           onClick={(e) => {
             e.preventDefault()
-            popupCenter({ url: 'http://localhost:5000/api/oauth/google', title: 'Sign-in with Third Party Account', w: 900, h: 500 });
+            popupCenter({ url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/oauth/google`, title: 'Sign-in with Third Party Account', w: 900, h: 500 });
           }}
         >
           <FaGoogle /> Google
