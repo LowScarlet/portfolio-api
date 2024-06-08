@@ -20,6 +20,18 @@ router.use((req, res, next) => {
   next();
 });
 
+router.get('/', [
+  //
+], async (req, res, next) => {
+  try {
+    res.json({
+      NODE_ENV: process.env.NODE_ENV
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.use('/auth', [
   AuthRateLimit
 ], require('./auth/Routes'));
