@@ -19,6 +19,7 @@ const api = require('./api/Routes');
 const Error = require('./utils/middlewares/Error');
 const NotFound = require('./utils/NotFound');
 const { CheckPayload } = require('./api/auth/Middlewares');
+const { handleCors } = require('./utils/middlewares/Cors');
 
 // Use .env
 require('dotenv').config();
@@ -59,7 +60,6 @@ app.get('/public/:path*', (req, res) => {
 app.set('json spaces', 2);
 app.use(morgan('dev'));
 app.use(helmet());
-app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -74,7 +74,7 @@ app.get('/', (req, res) => {
 });
 
 // Routes Setup
-app.use('/api', api);
+app.use('/api', cors(handleCors), api);
 
 // Custom Middlewares Setup
 app.use(NotFound);
