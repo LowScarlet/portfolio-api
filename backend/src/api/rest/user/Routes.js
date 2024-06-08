@@ -16,7 +16,7 @@ router.use((req, res, next) => {
 });
 
 router.post('/', [
-  // isAdministrator,
+  isAdministrator,
   CreateValidator()
 ], async (req, res, next) => {
   try {
@@ -75,7 +75,7 @@ router.get('/:id', [
 });
 
 router.put('/:id', [
-  // isAdministrator,
+  isAdministrator,
   ReadValidator(),
   UpdateValidator()
 ], async (req, res, next) => {
@@ -96,7 +96,7 @@ router.put('/:id', [
 });
 
 router.delete('/:id', [
-  // isAdministrator,
+  isAdministrator,
   ReadValidator(),
   DeleteValidator()
 ], async (req, res, next) => {
