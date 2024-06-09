@@ -15,7 +15,7 @@ const hashDigest = 'hex';
 
 const AuthRateLimit = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 3,
+  max: 10,
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res, /* next */) => {

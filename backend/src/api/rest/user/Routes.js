@@ -7,6 +7,7 @@ const { isAdministrator } = require('./Middlewares');
 const { CreateValidator, WheresValidator, ReadValidator, UpdateValidator, DeleteValidator } = require('./Validators');
 const { dbModel, viewField } = require('./Services');
 const CrudHandler = require('../../../utils/services/CrudHandler');
+const { IsAuthenticated } = require('../../auth/Middlewares');
 
 const handler = new CrudHandler(dbModel);
 
@@ -16,6 +17,7 @@ router.use((req, res, next) => {
 });
 
 router.post('/', [
+  IsAuthenticated,
   isAdministrator,
   CreateValidator()
 ], async (req, res, next) => {
@@ -75,6 +77,7 @@ router.get('/:id', [
 });
 
 router.put('/:id', [
+  IsAuthenticated,
   isAdministrator,
   ReadValidator(),
   UpdateValidator()
@@ -96,6 +99,7 @@ router.put('/:id', [
 });
 
 router.delete('/:id', [
+  IsAuthenticated,
   isAdministrator,
   ReadValidator(),
   DeleteValidator()
