@@ -72,7 +72,7 @@ function CreateValidator() {
   });
 
   const input = {
-    identifier: { ...identifier, optional: true },
+    identifier: { ...identifier, notEmpty: { errorMessage: 'validations.required' } },
     socialMediaId: { ...socialMediaId, notEmpty: { errorMessage: 'validations.required' } },
     portfolioId: { ...portfolioId, notEmpty: { errorMessage: 'validations.required' } },
   };
