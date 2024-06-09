@@ -4,7 +4,6 @@ const { dbModel } = require('./Services');
 const SchemaValidatorHandler = require('../../../utils/services/SchemaValidatorHandler');
 const { db } = require('../../../utils/database');
 const { ValidateSchemaModel, ValidateSchemaDefault, ValidateSchemaCustom } = require('../../../utils/services/ValidateSchema');
-require('i18next');
 
 const config = {
   //
@@ -29,52 +28,24 @@ const ModelSchema = (options) => {
       index: 'id',
     }),
 
-    // FullName
+    // Identifier
     ...ValidateSchemaDefault({
       ...configSchema,
-      index: 'fullName',
+      index: 'identifier',
     }),
 
-    // Label
-    ...ValidateSchemaDefault({
+    // SocialMediaId
+    ...ValidateSchemaCustom({
       ...configSchema,
-      index: 'label',
-    }),
+      index: 'socialMediaId',
+      custom: {
+        options: async (value, { req }) => {
+          const socialMedia = await db.socialMedia.findUnique({ where: { id: value } });
+          if (!socialMedia) throw new Error('validations.model.data-not-found');
 
-    // Nickname
-    ...ValidateSchemaDefault({
-      ...configSchema,
-      index: 'nickname',
-    }),
-
-    // About
-    ...ValidateSchemaDefault({
-      ...configSchema,
-      index: 'about',
-    }),
-
-    // Country
-    ...ValidateSchemaDefault({
-      ...configSchema,
-      index: 'country',
-    }),
-
-    // Email
-    ...ValidateSchemaDefault({
-      ...configSchema,
-      index: 'email',
-    }),
-
-    // Phone
-    ...ValidateSchemaDefault({
-      ...configSchema,
-      index: 'phone',
-    }),
-
-    // Website
-    ...ValidateSchemaDefault({
-      ...configSchema,
-      index: 'website',
+          req.scarlet.body.socialMediaId = value;
+        },
+      },
     }),
 
     // PortfolioId
@@ -83,9 +54,8 @@ const ModelSchema = (options) => {
       index: 'portfolioId',
       custom: {
         options: async (value, { req }) => {
-          const portfolio = await db.portfolio.findUnique({ where: { id: value }, include: { PortfolioProfile: true } });
+          const portfolio = await db.portfolio.findUnique({ where: { id: value } });
           if (!portfolio) throw new Error('validations.model.data-not-found');
-          if (portfolio.PortfolioProfile) throw new Error('validations.model.data-has-relation');
 
           req.scarlet.body.portfolioId = value;
         },
@@ -96,21 +66,15 @@ const ModelSchema = (options) => {
 };
 
 function CreateValidator() {
-  const { fullName, label, nickname, about, country, email, phone, website, portfolioId } = ModelSchema({
+  const { identifier, socialMediaId, ownerId } = ModelSchema({
     checkIn: ['body'],
     errorIf: 'exist'
   });
 
   const input = {
-    fullName: { ...fullName, optional: true },
-    label: { ...label, optional: true },
-    nickname: { ...nickname, optional: true },
-    about: { ...about, optional: true },
-    country: { ...country, optional: true },
-    email: { ...email, optional: true },
-    phone: { ...phone, optional: true },
-    website: { ...website, optional: true },
-    portfolioId: { ...portfolioId, notEmpty: { errorMessage: 'validations.required' } },
+    identifier: { ...identifier, optional: true },
+    socialMediaId: { ...socialMediaId, notEmpty: { errorMessage: 'validations.required' } },
+    ownerId: { ...ownerId, notEmpty: { errorMessage: 'validations.required' } },
   };
 
   return [
@@ -132,21 +96,15 @@ function ReadValidator() {
 }
 
 function UpdateValidator() {
-  const { fullName, label, nickname, about, country, email, phone, website, portfolioId } = ModelSchema({
+  const { identifier, socialMediaId, ownerId } = ModelSchema({
     checkIn: ['body'],
     errorIf: 'exist'
   });
 
   const input = {
-    fullName: { ...fullName, optional: true },
-    label: { ...label, optional: true },
-    nickname: { ...nickname, optional: true },
-    about: { ...about, optional: true },
-    country: { ...country, optional: true },
-    email: { ...email, optional: true },
-    phone: { ...phone, optional: true },
-    website: { ...website, optional: true },
-    portfolioId: { ...portfolioId, optional: true },
+    identifier: { ...identifier, optional: true },
+    socialMediaId: { ...socialMediaId, optional: true },
+    ownerId: { ...ownerId, optional: true },
   };
 
   return [

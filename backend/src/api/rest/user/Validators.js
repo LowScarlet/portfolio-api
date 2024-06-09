@@ -5,6 +5,7 @@ const { Role } = require('@prisma/client');
 const { dbModel } = require('./Services');
 const SchemaValidatorHandler = require('../../../utils/services/SchemaValidatorHandler');
 const { hashPassword } = require('../../auth/Services');
+const { ValidateSchemaModel, ValidateSchemaDefault, ValidateSchemaCustom } = require('../../../utils/services/ValidateSchema');
 
 const config = {
   username: {
@@ -41,127 +42,98 @@ const FilterSchema = () => ({
 });
 
 const ModelSchema = (options) => {
-  const { checkIn } = options;
+  const { customModel, checkIn, errorIf } = options;
+  const configSchema = {
+    checkIn,
+    errorIf,
+    dbModel: customModel || dbModel
+  };
+
   return {
     // Id
-    id: {
-      in: checkIn,
-      custom: {
-        options: async (id, { req }) => {
-          const user = await dbModel.findUnique({ where: { id } });
-          if (!user) throw new Error('validations.model.data-not-found');
-
-          for (let i = 0; i < checkIn.length; i += 1) {
-            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
-            req.scarlet[checkIn[i]].id = id;
-          }
-        }
-      }
-    },
+    ...ValidateSchemaModel({
+      ...configSchema,
+      index: 'id',
+    }),
 
     // Username
-    username: {
-      in: checkIn,
-      custom: {
-        options: async (username, { req }) => {
-          const user = await dbModel.findUnique({ where: { username } });
-          if (user) throw new Error('validations.already-exist');
-
-          for (let i = 0; i < checkIn.length; i += 1) {
-            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
-            req.scarlet[checkIn[i]].username = username;
-          }
+    ...ValidateSchemaModel({
+      ...configSchema,
+      index: 'username',
+      other: {
+        isLength: {
+          options: config.username.isLength,
+          errorMessage: () => i18next.t('validations.require-length-min-max', config.username.isLength),
         },
-      },
-      isLength: {
-        options: config.username.isLength,
-        errorMessage: () => i18next.t('validations.require-length-min-max', config.username.isLength),
-      },
-      matches: {
-        options: config.username.matches,
-        errorMessage: 'validations.only-alphanumeric-and-underscore',
+        matches: {
+          options: config.username.matches,
+          errorMessage: 'validations.only-alphanumeric-and-underscore',
+        }
       }
-    },
+    }),
 
     // Email
-    email: {
-      in: checkIn,
-      custom: {
-        options: async (email, { req }) => {
-          if (!email) return;
-          const user = await dbModel.findUnique({ where: { email } });
-          if (user) throw new Error('validations.already-exist');
-
-          for (let i = 0; i < checkIn.length; i += 1) {
-            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
-            req.scarlet[checkIn[i]].email = email;
-          }
-        }
-      },
-      isEmail: { errorMessage: 'validations.invalid-type', }
-    },
+    ...ValidateSchemaModel({
+      ...configSchema,
+      index: 'email',
+      other: {
+        isEmail: { errorMessage: 'validations.invalid-type', }
+      }
+    }),
 
     // Password
-    password: {
-      in: checkIn,
-      custom: {
-        options: async (password, { req }) => {
-          for (let i = 0; i < checkIn.length; i += 1) {
-            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
-            req.scarlet[checkIn[i]].password = hashPassword(password);
-          }
-        },
-      },
-      isLength: {
-        options: config.password.isLength,
-        errorMessage: () => i18next.t('validations.require-length-min-max', config.password.isLength),
+    ...ValidateSchemaDefault({
+      ...configSchema,
+      index: 'password',
+      changeValue: hashPassword,
+      other: {
+        isLength: {
+          options: config.password.isLength,
+          errorMessage: () => i18next.t('validations.require-length-min-max', config.password.isLength),
+        }
       }
-    },
+    }),
 
     // Role
-    role: {
-      in: checkIn,
+    ...ValidateSchemaCustom({
+      ...configSchema,
+      index: 'role',
       custom: {
-        options: async (role, { req }) => {
-          if (!Role[role]) throw new Error('validations.invalid-type');
-
+        options: async (value, { req }) => {
+          if (!Role[value]) throw new Error('validations.invalid-type');
           for (let i = 0; i < checkIn.length; i += 1) {
             req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
-            req.scarlet[checkIn[i]].role = role;
+            req.scarlet[checkIn[i]].role = value;
           }
         },
         errorMessage: 'validations.invalid-type',
-      }
-    },
+      },
+    }),
 
     // IsActive
-    isActive: {
-      in: checkIn,
-      toBoolean: true,
-      custom: {
-        options: async (isActive, { req }) => {
-          for (let i = 0; i < checkIn.length; i += 1) {
-            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
-            req.scarlet[checkIn[i]].isActive = isActive;
-          }
-        },
-      },
-      isBoolean: { errorMessage: 'validations.invalid-type' }
-    },
+    ...ValidateSchemaDefault({
+      ...configSchema,
+      index: 'isActive',
+      changeValue: (x) => (x === 'true'),
+      other: {
+        isBoolean: { errorMessage: 'validations.invalid-type' }
+      }
+    }),
   };
 };
 
 function CreateValidator() {
   const { username, email, password, role, isActive } = ModelSchema({
-    checkIn: ['body']
+    checkIn: ['body'],
+    errorIf: 'exist'
   });
 
   const input = {
     username: { ...username, notEmpty: { errorMessage: 'validations.required' } },
     email: { ...email, notEmpty: { errorMessage: 'validations.required', } },
     password: { ...password, notEmpty: { errorMessage: 'validations.required', } },
-    role: { ...role, notEmpty: { errorMessage: 'validations.required', } },
-    isActive: { ...isActive, notEmpty: { errorMessage: 'validations.required', } },
+    role: { ...role, optional: true },
+    isActive: { ...isActive, optional: true },
   };
 
   return SchemaValidatorHandler([checkSchema(input)]);
@@ -169,7 +141,8 @@ function CreateValidator() {
 
 function ReadValidator() {
   const { id } = ModelSchema({
-    checkIn: ['params']
+    checkIn: ['params'],
+    errorIf: 'notExist'
   });
 
   const input = {
@@ -181,7 +154,8 @@ function ReadValidator() {
 
 function UpdateValidator() {
   const { username, email, password, role, isActive } = ModelSchema({
-    checkIn: ['body']
+    checkIn: ['body'],
+    errorIf: 'exist'
   });
 
   const input = {

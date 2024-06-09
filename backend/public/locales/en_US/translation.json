@@ -26,7 +26,8 @@
       "success-delete-data": "Berhasil Menghapus Data.",
 
       "data-has-relation": "Data sudah memiliki relasi.",
-      "data-not-found": "Data tidak ditemukan."
+      "data-not-found": "Data tidak ditemukan.",
+      "data-found": "Data sudah ada."
     },
     "file-upload": {
       "max-size": "File melebihi batas limit yang ditentukan.",

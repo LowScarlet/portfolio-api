@@ -6,6 +6,7 @@ const { dbModel } = require('./Services');
 const { db } = require('../../../utils/database');
 const fileUploadName = require('../../../utils/fileUploadName');
 const SchemaValidatorHandler = require('../../../utils/services/SchemaValidatorHandler');
+const { ValidateSchemaModel, ValidateSchemaDefault, ValidateSchemaCustom } = require('../../../utils/services/ValidateSchema');
 
 const config = {
   fullName: {
@@ -35,23 +36,19 @@ const FilterSchema = () => ({
 });
 
 const ModelSchema = (options) => {
-  const { checkIn } = options;
+  const { customModel, checkIn, errorIf } = options;
+  const configSchema = {
+    checkIn,
+    errorIf,
+    dbModel: customModel || dbModel
+  };
+
   return {
     // Id
-    id: {
-      in: checkIn,
-      custom: {
-        options: async (id, { req }) => {
-          const user = await dbModel.findUnique({ where: { id } });
-          if (!user) throw new Error('validations.model.data-not-found');
-
-          for (let i = 0; i < checkIn.length; i += 1) {
-            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
-            req.scarlet[checkIn[i]].id = id;
-          }
-        }
-      }
-    },
+    ...ValidateSchemaModel({
+      ...configSchema,
+      index: 'id',
+    }),
 
     // Avatar
     avatar: {
@@ -91,70 +88,56 @@ const ModelSchema = (options) => {
     },
 
     // FullName
-    fullName: {
-      in: checkIn,
-      custom: {
-        options: async (fullName, { req }) => {
-          for (let i = 0; i < checkIn.length; i += 1) {
-            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
-            req.scarlet[checkIn[i]].fullName = fullName;
-          }
-        },
-      },
-      isLength: {
-        options: config.fullName.isLength,
-        errorMessage: () => i18next.t('validations.require-length-min-max', config.fullName.isLength),
+    ...ValidateSchemaDefault({
+      ...configSchema,
+      index: 'fullName',
+      other: {
+        isLength: {
+          options: config.fullName.isLength,
+          errorMessage: () => i18next.t('validations.require-length-min-max', config.fullName.isLength),
+        }
       }
-    },
+    }),
 
     // Bio
-    bio: {
-      in: checkIn,
-      custom: {
-        options: async (bio, { req }) => {
-          for (let i = 0; i < checkIn.length; i += 1) {
-            req.scarlet[checkIn[i]] = req.scarlet[checkIn[i]] || {};
-            req.scarlet[checkIn[i]].bio = bio;
-          }
-        },
-      },
-      isLength: {
-        options: config.bio.isLength,
-        errorMessage: () => i18next.t('validations.require-length-min-max', config.bio.isLength),
+    ...ValidateSchemaDefault({
+      ...configSchema,
+      index: 'bio',
+      other: {
+        isLength: {
+          options: config.bio.isLength,
+          errorMessage: () => i18next.t('validations.require-length-min-max', config.bio.isLength),
+        }
       }
-    },
+    }),
 
     // UserId
-    userId: {
-      in: checkIn,
+    ...ValidateSchemaCustom({
+      ...configSchema,
+      index: 'userId',
       custom: {
-        options: async (userId, { req }) => {
-          const user = await db.user.findUnique({ where: { id: userId }, include: { UserProfile: true } });
+        options: async (value, { req }) => {
+          const user = await db.user.findUnique({ where: { id: value }, include: { UserProfile: true } });
           if (!user) throw new Error('validations.model.data-not-found');
           if (user.UserProfile) throw new Error('validations.model.data-has-relation');
 
-          req.scarlet.body.userId = userId;
+          req.scarlet.body.userId = value;
         },
       },
-    },
+    }),
   };
 };
 
 function CreateValidator() {
-  const { fullName, label, nickname, about, country, email, phone, website, portfolioId } = ModelSchema({
-    checkIn: ['body']
+  const { fullName, bio, userId } = ModelSchema({
+    checkIn: ['body'],
+    errorIf: 'exist'
   });
 
   const input = {
     fullName: { ...fullName, optional: true },
-    label: { ...label, optional: true },
-    nickname: { ...nickname, optional: true },
-    about: { ...about, optional: true },
-    country: { ...country, optional: true },
-    email: { ...email, optional: true },
-    phone: { ...phone, optional: true },
-    website: { ...website, optional: true },
-    portfolioId: { ...portfolioId, notEmpty: { errorMessage: 'validations.required' } },
+    bio: { ...bio, optional: true },
+    userId: { ...userId, notEmpty: { errorMessage: 'validations.required', } },
   };
 
   return [
@@ -164,7 +147,8 @@ function CreateValidator() {
 
 function ReadValidator() {
   const { id } = ModelSchema({
-    checkIn: ['params']
+    checkIn: ['params'],
+    errorIf: 'notExist'
   });
 
   const input = {
@@ -175,20 +159,15 @@ function ReadValidator() {
 }
 
 function UpdateValidator() {
-  const { fullName, label, nickname, about, country, email, phone, website, portfolioId } = ModelSchema({
-    checkIn: ['body']
+  const { fullName, bio, userId } = ModelSchema({
+    checkIn: ['body'],
+    errorIf: 'exist'
   });
 
   const input = {
     fullName: { ...fullName, optional: true },
-    label: { ...label, optional: true },
-    nickname: { ...nickname, optional: true },
-    about: { ...about, optional: true },
-    country: { ...country, optional: true },
-    email: { ...email, optional: true },
-    phone: { ...phone, optional: true },
-    website: { ...website, optional: true },
-    portfolioId: { ...portfolioId, optional: true },
+    bio: { ...bio, optional: true },
+    userId: { ...userId, optional: true },
   };
 
   return [

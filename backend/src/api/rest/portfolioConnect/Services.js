@@ -1,23 +1,17 @@
 const { db } = require('../../../utils/database');
 
-const dbModel = db.portfolioProfile;
+const dbModel = db.portfolioConnect;
 
 const viewField = (client) => {
   const scheme = {
     ADMIN: undefined,
     MEMBER: {
       id: true,
-      logo: true,
-      banner: true,
-      fullName: true,
-      label: true,
-      nickname: true,
-      about: true,
-      country: true,
-      email: true,
-      phone: true,
-      website: true,
-      portfolioId: true
+      identifier: true,
+      socialMediaId: true,
+      portfolioId: true,
+      createdAt: true,
+      updatedAt: true,
     }
   };
 
