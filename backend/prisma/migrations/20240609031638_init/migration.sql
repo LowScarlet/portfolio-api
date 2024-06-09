@@ -82,7 +82,7 @@ CREATE TABLE "PortfolioProfile" (
     "email" TEXT,
     "phone" TEXT,
     "website" TEXT,
-    "porfolioId" TEXT NOT NULL,
+    "portfolioId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -115,9 +115,10 @@ CREATE TABLE "PortfolioComment" (
 
 -- CreateTable
 CREATE TABLE "SocialMedia" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "url" TEXT NOT NULL,
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -128,7 +129,7 @@ CREATE TABLE "SocialMedia" (
 CREATE TABLE "PortfolioConnect" (
     "id" TEXT NOT NULL,
     "identifier" TEXT NOT NULL,
-    "socialMediaId" INTEGER NOT NULL,
+    "socialMediaId" TEXT NOT NULL,
     "portfolioId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -138,9 +139,10 @@ CREATE TABLE "PortfolioConnect" (
 
 -- CreateTable
 CREATE TABLE "TechincalSkill" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -179,7 +181,7 @@ CREATE TABLE "_PinnedByUser" (
 -- CreateTable
 CREATE TABLE "_PortfolioToTechincalSkill" (
     "A" TEXT NOT NULL,
-    "B" INTEGER NOT NULL
+    "B" TEXT NOT NULL
 );
 
 -- CreateIndex
@@ -198,10 +200,13 @@ CREATE UNIQUE INDEX "RefreshToken_hashedToken_key" ON "RefreshToken"("hashedToke
 CREATE UNIQUE INDEX "UserProfile_userId_key" ON "UserProfile"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "PortfolioProfile_porfolioId_key" ON "PortfolioProfile"("porfolioId");
+CREATE UNIQUE INDEX "PortfolioProfile_portfolioId_key" ON "PortfolioProfile"("portfolioId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PortfolioVote_userId_portfolioId_key" ON "PortfolioVote"("userId", "portfolioId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SocialMedia_name_key" ON "SocialMedia"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_PinnedByUser_AB_unique" ON "_PinnedByUser"("A", "B");
@@ -228,7 +233,7 @@ ALTER TABLE "UserProfile" ADD CONSTRAINT "UserProfile_userId_fkey" FOREIGN KEY (
 ALTER TABLE "Portfolio" ADD CONSTRAINT "Portfolio_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PortfolioProfile" ADD CONSTRAINT "PortfolioProfile_porfolioId_fkey" FOREIGN KEY ("porfolioId") REFERENCES "Portfolio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PortfolioProfile" ADD CONSTRAINT "PortfolioProfile_portfolioId_fkey" FOREIGN KEY ("portfolioId") REFERENCES "Portfolio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PortfolioVote" ADD CONSTRAINT "PortfolioVote_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

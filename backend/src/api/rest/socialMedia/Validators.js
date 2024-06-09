@@ -28,7 +28,7 @@ const ModelSchema = (options) => {
     }),
 
     // Name
-    ...ValidateSchemaDefault({
+    ...ValidateSchemaModel({
       ...configSchema,
       index: 'name',
     }),
