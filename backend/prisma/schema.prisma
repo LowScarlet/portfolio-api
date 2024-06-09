@@ -79,8 +79,8 @@ model UserProfile {
   //
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   //
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Portfolio {
@@ -158,7 +158,7 @@ model PortfolioComment {
 }
 
 model SocialMedia {
-  id         Int                @id @default(autoincrement())
+  id            String       @id @default(uuid())
   //
   name       String
   url        String
@@ -174,7 +174,7 @@ model PortfolioConnect {
   id            String       @id @default(uuid())
   //
   identifier    String
-  socialMediaId Int
+  socialMediaId String
   portfolioId   String
   //
   SocialMedia   SocialMedia? @relation(fields: [socialMediaId], references: [id])
@@ -185,7 +185,7 @@ model PortfolioConnect {
 }
 
 model TechincalSkill {
-  id          Int         @id @default(autoincrement())
+  id            String       @id @default(uuid())
   //
   name        String
   description String
