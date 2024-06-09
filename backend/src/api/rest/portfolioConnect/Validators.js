@@ -66,7 +66,7 @@ const ModelSchema = (options) => {
 };
 
 function CreateValidator() {
-  const { identifier, socialMediaId, ownerId } = ModelSchema({
+  const { identifier, socialMediaId, portfolioId } = ModelSchema({
     checkIn: ['body'],
     errorIf: 'exist'
   });
@@ -74,7 +74,7 @@ function CreateValidator() {
   const input = {
     identifier: { ...identifier, optional: true },
     socialMediaId: { ...socialMediaId, notEmpty: { errorMessage: 'validations.required' } },
-    ownerId: { ...ownerId, notEmpty: { errorMessage: 'validations.required' } },
+    portfolioId: { ...portfolioId, notEmpty: { errorMessage: 'validations.required' } },
   };
 
   return [
@@ -96,7 +96,7 @@ function ReadValidator() {
 }
 
 function UpdateValidator() {
-  const { identifier, socialMediaId, ownerId } = ModelSchema({
+  const { identifier, socialMediaId, portfolioId } = ModelSchema({
     checkIn: ['body'],
     errorIf: 'exist'
   });
@@ -104,7 +104,7 @@ function UpdateValidator() {
   const input = {
     identifier: { ...identifier, optional: true },
     socialMediaId: { ...socialMediaId, optional: true },
-    ownerId: { ...ownerId, optional: true },
+    portfolioId: { ...portfolioId, optional: true },
   };
 
   return [
