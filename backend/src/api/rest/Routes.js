@@ -12,9 +12,13 @@ router.use('/userProfiles', require('./userProfile/Routes'));
 // Portfolios Model
 router.use('/portfolios', require('./portfolio/Routes'));
 router.use('/portfolioProfiles', require('./portfolioProfile/Routes'));
-router.use('/portfolioConnects', require('./portfolioConnect/Routes'));
 
-// Social Media Model
+router.use('/portfolioConnects', require('./portfolioConnect/Routes'));
 router.use('/socialMedias', require('./socialMedia/Routes'));
+
+router.use('/portfolioEducations', require('./portfolioEducation/Routes'));
+router.use('/institutions', require('./institution/Routes'));
+router.use('/departments', require('./department/Routes'));
+router.use('/degrees', require('./degree/Routes'));
 
 module.exports = router;

@@ -97,12 +97,13 @@ model Portfolio {
   Comments         PortfolioComment[]
 
   Connect        PortfolioConnect[]
-  TechincalSkill TechincalSkill[]
+  TechincalSkill PortfolioTechincalSkill[]
+  Education      PortfolioEducation[]
   //
-  Owner          User?              @relation("UserPortfolio", fields: [ownerId], references: [id], onDelete: SetNull)
+  Owner          User?                     @relation("UserPortfolio", fields: [ownerId], references: [id], onDelete: SetNull)
   //
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
 }
 
 model PortfolioProfile {
@@ -171,38 +172,53 @@ model SocialMedia {
 }
 
 model PortfolioConnect {
-  id            String       @id @default(uuid())
+  id            String      @id @default(uuid())
   //
   identifier    String
   socialMediaId String
   portfolioId   String
   //
-  SocialMedia   SocialMedia? @relation(fields: [socialMediaId], references: [id])
-  Portfolio     Portfolio    @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  SocialMedia   SocialMedia @relation(fields: [socialMediaId], references: [id])
+  Portfolio     Portfolio   @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
   //
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model TechincalSkill {
-  id          String      @id @default(uuid())
+  id                      String                    @id @default(uuid())
   //
-  name        String
-  description String
-  isVerified  Boolean     @default(false)
+  name                    String
+  description             String?
+  isVerified              Boolean                   @default(false)
   //
-  Portfolio   Portfolio[]
+  PortfolioTechincalSkill PortfolioTechincalSkill[]
   //
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+}
+
+model PortfolioTechincalSkill {
+  id               String         @id @default(uuid())
+  //
+  identifier       String
+  techincalSkillId String
+  portfolioId      String
+  //
+  TechincalSkill   TechincalSkill @relation(fields: [techincalSkillId], references: [id])
+  Portfolio        Portfolio      @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  //
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
 
 model Institution {
-  id          Int                  @id @default(autoincrement())
+  id          String               @id @default(uuid())
   //
-  name        String
-  description String
-  website     String
+  name        String               @unique
+  description String?
+  website     String?
+  maxScore    Float                @default(4.0)
   //
   Education   PortfolioEducation[]
   //
@@ -210,14 +226,90 @@ model Institution {
   updatedAt   DateTime             @updatedAt
 }
 
+model Department {
+  id          String               @id @default(uuid())
+  //
+  name        String               @unique
+  description String?
+  degreeId    String?
+  //
+  Education   PortfolioEducation[]
+  Degree      Degree?              @relation(fields: [degreeId], references: [id])
+  //
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+}
+
+model Degree {
+  id          String       @id @default(uuid())
+  //
+  name        String       @unique
+  description String?
+  //
+  Department  Department[]
+  //
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+enum DegreeLevel {
+  BACHELOR
+  MAGISTER
+  DOCTORAL
+}
+
+enum EducationStatus {
+  DROPOUT
+  UNGRADUATE
+  GRADUATE
+  POSTGRADUATE
+}
+
 model PortfolioEducation {
-  id            Int         @id @default(autoincrement())
+  id                String          @id @default(uuid())
   //
-  score         Float
-  institutionId Int
+  status            EducationStatus @default(GRADUATE)
+  degreeLevel       DegreeLevel?
+  description       String?
+  score             Float?
+  dissertationTitle String?
+  startAt           DateTime        @default(now())
+  endAt             DateTime?
+  departmentId      String?
+  institutionId     String
+  portfolioId       String
   //
-  Institution   Institution @relation(fields: [institutionId], references: [id])
+  Department        Department?     @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  Institution       Institution     @relation(fields: [institutionId], references: [id])
+  Portfolio         Portfolio       @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
   //
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model Company {
+  id          String   @id @default(uuid())
+  //
+  name        String   @unique
+  description String?
+  website     String?
+  //
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PortfolioWork {
+  id                String    @id @default(uuid())
+  //
+  description       String?
+  score             Float?
+  dissertationTitle String?
+  startAt           DateTime  @default(now())
+  endAt             DateTime?
+  departmentId      String?
+  institutionId     String
+  portfolioId       String
+  //
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
