@@ -20,7 +20,7 @@ function generateShortUid(length = 6) {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_AUTH_CLIENT_ID,
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-  callbackURL: `${process.env.FRONTEND_URL}/api/oauth/google`
+  callbackURL: `${process.env.FRONTEND_URL}/oauth/google`
 }, (accessToken, refreshToken, profile, done) => {
   const data = {
     id: profile.id,
@@ -35,14 +35,14 @@ router.get('/', [
   passport.authenticate('google', { scope: ['profile', 'email'] })
 ]);
 
-router.get('/exchange', [
+router.post('/exchange', [
   passport.authenticate('google', { session: false })
 ], async (req, res, next) => {
   try {
     const { fullName, email } = req.user;
 
     const jti = uuidv4();
-    const user = await db.user.findUnique({ where: { email }, select: viewField() }) || await db.user.create({
+    const user = await db.user.findUnique({ where: { email }, select: { ...viewField(), UserProfile: true } }) || await db.user.create({
       data: {
         username: `user_${generateShortUid()}`,
         email,
@@ -54,7 +54,10 @@ router.get('/exchange', [
           }
         }
       },
-      select: viewField()
+      select: {
+        ...viewField(),
+        UserProfile: true
+      }
     });
 
     const { accessToken, refreshToken } = await createToken(user, jti);

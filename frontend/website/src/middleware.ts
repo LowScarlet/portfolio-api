@@ -1,17 +1,20 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import MainPageMiddleware from './app/(main)/_utils/middleware';
-import AuthMiddleware from './app/(authentication)/_utils/middleware';
+import MainPageMiddleware from './app/app/_utils/middleware';
+import AuthMiddleware from './app/auth/_utils/middleware';
 
 // Main
 export default async function mainMiddleware(request: NextRequest) {
   const url = request.nextUrl;
 
-  if (url.pathname.startsWith('/auth')) {
+  if (
+    url.pathname.startsWith('/auth')
+  ) {
     return AuthMiddleware(request)
   }
 
   if (
+    url.pathname.startsWith('/app') ||
     url.pathname.startsWith('/dashboard') ||
     url.pathname.startsWith('/portfolio') ||
     url.pathname.startsWith('/account')
