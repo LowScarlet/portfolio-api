@@ -32,7 +32,7 @@ const AltButtons = () => {
     <div>
       <div className='gap-3 grid grid-cols-2 lg:grid-cols-3'>
         <Link
-          href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/oauth/google`}
+          href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/oauth/google/`}
           className="col-span-2 lg:col-span-1 btn btn-primary grow"
         >
           <FaGoogle /> Google
