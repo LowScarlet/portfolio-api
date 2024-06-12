@@ -36,7 +36,7 @@ router.get('/', [
 ]);
 
 router.post('/exchange', [
-  passport.authenticate('google')
+  passport.authenticate('google', { session: false })
 ], async (req, res, next) => {
   try {
     const { fullName, email } = req.user;
