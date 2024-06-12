@@ -5,11 +5,17 @@ import { deleteToken } from "@/app/auth/_utils/token";
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FaSearch } from "react-icons/fa"
-import { FaBarsStaggered } from "react-icons/fa6"
+import { FaBars, FaBarsStaggered } from "react-icons/fa6"
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md"
 import UserAvatar from "./UserAvatar";
 
-export default function AppBar() {
+export default function AppBar({
+  isOpen,
+  setIsOpen
+}: {
+  isOpen: boolean,
+  setIsOpen: (e: boolean) => void
+}) {
   const router = useRouter()
 
   const { auth, setAuth } = useAuth()
@@ -28,14 +34,12 @@ export default function AppBar() {
     <div className="top-0 z-40 sticky bg-base-100 navbar">
       <div className="navbar-start">
         <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-circle btn-ghost">
-            <FaBarsStaggered />
-          </div>
-          <ul tabIndex={0} className="z-[1] bg-base-100 shadow mt-3 p-2 rounded-box w-52 dropdown-content menu menu-sm">
-            <li><a>Homepage</a></li>
-            <li><a>Portfolio</a></li>
-            <li><a>About</a></li>
-          </ul>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="btn btn-circle btn-ghost"
+          >
+            {isOpen ? <FaBarsStaggered /> : <FaBars />}
+          </button>
         </div>
       </div>
       <div className="navbar-center">
