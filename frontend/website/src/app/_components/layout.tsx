@@ -56,7 +56,10 @@ export default function MainLayout({
 
   return (
     <AuthProvider initData={authData}>
-      <ToastContainer />
+      <ToastContainer
+        position="bottom-right"
+        closeOnClick
+      />
       <NextTopLoader />
       {children}
     </AuthProvider>
