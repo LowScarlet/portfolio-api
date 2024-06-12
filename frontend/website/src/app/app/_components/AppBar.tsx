@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/app/auth/_context/AuthContext";
 import { deleteToken } from "@/app/auth/_utils/token";
-import Image from "next/image";
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FaSearch } from "react-icons/fa"
@@ -20,7 +19,6 @@ export default function AppBar() {
       setAuth({
         isAuthenticated: false,
         user: null,
-        userProfile: null
       })
       router.push('/auth')
     })

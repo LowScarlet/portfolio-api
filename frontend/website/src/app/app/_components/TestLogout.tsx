@@ -14,7 +14,6 @@ export default function TestLogout() {
       setAuth({
         isAuthenticated: false,
         user: null,
-        userProfile: null
       })
       router.push('/auth')
     })

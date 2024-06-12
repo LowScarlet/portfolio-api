@@ -17,8 +17,8 @@ export default function UserAvatar({
   const [src, setSrc] = useState('/images/no-profile.png');
 
   useEffect(() => {
-    if (auth && auth.userProfile && auth.userProfile.avatar) {
-      const avatar = auth.userProfile.avatar;
+    if (auth && auth.user && auth.user.avatar) {
+      const avatar = auth.user.avatar;
       const fullSrc = `${process.env.NEXT_PUBLIC_BACKEND_URL}/public/uploads/images/avatars/${avatar}`;
       setSrc(fullSrc);
     }
