@@ -1,25 +1,22 @@
 'use client'
 
-import { useAuth } from "@/app/auth/_context/AuthContext";
 import Drawer from "./_components/Drawer";
 import AppBar from "./_components/AppBar";
 import Footer from "./_components/Footer";
-import FetchError from "./_components/FetchError";
 import { useState } from "react";
+import { useAuth } from "../auth/_context/AuthContext";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { auth, setAuth } = useAuth()
+  const { auth } = useAuth();
 
   const [drawerOpen, setDrawerOpen] = useState(true)
 
-  if (!auth || !auth.isAuthenticated || !auth.user) {
-    return <FetchError />;
-  }
-
+  if (!auth || !auth.isAuthenticated) return (<></>)
+    
   return (<>
     <div className="flex h-svh">
       {/* Drawer */}

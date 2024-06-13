@@ -7,6 +7,7 @@ import "../globals.css";
 import { useGet_ClientUser } from "../app/_models/client/user/GetClientUser";
 import { AuthContextInterface } from "../auth/_interface/AuthContextInterface";
 import { AuthProvider } from "../auth/_context/AuthContext";
+import LoadingScreen from "./LoadingScreen";
 
 export default function MainLayout({
   children,
@@ -17,16 +18,7 @@ export default function MainLayout({
 
   const useClientUser = useGet_ClientUser()
 
-  if (useClientUser.isLoading) {
-    return (<>
-      <div className="flex justify-center items-center h-svh">
-        <div className="space-y-4 text-center">
-          <h1 className="text-4xl">🔥</h1>
-          <span className="loading loading-ball loading-lg"></span>
-        </div>
-      </div>
-    </>)
-  }
+  if (useClientUser.isLoading) return <LoadingScreen />
 
   if (useClientUser.isError) {
     authData = {

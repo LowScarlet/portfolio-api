@@ -12,22 +12,22 @@ router.get('/', [
     const { user: client } = req;
 
     const selectFields = viewField(client);
-    const portfolio = await db.portfolio.findMany({
+    const portfolios = await db.portfolio.findMany({
       where: { ownerId: client.id },
       ...(selectFields ? {
         select: {
           ...selectFields,
-          PorfolioProfile: true
+          PortfolioProfile: true
         }
       } : {
         include: {
-          PorfolioProfile: true
+          PortfolioProfile: true
         }
       })
     });
 
     res.json({
-      portfolio,
+      portfolios,
     });
   } catch (err) {
     next(err);

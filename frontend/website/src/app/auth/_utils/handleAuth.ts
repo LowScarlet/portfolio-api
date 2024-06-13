@@ -91,9 +91,10 @@ export const handleAuth = async ({
           const diffMinutes = Math.floor(diffMs / (1000 * 60));
           const diffSeconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
-          throw new Error(
-            `Your IP has been banned for the next ${diffMinutes} minutes and ${diffSeconds} seconds!`
-          );
+          return {
+            status,
+            message: `Your IP has been banned for the next ${diffMinutes} minutes and ${diffSeconds} seconds!`
+          };
         }
 
         if (status === 400) {

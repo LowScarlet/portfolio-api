@@ -9,9 +9,11 @@ import { toast } from 'react-toastify'
 import AltButtons from './AltButtons'
 import { useAuth } from '@/app/auth/_context/AuthContext'
 import { handleAuth } from '../../_utils/handleAuth'
+import { useRouter } from 'next/navigation'
 
 
 const SigninForm = () => {
+  const router = useRouter()
   const { setAuth } = useAuth()
 
   const defaultFormData = { username: '', email: '', password: '' }
@@ -67,6 +69,7 @@ const SigninForm = () => {
             }
           })
           toast.success(message)
+          router.push('/app')
         })
       } else {
         if (validationErrors) {

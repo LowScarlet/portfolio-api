@@ -10,7 +10,7 @@ export const verifyRefreshToken = async ({
   refreshToken: RequestCookie
 }) => {
   try {
-    const fetchRes = await fetch('http://localhost:5000/api/auth/verify', {
+    const fetchRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/verify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -54,7 +54,6 @@ export default async function MainPageMiddleware(request: NextRequest) {
 
   if (!refreshToken?.value) {
     const res = NextResponse.redirect(new URL('/auth/signin', request.url))
-
     res.cookies.delete('accessToken')
     return res
   }

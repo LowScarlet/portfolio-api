@@ -1,8 +1,8 @@
-import { UserInterface, UserInterface_ValidationErrors } from "../../rest/UserInterface";
 import useSWR from "swr";
 import { getCookie } from 'cookies-next';
 import axios from "axios";
-import { UserProfileInterface } from "../../rest/UserProfileInterface";
+import { UserInterface_ValidationErrors } from "../../../rest/UserInterface";
+import { UserProfileInterface } from "../../../rest/UserProfileInterface";
 import useSWRImmutable from "swr/immutable";
 
 interface BadRequest {
@@ -19,7 +19,7 @@ const fetcher = async (url: string, accessToken: string | undefined) => {
       },
     });
 
-    const fetchResOutput: { user: UserInterface & { UserProfile: UserProfileInterface } } & BadRequest = response.data;
+    const fetchResOutput: { userProfile: UserProfileInterface } & BadRequest = response.data;
     return fetchResOutput;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -32,7 +32,7 @@ const fetcher = async (url: string, accessToken: string | undefined) => {
 
 export function useGet_ClientUser(query = '') {
   const accessToken = getCookie('accessToken')
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/@me?${query}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/@me/profile?${query}`;
 
   const { data, error } = useSWRImmutable(url, () => fetcher(url, accessToken));
 

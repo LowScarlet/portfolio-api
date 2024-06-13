@@ -13,7 +13,7 @@ router.get('/', [
 
     const selectFields = viewField(client);
     const portfolioProfile = await db.portfolioProfile.findUnique({
-      where: { porfolioId: id },
+      where: { portfolioId: id },
       select: selectFields
     });
 

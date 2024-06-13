@@ -1,13 +1,13 @@
-import { UserInterface, UserInterface_ValidationErrors } from "../../rest/UserInterface";
 import useSWR from "swr";
 import { getCookie } from 'cookies-next';
 import axios from "axios";
-import { UserProfileInterface } from "../../rest/UserProfileInterface";
+import { PortfolioInterface, PortfolioInterface_ValidationErrors } from "../../../rest/PortfolioInterface";
+import { PortfolioProfileInterface } from "../../../rest/PortfolioProfileInterface";
 import useSWRImmutable from "swr/immutable";
 
 interface BadRequest {
   message: string,
-  validationErrors: UserInterface_ValidationErrors
+  validationErrors: PortfolioInterface_ValidationErrors
 }
 
 const fetcher = async (url: string, accessToken: string | undefined) => {
@@ -19,7 +19,7 @@ const fetcher = async (url: string, accessToken: string | undefined) => {
       },
     });
 
-    const fetchResOutput: { user: UserInterface & { UserProfile: UserProfileInterface } } & BadRequest = response.data;
+    const fetchResOutput: { portfolios: Array<(PortfolioInterface & { PortfolioProfile: PortfolioProfileInterface })> } & BadRequest = response.data;
     return fetchResOutput;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -30,9 +30,9 @@ const fetcher = async (url: string, accessToken: string | undefined) => {
   }
 };
 
-export function useGet_ClientUser(query = '') {
+export function useGet_ClientPortfolios(query = '') {
   const accessToken = getCookie('accessToken')
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/@me?${query}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/@me/portfolios?${query}`;
 
   const { data, error } = useSWRImmutable(url, () => fetcher(url, accessToken));
 

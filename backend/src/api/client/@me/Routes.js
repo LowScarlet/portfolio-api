@@ -34,6 +34,6 @@ router.get('/', [
 });
 
 router.use('/profile', require('./profile/Routes'));
-router.use('/portfolio', require('./portfolios/Routes'));
+router.use('/portfolios', require('./portfolios/Routes'));
 
 module.exports = router;

@@ -16,6 +16,10 @@ export default async function mainMiddleware(request: NextRequest) {
   if (
     url.pathname.startsWith('/app')
   ) {
+    if (url.pathname === '/app') {
+      const res = NextResponse.redirect(new URL('/app/dashboard', request.url))
+      return res
+    }
     return MainPageMiddleware(request)
   }
 
