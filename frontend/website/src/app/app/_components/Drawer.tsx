@@ -47,11 +47,14 @@ export default function Drawer({
           <ul className="menu">
             <li><Link href={"/"}><FaHome /> Home</Link></li>
             <li><Link href={"/about"}><MdQuestionAnswer /> About</Link></li>
-            <li><Link className={pathname.startsWith("/dashboard") ? "active" : ""} href={"/dashboard"}>
+            <li><Link className={pathname.startsWith("/app/dashboard") ? "active" : ""} href={"/app/dashboard"}>
               <MdDashboard /> Dashboard
             </Link></li>
-            <li><Link className={pathname.startsWith("/portfolio") ? "active" : ""} href={"/portfolio"}>
+            <li><Link className={pathname.startsWith("/app/portfolio") ? "active" : ""} href={"/app/portfolio"}>
               <LuFileJson /> Portfolio
+            </Link></li>
+            <li><Link className={pathname.startsWith("/app/admin") ? "active" : ""} href={"/app/admin"}>
+              <LuFileJson /> Admin
             </Link></li>
           </ul>
         </div>
@@ -75,13 +78,13 @@ export default function Drawer({
           </div>
           <ul tabIndex={0} className="z-[1] bg-base-100 shadow mt-3 p-2 rounded-box w-52 dropdown-content menu menu-sm">
             <li>
-              <Link href={"/profile"}>
+              <Link href={"/app/profile"}>
                 Profile
                 <span className="badge">New</span>
               </Link>
             </li>
             <li>
-              <Link href={"/settings"}>
+              <Link href={"/app/settings"}>
                 Settings
               </Link>
             </li>

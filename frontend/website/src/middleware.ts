@@ -14,10 +14,7 @@ export default async function mainMiddleware(request: NextRequest) {
   }
 
   if (
-    url.pathname.startsWith('/app') ||
-    url.pathname.startsWith('/dashboard') ||
-    url.pathname.startsWith('/portfolio') ||
-    url.pathname.startsWith('/account')
+    url.pathname.startsWith('/app')
   ) {
     return MainPageMiddleware(request)
   }

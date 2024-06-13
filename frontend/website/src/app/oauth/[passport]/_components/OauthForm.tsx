@@ -72,7 +72,7 @@ const OauthForm = ({
     <div className='flex justify-center items-center'>
       <div className='flex flex-col items-center space-y-2'>
         <h1 className="text-4xl">🔥</h1>
-        <h4 className="font-semibold text-2xl">Success!</h4>
+        <h4 className="font-semibold text-2xl">The link is ready!</h4>
         <p>Click the Button below to continue!</p>
         <div className='flex space-x-2 pt-4'>
           <button

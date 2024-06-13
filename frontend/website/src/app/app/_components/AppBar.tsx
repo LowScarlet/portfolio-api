@@ -79,13 +79,13 @@ export default function AppBar({
           </div>
           <ul tabIndex={0} className="z-[1] bg-base-100 shadow mt-3 p-2 rounded-box w-52 dropdown-content menu menu-sm">
             <li>
-              <Link href={"/account"}>
+              <Link href={"/app/account"}>
                 Account
                 <span className="badge">New</span>
               </Link>
             </li>
             <li>
-              <Link href={"/account/settings"}>
+              <Link href={"/app/account/settings"}>
                 Settings
               </Link>
             </li>
