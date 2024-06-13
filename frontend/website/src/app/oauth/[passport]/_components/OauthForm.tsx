@@ -6,6 +6,7 @@ import { useAuth } from '@/app/auth/_context/AuthContext'
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { handleAuth } from '@/app/auth/_utils/handleAuth'
+import Link from 'next/link'
 
 
 const OauthForm = ({
@@ -67,12 +68,30 @@ const OauthForm = ({
     }
   }
 
-  return (
-    <>
-      {loading}
-      <button onClick={confirmButton}>Go!</button>
-    </>
-  )
+  return (<>
+    <div className='flex justify-center items-center'>
+      <div className='flex flex-col items-center space-y-2'>
+        <h1 className="text-4xl">🔥</h1>
+        <h4 className="font-semibold text-2xl">Success!</h4>
+        <p>Click the Button below to continue!</p>
+        <div className='flex space-x-2 pt-4'>
+          <button
+            className='btn btn-primary'
+            onClick={confirmButton}
+            disabled={loading}
+          >
+            🔥 Signin
+          </button>
+          <Link
+            className='btn btn-error btn-outline'
+            href={'/auth/'}
+          >
+            💢 Cancel
+          </Link>
+        </div>
+      </div>
+    </div>
+  </>)
 }
 
 export default OauthForm
