@@ -70,7 +70,7 @@ export default function PortfolioList(): JSX.Element {
           </svg>
           <span>{isError}</span>
         </div>
-      ) : (undefined)
+      ) : (<></>)
     }
     {
       portfolios.length > 0 ? (
