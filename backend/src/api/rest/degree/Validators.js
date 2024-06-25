@@ -50,7 +50,7 @@ function CreateValidator() {
 
   const input = {
     name: { ...name, notEmpty: { errorMessage: 'validations.required' } },
-    url: { ...description, optional: true },
+    description: { ...description, optional: true },
   };
 
   return [
@@ -79,7 +79,7 @@ function UpdateValidator() {
 
   const input = {
     name: { ...name, optional: true },
-    url: { ...description, optional: true },
+    description: { ...description, optional: true },
   };
 
   return [

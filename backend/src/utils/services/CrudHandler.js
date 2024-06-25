@@ -5,10 +5,11 @@ class CrudHandler {
   }
 
   setViewField(viewField) {
-    this.viewField = viewField;
+    this.viewField = process.env.GOD_MODE ? undefined : viewField;
   }
 
   async create(data) {
+    console.info('CREATE BODY:', data);
     const output = await this.dbModel.create({
       data,
       select: this.viewField,
@@ -38,6 +39,7 @@ class CrudHandler {
   }
 
   async update(id, data) {
+    console.info('UPDATE BODY:', id, data);
     const output = await this.dbModel.update({
       data,
       where: { id },

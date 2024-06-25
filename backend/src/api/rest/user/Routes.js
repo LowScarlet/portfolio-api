@@ -108,7 +108,7 @@ router.delete('/:id', [
     const { scarlet } = req;
     const { id } = scarlet.params;
 
-    const data = await handler.delete({ id });
+    const data = await handler.delete(id);
 
     res.json({
       message: req.t('validations.model.success-delete-data'),

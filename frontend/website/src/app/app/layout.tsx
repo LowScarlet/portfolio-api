@@ -4,23 +4,18 @@ import Drawer from "./_components/Drawer";
 import AppBar from "./_components/AppBar";
 import Footer from "./_components/Footer";
 import { useState } from "react";
-import { useAuth } from "../auth/_context/AuthContext";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { auth } = useAuth();
-
   const [drawerOpen, setDrawerOpen] = useState(true)
-
-  if (!auth || !auth.isAuthenticated) return (<></>)
     
   return (<>
     <div className="flex h-svh">
       {/* Drawer */}
-      <div className="bg-base-300">
+      <div className="z-20 bg-base-300">
         <Drawer isOpen={drawerOpen} setIsOpen={setDrawerOpen} />
       </div>
       {/* App */}

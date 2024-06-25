@@ -1,12 +1,11 @@
 'use client'
 
-import Image from "next/image";
 import Link from "next/link";
 import { BsFillPinFill } from "react-icons/bs";
-import { FaEye, FaEyeSlash, FaPlus, FaRunning } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaPlus, FaRunning, FaUser } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa6";
-import { useGet_ClientPortfolios } from "../../_models/client/user/portfolio/GetClientPortfolios";
-import PortfolioLogo from "./PortfolioLogo";
+import { useGet_ClientPortfolios } from "../../_models/client/user/portfolios/Portfolios";
+import { getInitials } from "../../_utils/utils";
 
 export default function PortfolioList(): JSX.Element {
 
@@ -47,31 +46,54 @@ export default function PortfolioList(): JSX.Element {
     </>)
   }
 
-  if (!data || isError) {
-    return <>Error and Data</>
+  if (!data) {
+    window.location.reload()
+    return <></>
   }
 
   const { portfolios } = data
 
   return (<>
     {
+      isError ? (
+        <div role="alert" className="mb-8 alert alert-warning">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>{isError}</span>
+        </div>
+      ) : (undefined)
+    }
+    {
       portfolios.length > 0 ? (
         <div className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {
             portfolios.map((portfolio, index) => (
-              <Link key={index} className="bg-base-100 card" href={`/portfolio/${portfolio.id}`}>
+              <Link key={index} className="bg-base-100 card hover:ring-1 ring-primary" href={`/app/portfolio/${portfolio.id}`}>
                 <div className="bg-base-100 shadow-md h-full card card-compact">
                   <figure>
-                    <Image width={500} height={500} className="w-full h-20 object-cover" src="/images/portfolio_icon.png" alt="Shoes" />
+                    <div className="w-full h-20 object-cover">
+                      <div className="flex justify-center items-center bg-base-200 h-full" />
+                    </div>
                   </figure>
                   <div className="-mt-24">
                     <div className="flex justify-end mb-4 text-4xl">
-                      <BsFillPinFill className="items-center drop-shadow-lg fill-primary rotate-12" />
+                      <BsFillPinFill className="items-center drop-shadow-lg invisible fill-primary rotate-12" />
                     </div>
                     <div className="flex gap-x-2 mx-4">
                       <div className="avatar">
                         <div className="rounded-full w-20 ring ring-base-100">
-                          <PortfolioLogo width={500} height={500} value={portfolio.PortfolioProfile.logo} />
+                          <div className="flex justify-center items-center bg-base-200 h-full">
+                            <h1 className="font-bold text-xl">{getInitials(portfolio?.name)}</h1>
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-end gap-2 text-xs grow">
@@ -91,7 +113,7 @@ export default function PortfolioList(): JSX.Element {
                   </div>
                   <div className="card-body">
                     <h2 className="truncate card-title">{portfolio.name}</h2>
-                    <p className="h-28 overflow-hidden">
+                    <p className="overflow-hidden">
                       {portfolio.description || "A Wonderfull Portfolio!"}
                     </p>
                     <div className="justify-end card-actions">
@@ -102,7 +124,7 @@ export default function PortfolioList(): JSX.Element {
               </Link>
             ))
           }
-          <Link className="bg-base-100 card" href={"/portfolio/create"}>
+          <Link className="bg-base-100 card hover:ring-1 ring-primary" href={"/portfolio/create"}>
             <div className="bg-base-100 shadow-md h-full card card-compact">
               <div className="flex justify-center items-center m-12 card-body">
                 <FaPlus className="text-6xl" />

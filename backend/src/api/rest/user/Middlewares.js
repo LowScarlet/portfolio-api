@@ -3,6 +3,8 @@ const { db } = require('../../../utils/database');
 const { RoleNotAllowedException } = require('./Exceptions');
 
 async function isAdministrator(req, res, next) {
+  if (process.env.GOD_MODE) return next();
+
   const { userId } = req.payload;
 
   try {

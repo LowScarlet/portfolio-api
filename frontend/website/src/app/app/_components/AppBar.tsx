@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { FaSearch } from "react-icons/fa"
 import { FaBars, FaBarsStaggered } from "react-icons/fa6"
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md"
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "./models/UserAvatar";
 
 export default function AppBar({
   isOpen,
@@ -27,11 +27,12 @@ export default function AppBar({
         user: null,
       })
       router.push('/auth')
+      window.location.reload()
     })
   }
 
   return (
-    <div className="top-0 z-40 sticky bg-base-100 navbar">
+    <div className="top-0 z-20 sticky bg-base-100 navbar">
       <div className="navbar-start">
         <div className="dropdown">
           <button

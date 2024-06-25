@@ -4,7 +4,8 @@ const SchemaValidatorHandler = require('../../../utils/services/SchemaValidatorH
 
 function UpdateValidator() {
   const { username, email, password } = ModelSchema({
-    checkIn: ['body']
+    checkIn: ['body'],
+    errorIf: 'exist'
   });
 
   const input = {

@@ -2,12 +2,11 @@ const { Router } = require('express');
 const { db } = require('../../../../utils/database');
 const { UpdateValidator } = require('./Validators');
 const { viewField } = require('../../../rest/userProfile/Services');
-const ImageUploads = require('../../../../utils/middlewares/ImageUploads');
 
 const router = Router();
 
 router.get('/', [
-  // DefaultReadRateLimit
+  //
 ], async (req, res, next) => {
   try {
     const { user: client } = req;
@@ -27,13 +26,7 @@ router.get('/', [
 });
 
 router.post('/', [
-  UpdateValidator(),
-  ImageUploads({
-    avatar: {
-      dir: '/avatars',
-      resize: { width: 300 }
-    }
-  })
+  UpdateValidator()
 ], async (req, res, next) => {
   try {
     const { user: client, scarlet } = req;

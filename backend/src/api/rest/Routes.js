@@ -20,5 +20,7 @@ router.use('/portfolioEducations', require('./portfolioEducation/Routes'));
 router.use('/institutions', require('./institution/Routes'));
 router.use('/departments', require('./department/Routes'));
 router.use('/degrees', require('./degree/Routes'));
+router.use('/technicalSkills', require('./technicalSkill/Routes'));
+router.use('/companies', require('./company/Routes'));
 
 module.exports = router;

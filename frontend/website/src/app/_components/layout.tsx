@@ -4,10 +4,10 @@ import NextTopLoader from "nextjs-toploader";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import "../globals.css";
-import { useGet_ClientUser } from "../app/_models/client/user/GetClientUser";
 import { AuthContextInterface } from "../auth/_interface/AuthContextInterface";
 import { AuthProvider } from "../auth/_context/AuthContext";
 import LoadingScreen from "./LoadingScreen";
+import { useUser } from "../app/_models/client/user/User";
 
 export default function MainLayout({
   children,
@@ -16,19 +16,19 @@ export default function MainLayout({
 }>) {
   let authData: AuthContextInterface
 
-  const useClientUser = useGet_ClientUser()
+  const user = useUser()
 
-  if (useClientUser.isLoading) return <LoadingScreen />
+  if (user.isLoading) return <LoadingScreen />
 
-  if (useClientUser.isError) {
+  if (user.isError) {
     authData = {
       isAuthenticated: false,
       user: null,
     }
   }
 
-  else if (useClientUser.data) {
-    const { id, username, role, UserProfile } = useClientUser.data.user
+  else if (user.data) {
+    const { id, username, role, UserProfile } = user.data.user
     const { avatar } = UserProfile
     authData = {
       isAuthenticated: true,

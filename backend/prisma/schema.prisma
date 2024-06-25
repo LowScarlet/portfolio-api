@@ -6,7 +6,6 @@ datasource db {
   provider          = "postgresql"
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  // directUrl         = env("DIRECT_URL")
 }
 
 enum Role {
@@ -15,25 +14,24 @@ enum Role {
 }
 
 model User {
-  id                String             @id @default(uuid())
+  id                   String                 @id @default(uuid())
   //
-  username          String             @unique
-  email             String             @unique
-  password          String
-  role              Role               @default(MEMBER)
-  isActive          Boolean            @default(false)
+  username             String                 @unique
+  email                String                 @unique
+  password             String
+  role                 Role                   @default(MEMBER)
+  isActive             Boolean                @default(false)
   //
-  pinnedPortfolios  Portfolio[]        @relation("PinnedByUser")
+  UserProfile          UserProfile?
+  Portfolios           Portfolio[]            @relation("UserPortfolio")
+  PortfolioContributor PortfolioContributor[]
+  PortfolioVotes       PortfolioVote[]
+  PortfolioComments    PortfolioComment[]
+  RefreshTokens        RefreshToken[]
+  OneTimePasswords     OneTimePassword[]
   //
-  UserProfile       UserProfile?
-  Portfolios        Portfolio[]        @relation("UserPortfolio")
-  PortfolioVotes    PortfolioVote[]
-  PortfolioComments PortfolioComment[]
-  RefreshTokens     RefreshToken[]
-  OneTimePasswords  OneTimePassword[]
-  //
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
 }
 
 enum OneTimePasswordType {
@@ -89,21 +87,22 @@ model Portfolio {
   name             String
   description      String?
   isPublic         Boolean            @default(true)
-  pinnedBy         User[]             @relation("PinnedByUser")
   ownerId          String?
   //
   PortfolioProfile PortfolioProfile?
   Votes            PortfolioVote[]
   Comments         PortfolioComment[]
 
-  Connect        PortfolioConnect[]
-  TechincalSkill PortfolioTechincalSkill[]
-  Education      PortfolioEducation[]
+  Connect              PortfolioConnect[]
+  TechnicalSkill       PortfolioTechnicalSkill[]
+  Education            PortfolioEducation[]
+  Work                 PortfolioWork[]
   //
-  Owner          User?                     @relation("UserPortfolio", fields: [ownerId], references: [id], onDelete: SetNull)
+  Owner                User?                     @relation("UserPortfolio", fields: [ownerId], references: [id], onDelete: SetNull)
   //
-  createdAt      DateTime                  @default(now())
-  updatedAt      DateTime                  @updatedAt
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+  PortfolioContributor PortfolioContributor[]
 }
 
 model PortfolioProfile {
@@ -158,6 +157,18 @@ model PortfolioComment {
   updatedAt   DateTime  @updatedAt
 }
 
+model PortfolioContributor {
+  id          String    @id @default(uuid())
+  userId      String
+  portfolioId String
+  //
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  //
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 model SocialMedia {
   id         String             @id @default(uuid())
   //
@@ -165,7 +176,7 @@ model SocialMedia {
   url        String
   isVerified Boolean            @default(false)
   //
-  Connect    PortfolioConnect[]
+  Connects   PortfolioConnect[]
   //
   createdAt  DateTime           @default(now())
   updatedAt  DateTime           @updatedAt
@@ -178,34 +189,33 @@ model PortfolioConnect {
   socialMediaId String
   portfolioId   String
   //
-  SocialMedia   SocialMedia @relation(fields: [socialMediaId], references: [id])
+  SocialMedia   SocialMedia @relation(fields: [socialMediaId], references: [id], onDelete: Cascade)
   Portfolio     Portfolio   @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
   //
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
 
-model TechincalSkill {
-  id                      String                    @id @default(uuid())
+model TechnicalSkill {
+  id                       String                    @id @default(uuid())
   //
-  name                    String
-  description             String?
-  isVerified              Boolean                   @default(false)
+  name                     String                    @unique
+  description              String?
+  isVerified               Boolean                   @default(false)
   //
-  PortfolioTechincalSkill PortfolioTechincalSkill[]
+  PortfolioTechnicalSkills PortfolioTechnicalSkill[]
   //
-  createdAt               DateTime                  @default(now())
-  updatedAt               DateTime                  @updatedAt
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
 }
 
-model PortfolioTechincalSkill {
+model PortfolioTechnicalSkill {
   id               String         @id @default(uuid())
   //
-  identifier       String
-  techincalSkillId String
+  TechnicalSkillId String
   portfolioId      String
   //
-  TechincalSkill   TechincalSkill @relation(fields: [techincalSkillId], references: [id])
+  TechnicalSkill   TechnicalSkill @relation(fields: [TechnicalSkillId], references: [id])
   Portfolio        Portfolio      @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
   //
   createdAt        DateTime       @default(now())
@@ -218,9 +228,9 @@ model Institution {
   name        String               @unique
   description String?
   website     String?
-  maxScore    Float                @default(4.0)
+  maxScore    Float?
   //
-  Education   PortfolioEducation[]
+  Educations  PortfolioEducation[]
   //
   createdAt   DateTime             @default(now())
   updatedAt   DateTime             @updatedAt
@@ -233,7 +243,7 @@ model Department {
   description String?
   degreeId    String?
   //
-  Education   PortfolioEducation[]
+  Educations  PortfolioEducation[]
   Degree      Degree?              @relation(fields: [degreeId], references: [id])
   //
   createdAt   DateTime             @default(now())
@@ -246,7 +256,7 @@ model Degree {
   name        String       @unique
   description String?
   //
-  Department  Department[]
+  Departments Department[]
   //
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -288,28 +298,31 @@ model PortfolioEducation {
 }
 
 model Company {
-  id          String   @id @default(uuid())
+  id             String          @id @default(uuid())
   //
-  name        String   @unique
-  description String?
-  website     String?
+  name           String          @unique
+  description    String?
+  website        String?
   //
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  PortfolioWorks PortfolioWork[]
+  //
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model PortfolioWork {
-  id                String    @id @default(uuid())
+  id          String    @id @default(uuid())
   //
-  description       String?
-  score             Float?
-  dissertationTitle String?
-  startAt           DateTime  @default(now())
-  endAt             DateTime?
-  departmentId      String?
-  institutionId     String
-  portfolioId       String
+  name        String
+  description String?
+  startAt     DateTime  @default(now())
+  endAt       DateTime?
+  companyId   String
+  portfolioId String
   //
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  Company     Company   @relation(fields: [companyId], references: [id])
+  Portfolio   Portfolio @relation(fields: [portfolioId], references: [id])
+  //
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

@@ -1,17 +1,17 @@
 'use client'
 
-import Image from "next/image";
 import Link from "next/link";
 import { FaEye } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
-import UserAvatar from "../_components/UserAvatar";
-import { useGet_ClientUser } from "../_models/client/user/GetClientUser";
+import UserAvatar from "../_components/models/UserAvatar";
+import UserBanner from "../_components/models/UserBanner";
+import { useUser } from "../_models/client/user/User";
 
 export default function Account(): JSX.Element {
 
-  const useClientUser = useGet_ClientUser()
+  const user = useUser()
 
-  const {data, isError, isLoading} = useClientUser
+  const { data, isError, isLoading } = user
 
   if (isLoading) {
     return (<>
@@ -24,8 +24,9 @@ export default function Account(): JSX.Element {
     </>)
   }
 
-  if (!data || isError) {
-    return <>Error and Data</>
+  if (!data) {
+    window.location.reload()
+    return <></>
   }
 
   const { id, username, UserProfile } = data.user
@@ -35,7 +36,9 @@ export default function Account(): JSX.Element {
     <div className="py-4">
       <div className="shadow-md h-full card card-compact">
         <figure>
-          <Image width={1500} height={1500} className="w-full h-36 object-cover" src="/images/portfolio_icon.png" alt="Shoes" />
+          <div className="w-full h-36 object-cover">
+            <UserBanner width={1500} height={1500} />
+          </div>
         </figure>
         <div className="-mt-36">
           <div className="flex justify-end m-4 text-4xl">

@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-router.use('/@me', require('./@me/Routes'));
+router.use('/user', require('./user/Routes'));
+router.use('/portfolios', require('./portfolios/Routes'));
 
 module.exports = router;

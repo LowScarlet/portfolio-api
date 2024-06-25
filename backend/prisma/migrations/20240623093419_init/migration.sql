@@ -144,7 +144,7 @@ CREATE TABLE "PortfolioConnect" (
 );
 
 -- CreateTable
-CREATE TABLE "TechincalSkill" (
+CREATE TABLE "TechnicalSkill" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
@@ -152,19 +152,19 @@ CREATE TABLE "TechincalSkill" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "TechincalSkill_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "TechnicalSkill_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "PortfolioTechincalSkill" (
+CREATE TABLE "PortfolioTechnicalSkill" (
     "id" TEXT NOT NULL,
     "identifier" TEXT NOT NULL,
-    "techincalSkillId" TEXT NOT NULL,
+    "TechnicalSkillId" TEXT NOT NULL,
     "portfolioId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "PortfolioTechincalSkill_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "PortfolioTechnicalSkill_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -173,7 +173,7 @@ CREATE TABLE "Institution" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "website" TEXT,
-    "maxScore" DOUBLE PRECISION NOT NULL DEFAULT 4.0,
+    "maxScore" DOUBLE PRECISION,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -237,13 +237,11 @@ CREATE TABLE "Company" (
 -- CreateTable
 CREATE TABLE "PortfolioWork" (
     "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "description" TEXT,
-    "score" DOUBLE PRECISION,
-    "dissertationTitle" TEXT,
     "startAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "endAt" TIMESTAMP(3),
-    "departmentId" TEXT,
-    "institutionId" TEXT NOT NULL,
+    "companyId" TEXT NOT NULL,
     "portfolioId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -252,7 +250,7 @@ CREATE TABLE "PortfolioWork" (
 );
 
 -- CreateTable
-CREATE TABLE "_PinnedByUser" (
+CREATE TABLE "_TeamPortfolio" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
@@ -282,6 +280,9 @@ CREATE UNIQUE INDEX "PortfolioVote_userId_portfolioId_key" ON "PortfolioVote"("u
 CREATE UNIQUE INDEX "SocialMedia_name_key" ON "SocialMedia"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "TechnicalSkill_name_key" ON "TechnicalSkill"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Institution_name_key" ON "Institution"("name");
 
 -- CreateIndex
@@ -294,10 +295,10 @@ CREATE UNIQUE INDEX "Degree_name_key" ON "Degree"("name");
 CREATE UNIQUE INDEX "Company_name_key" ON "Company"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_PinnedByUser_AB_unique" ON "_PinnedByUser"("A", "B");
+CREATE UNIQUE INDEX "_TeamPortfolio_AB_unique" ON "_TeamPortfolio"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_PinnedByUser_B_index" ON "_PinnedByUser"("B");
+CREATE INDEX "_TeamPortfolio_B_index" ON "_TeamPortfolio"("B");
 
 -- AddForeignKey
 ALTER TABLE "OneTimePassword" ADD CONSTRAINT "OneTimePassword_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -327,16 +328,16 @@ ALTER TABLE "PortfolioComment" ADD CONSTRAINT "PortfolioComment_userId_fkey" FOR
 ALTER TABLE "PortfolioComment" ADD CONSTRAINT "PortfolioComment_portfolioId_fkey" FOREIGN KEY ("portfolioId") REFERENCES "Portfolio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PortfolioConnect" ADD CONSTRAINT "PortfolioConnect_socialMediaId_fkey" FOREIGN KEY ("socialMediaId") REFERENCES "SocialMedia"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "PortfolioConnect" ADD CONSTRAINT "PortfolioConnect_socialMediaId_fkey" FOREIGN KEY ("socialMediaId") REFERENCES "SocialMedia"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PortfolioConnect" ADD CONSTRAINT "PortfolioConnect_portfolioId_fkey" FOREIGN KEY ("portfolioId") REFERENCES "Portfolio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PortfolioTechincalSkill" ADD CONSTRAINT "PortfolioTechincalSkill_techincalSkillId_fkey" FOREIGN KEY ("techincalSkillId") REFERENCES "TechincalSkill"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "PortfolioTechnicalSkill" ADD CONSTRAINT "PortfolioTechnicalSkill_TechnicalSkillId_fkey" FOREIGN KEY ("TechnicalSkillId") REFERENCES "TechnicalSkill"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PortfolioTechincalSkill" ADD CONSTRAINT "PortfolioTechincalSkill_portfolioId_fkey" FOREIGN KEY ("portfolioId") REFERENCES "Portfolio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PortfolioTechnicalSkill" ADD CONSTRAINT "PortfolioTechnicalSkill_portfolioId_fkey" FOREIGN KEY ("portfolioId") REFERENCES "Portfolio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Department" ADD CONSTRAINT "Department_degreeId_fkey" FOREIGN KEY ("degreeId") REFERENCES "Degree"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -351,7 +352,13 @@ ALTER TABLE "PortfolioEducation" ADD CONSTRAINT "PortfolioEducation_institutionI
 ALTER TABLE "PortfolioEducation" ADD CONSTRAINT "PortfolioEducation_portfolioId_fkey" FOREIGN KEY ("portfolioId") REFERENCES "Portfolio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_PinnedByUser" ADD CONSTRAINT "_PinnedByUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Portfolio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PortfolioWork" ADD CONSTRAINT "PortfolioWork_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_PinnedByUser" ADD CONSTRAINT "_PinnedByUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PortfolioWork" ADD CONSTRAINT "PortfolioWork_portfolioId_fkey" FOREIGN KEY ("portfolioId") REFERENCES "Portfolio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TeamPortfolio" ADD CONSTRAINT "_TeamPortfolio_A_fkey" FOREIGN KEY ("A") REFERENCES "Portfolio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TeamPortfolio" ADD CONSTRAINT "_TeamPortfolio_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

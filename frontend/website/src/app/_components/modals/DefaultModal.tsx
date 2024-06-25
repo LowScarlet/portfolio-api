@@ -43,9 +43,7 @@ export default function DefaultModal({
         </ModalTransitionChild>
         <div className="z-10 fixed inset-0 w-screen overflow-y-auto">
           <div className="flex justify-center items-center p-4 min-h-full">
-            <ModalTransitionChild>
-              {children}
-            </ModalTransitionChild>
+            {children}
           </div>
         </div>
       </Dialog>

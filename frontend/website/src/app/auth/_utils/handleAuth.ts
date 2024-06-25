@@ -68,7 +68,7 @@ export const handleAuth = async ({
           id: user.id,
           username: user.username,
           role: user.role,
-          avatar: user.UserProfile.avatar,
+          avatar: user.UserProfile?.avatar,
         },
       },
     };

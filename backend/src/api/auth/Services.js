@@ -81,6 +81,9 @@ async function createToken(user, jti,) {
 
 async function verifyRefreshToken(token) {
   return jwt.verify(token, JWT_REFRESH_SECRET, async (err, payload) => {
+    if (!payload) {
+      return null;
+    }
     const { userId } = payload;
 
     if (err) return null;

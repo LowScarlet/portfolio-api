@@ -3,6 +3,7 @@
 import { useAuth } from "@/app/auth/_context/AuthContext";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { FaUser } from "react-icons/fa6";
 
 export default function UserAvatar({
   className,
@@ -14,7 +15,7 @@ export default function UserAvatar({
   height: number,
 }) {
   const { auth } = useAuth();
-  const [src, setSrc] = useState('/images/no-profile.png');
+  const [src, setSrc] = useState<string | null>(null);
 
   useEffect(() => {
     if (auth && auth.user && auth.user.avatar) {
@@ -24,9 +25,13 @@ export default function UserAvatar({
     }
   }, [auth]);
 
-  const handleError = () => {
-    setSrc('/images/no-profile.png');
-  };
+  if (!src) {
+    return (<>
+      <div className="flex justify-center items-center bg-base-200 h-full">
+        <FaUser className="text-xl" />
+      </div>
+    </>)
+  }
 
   return (
     <Image
@@ -35,7 +40,6 @@ export default function UserAvatar({
       height={height}
       src={src}
       alt={"User Avatar"}
-      onError={handleError}
     />
   );
 }

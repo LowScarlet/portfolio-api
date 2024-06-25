@@ -5,12 +5,15 @@ export default async function NotFound() {
   const headersList = headers()
   const domain = headersList.get('host')
   return (
-    <div>
-      <h2>Not Found</h2>
-      <p>Could not find requested resource</p>
-      <p>
-        View <Link href="/blog">all posts</Link>
-      </p>
+    <div className="flex justify-center items-center h-svh">
+      <div className="flex flex-col items-center">
+        <h1 className="font-semibold text-xl">(404) Page Not Found!</h1>
+        <p>🔥 There some sortcut for you 💢</p>
+        <div className="flex gap-x-2 mt-8">
+          <Link href={'/auth'} className="btn btn-primary btn-sm">Auth</Link>
+          <Link href={'/app'} className="btn btn-primary btn-sm">App</Link>
+        </div>
+      </div>
     </div>
   )
 }

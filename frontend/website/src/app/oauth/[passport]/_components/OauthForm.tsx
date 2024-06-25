@@ -15,11 +15,21 @@ const OauthForm = ({
   passport: string
 }) => {
   const router = useRouter()
-  const { setAuth } = useAuth()
+  const { auth, setAuth } = useAuth()
 
   const [loading, setLoading] = useState(false)
 
   const searchParams = useSearchParams()
+
+  if (auth?.isAuthenticated) {
+    router.push('/app')
+    return;
+  }
+
+  if (!searchParams.get('code')) {
+    router.push('/auth')
+    return;
+  }
 
   let queryString = "";
   searchParams.forEach((value, key) => {
@@ -56,7 +66,7 @@ const OauthForm = ({
             }
           })
           toast.success(message)
-          router.push('/app')
+          window.location.reload()
         })
       } else {
         toast.error(message)
