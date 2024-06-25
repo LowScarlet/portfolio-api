@@ -5,13 +5,13 @@ import { BsFillPinFill } from "react-icons/bs";
 import { FaEye, FaEyeSlash, FaPlus, FaRunning, FaUser } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa6";
 import { getInitials } from "../../_utils/utils";
-import { useUserPortfolio } from "../../_models/client/user/portfolios/Portfolios";
+import { useUserPortfolios } from "../../_models/client/user/portfolios/Portfolios";
 
 export default function PortfolioList(): JSX.Element {
 
-  const usePortfolio = useUserPortfolio()
+  const usePortfolios = useUserPortfolios()
 
-  const { data, isError, isLoading } = usePortfolio
+  const { data, isError, isLoading } = usePortfolios
 
   if (isLoading) {
     return (<>

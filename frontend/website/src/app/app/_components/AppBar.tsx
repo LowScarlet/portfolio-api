@@ -44,7 +44,7 @@ export default function AppBar({
         </div>
       </div>
       <div className="navbar-center">
-        <a className="lg:hidden text-xl btn btn-ghost">🔥 Portfolio API</a>
+        <Link href={'/app'} className="lg:hidden text-xl btn btn-ghost">🔥 Portfolio API</Link>
         <div className="lg:block hidden min-w-96 join">
           <label className="flex items-center gap-2 input-bordered rounded-full input input-sm">
             <input type="text" className="grow" placeholder="Find in Community.." />

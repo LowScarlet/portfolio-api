@@ -44,7 +44,7 @@ router.use('/oauth', [
 ], require('./oauth/Routes'));
 
 router.use('/client', [
-  IsAuthenticated
+  //
 ], require('./client/Routes'));
 
 router.use('/rest', [
