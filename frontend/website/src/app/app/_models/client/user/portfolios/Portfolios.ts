@@ -11,7 +11,7 @@ interface BadRequest {
 
 type Output = { portfolios: Array<(PortfolioInterface & { PortfolioProfile: PortfolioProfileInterface })> } & BadRequest;
 
-export function useGet_ClientPortfolios(query = '') {
+export function useUserPortfolio(query = '') {
   const accessToken = getCookie('accessToken')
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/user/portfolios?${query}`;
 
