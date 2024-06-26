@@ -33,12 +33,15 @@ export default function Portfolio(): JSX.Element {
             </div>
           </div>
         </div>
-        <PortfolioList />
+        <PortfolioList
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+        />
         <DefaultModal
           isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}
         >
-          <CreatePortfolioForm/>
+          <CreatePortfolioForm />
         </DefaultModal>
       </div>
     </>

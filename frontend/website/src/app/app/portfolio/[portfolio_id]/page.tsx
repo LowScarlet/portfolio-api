@@ -30,8 +30,7 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
   }
 
   if (!data) {
-    window.location.reload()
-    return <></>
+    return <>Portfolio Not Found!</>
   }
 
   const { portfolio } = data

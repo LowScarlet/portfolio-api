@@ -6,8 +6,15 @@ import { FaEye, FaEyeSlash, FaPlus, FaRunning, FaUser } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa6";
 import { getInitials } from "../../../_utils/utils";
 import { useUserPortfolios } from "../../_models/client/user/portfolios/UserPortfolios";
+import { Dispatch, SetStateAction } from "react";
 
-export default function PortfolioList(): JSX.Element {
+export default function PortfolioList({
+  isModalOpen,
+  setIsModalOpen
+}: {
+  isModalOpen: boolean,
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>
+}): JSX.Element {
 
   const usePortfolios = useUserPortfolios()
 
@@ -106,13 +113,16 @@ export default function PortfolioList(): JSX.Element {
               </Link>
             ))
           }
-          <Link className="bg-base-100 card hover:ring-1 ring-primary" href={"/portfolio/create"}>
+          <button
+            className="bg-base-100 card hover:ring-1 block ring-primary"
+            onClick={() => setIsModalOpen(true)}
+          >
             <div className="bg-base-100 shadow-md h-full card card-compact">
               <div className="flex justify-center items-center m-12 card-body">
                 <FaPlus className="text-6xl" />
               </div>
             </div>
-          </Link>
+          </button>
         </div>
       ) : (
         <div className="flex flex-col justify-center items-center py-8">
