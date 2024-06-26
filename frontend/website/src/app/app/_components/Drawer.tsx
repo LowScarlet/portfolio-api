@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FaHome } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { LuFileJson } from "react-icons/lu";
@@ -18,9 +18,16 @@ export default function Drawer({
   isOpen: boolean,
   setIsOpen: (e: boolean) => void
 }) {
+  const router = useRouter()
   const { auth, setAuth } = useAuth()
 
   const pathname = usePathname()
+
+  const handleLink = (href: string) => {
+    router.push(href)
+    setIsOpen(isOpen)
+    return
+  }
 
   return (<>
     <Transition
@@ -32,7 +39,7 @@ export default function Drawer({
       leaveFrom="translate-x-0"
       leaveTo="-translate-x-full"
     >
-      <div className="flex flex-col gap-4 bg-base-300 h-full">
+      <div className="flex flex-col gap-4 bg-base-300 p-4 h-full">
         <div className="flex justify-between">
           <div className="flex items-center">
             <h1 className="text-4xl">🔥</h1>
@@ -52,17 +59,27 @@ export default function Drawer({
         </div>
         <div className="grow">
           <ul className="menu">
-            <li><Link href={"/"}><FaHome /> Home</Link></li>
-            <li><Link href={"/about"}><MdQuestionAnswer /> About</Link></li>
-            <li><Link className={pathname.startsWith("/app/dashboard") ? "active" : ""} href={"/app/dashboard"}>
-              <MdDashboard /> Dashboard
-            </Link></li>
-            <li><Link className={pathname.startsWith("/app/portfolio") ? "active" : ""} href={"/app/portfolio"}>
-              <LuFileJson /> Portfolio
-            </Link></li>
-            <li><Link className={pathname.startsWith("/app/admin") ? "active" : ""} href={"/app/admin"}>
-              <LuFileJson /> Admin
-            </Link></li>
+            <li>
+              <button onClick={() => handleLink('/')}><FaHome /> Home</button>
+            </li>
+            <li>
+              <button onClick={() => handleLink('/about')}><MdQuestionAnswer /> About</button>
+            </li>
+            <li>
+              <button className={pathname.startsWith("/app/dashboard") ? "active" : ""} onClick={() => handleLink('/app/dashboard')}>
+                <MdDashboard /> Dashboard
+              </button>
+            </li>
+            <li>
+              <button className={pathname.startsWith("/app/portfolio") ? "active" : ""} onClick={() => handleLink('/app/portfolio')}>
+                <LuFileJson /> Portfolio
+              </button>
+            </li>
+            <li>
+              <button className={pathname.startsWith("/app/admin") ? "active" : ""} onClick={() => handleLink('/app/admin')}>
+                <LuFileJson /> Admin
+              </button>
+            </li>
           </ul>
         </div>
         {
@@ -89,15 +106,15 @@ export default function Drawer({
               </div>
               <ul tabIndex={0} className="z-[1] bg-base-100 shadow mt-3 p-2 rounded-box w-52 dropdown-content menu menu-sm">
                 <li>
-                  <Link href={"/app/profile"}>
+                  <button onClick={() => handleLink('/app/profile')}>
                     Profile
                     <span className="badge">New</span>
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link href={"/app/settings"}>
+                  <button onClick={() => handleLink('/app/settings')}>
                     Settings
-                  </Link>
+                  </button>
                 </li>
                 <li>
                   <button>

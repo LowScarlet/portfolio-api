@@ -17,7 +17,7 @@ export default function RootLayout({
     <div className="relative">
       <div className="flex h-svh">
         {/* Drawer Desktop */}
-        <div className="md:block z-20 hidden bg-base-300 p-4">
+        <div className="md:block z-20 hidden bg-base-300">
           <Drawer isOpen={drawerOpen} setIsOpen={setDrawerOpen} />
         </div>
         {/* App */}
@@ -42,7 +42,7 @@ export default function RootLayout({
         leaveFrom="translate-x-0"
         leaveTo="-translate-x-full"
       >
-        <div className={`top-0 left-0 z-20 absolute md:hidden bg-base-300 h-svh w-full p-8`}>
+        <div className={`top-0 left-0 z-20 absolute md:hidden bg-base-300 h-svh w-full p-4`}>
           <Drawer isOpen={!drawerOpen} setIsOpen={setDrawerOpen} />
         </div>
       </Transition>
