@@ -6,7 +6,7 @@ const { db } = require('../../utils/database');
 
 const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
 
-const accessExpiresIn = 1 * 60; // 15 menit
+const accessExpiresIn = 5 * 60; // 5 menit
 const refreshExpiresIn = 48 * 3600; // 48 jam
 
 const hashSalt = 12;
@@ -14,7 +14,7 @@ const hashAlgorithm = 'sha512';
 const hashDigest = 'hex';
 
 const AuthRateLimit = rateLimit({
-  windowMs: 5 * 60 * 1000, // 1 minute
+  windowMs: 1 * 60 * 1000, // 1 minute
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
