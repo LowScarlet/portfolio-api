@@ -10,6 +10,7 @@ import Markdown from "react-markdown";
 import { SiFreelancer } from "react-icons/si";
 import { GoProjectRoadmap } from "react-icons/go";
 import { usePortfolio } from "../../_models/client/portfolios/Portfolio";
+import { MdEdit } from "react-icons/md";
 
 const bio = `
 🎨 Welcome to my creative corner! 
@@ -48,7 +49,7 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
           <div className="-mt-52">
             <div className="flex justify-end mx-4 mt-4 mb-20 text-4xl">
               <Link href={"/account/settings"} className="text-2xl btn btn-circle">
-                <IoMdSettings />
+                <MdEdit />
               </Link>
             </div>
             <div className="flex gap-x-2 mx-4">
@@ -77,7 +78,9 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
             </div>
           </div>
           <div className="mb-4 card-body">
-            <h2 className="card-title">{PortfolioProfile.fullName || "Unknown Portfolio"} {PortfolioProfile.nickname ? `(${PortfolioProfile.nickname})` : undefined}</h2>
+            <h2 className="card-title">
+              {PortfolioProfile.fullName || "Unknown Portfolio"} {PortfolioProfile.nickname ? `(${PortfolioProfile.nickname})` : undefined}
+            </h2>
             <h4 className="-mt-4 overflow-hidden">
               {PortfolioProfile.label || "This portfolio has just started!"}
             </h4>
@@ -110,7 +113,12 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
           <div className="bg-base-100 shadow-md mt-4 card card-compact sm:card-side">
             <div className="card-body">
               <div>
-                <h2 className="card-title">About</h2>
+                <h2 className="flex justify-between card-title">
+                  <span>About</span>
+                  <button className="text-xl btn btn-circle btn-ghost btn-sm">
+                    <MdEdit />
+                  </button>
+                </h2>
                 <div className="whitespace-pre-line">
                   <Markdown>
                     {PortfolioProfile.about}
@@ -122,7 +130,12 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
           <div className="bg-base-100 shadow-md mt-4 card card-compact sm:card-side">
             <div className="card-body">
               <div>
-                <h2 className="card-title">Contact</h2>
+                <h2 className="flex justify-between card-title">
+                  <span>Contact</span>
+                  <button className="text-xl btn btn-circle btn-ghost btn-sm">
+                    <MdEdit />
+                  </button>
+                </h2>
                 {
                   PortfolioProfile.email || PortfolioProfile.phone ? (
                     <div className="flex flex-col gap-y-2 mt-4">
@@ -146,7 +159,12 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
           <div className="bg-base-100 shadow-md mt-4 card card-compact sm:card-side">
             <div className="card-body">
               <div>
-                <h2 className="card-title">Connect</h2>
+                <h2 className="flex justify-between card-title">
+                  <span>Connect</span>
+                  <button className="text-xl btn btn-circle btn-ghost btn-sm">
+                    <MdEdit />
+                  </button>
+                </h2>
                 <div className="flex flex-col gap-y-2 mt-4">
                   <a href="link block"><span className="font-semibold"><FaLinkedin className="inline me-2" /> LinkedIn:</span> tegar-maulana-fahreza-04615a221</a>
                   <a href="link block"><span className="font-semibold"><FaInstagram className="inline me-2" /> Instagram:</span> Low_Scarlet</a>
@@ -158,7 +176,12 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
           <div className="bg-base-100 shadow-md mt-4 card card-compact sm:card-side">
             <div className="card-body">
               <div>
-                <h2 className="card-title">Techincal Skills</h2>
+                <h2 className="flex justify-between card-title">
+                  <span>Techincal Skills</span>
+                  <button className="text-xl btn btn-circle btn-ghost btn-sm">
+                    <MdEdit />
+                  </button>
+                </h2>
                 <div className="space-x-2 space-y-2 mt-4">
                   <div className="badge badge-neutral">Typescript</div>
                   <div className="badge badge-neutral">Javascript</div>
@@ -178,7 +201,12 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
           <div className="bg-base-100 shadow-md mt-4 card card-compact sm:card-side">
             <div className="card-body">
               <div>
-                <h2 className="card-title">Education</h2>
+                <h2 className="flex justify-between card-title">
+                  <span>Education</span>
+                  <button className="text-xl btn btn-circle btn-ghost btn-sm">
+                    <MdEdit />
+                  </button>
+                </h2>
                 <div className="flex mt-4">
                   <div className="flex justify-center m-4 sm:m-8">
                     <FaGraduationCap className="text-xl sm:text-4xl" />
@@ -211,7 +239,12 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
           <div className="bg-base-100 shadow-md mt-4 card card-compact sm:card-side">
             <div className="card-body">
               <div>
-                <h2 className="card-title">Work Experience</h2>
+                <h2 className="flex justify-between card-title">
+                  <span>Work Experience</span>
+                  <button className="text-xl btn btn-circle btn-ghost btn-sm">
+                    <MdEdit />
+                  </button>
+                </h2>
                 <div className="flex mt-4">
                   <div className="flex justify-center m-4 sm:m-8">
                     <SiFreelancer className="text-xl sm:text-4xl" />
@@ -246,7 +279,12 @@ export default function PortfolioView({ params }: { params: { portfolio_id: stri
           <div className="bg-base-100 shadow-md mt-4 card card-compact sm:card-side">
             <div className="card-body">
               <div>
-                <h2 className="card-title">Projects</h2>
+                <h2 className="flex justify-between card-title">
+                  <span>Projects</span>
+                  <button className="text-xl btn btn-circle btn-ghost btn-sm">
+                    <MdEdit />
+                  </button>
+                </h2>
                 <div className="flex mt-4">
                   <div className="flex justify-center m-4 sm:m-8">
                     <GoProjectRoadmap className="text-xl sm:text-4xl" />

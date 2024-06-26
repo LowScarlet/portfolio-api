@@ -9,6 +9,7 @@ import { MdDashboard, MdQuestionAnswer } from "react-icons/md";
 import UserAvatar from "./models/UserAvatar";
 import { Transition } from "@headlessui/react";
 import { useAuth } from "@/app/auth/_models/auth/Auth";
+import { IoClose } from "react-icons/io5";
 
 export default function Drawer({
   isOpen,
@@ -31,12 +32,22 @@ export default function Drawer({
       leaveFrom="translate-x-0"
       leaveTo="-translate-x-full"
     >
-      <div className="md:flex flex-col gap-4 hidden bg-base-300 p-2 h-full">
-        <div className="flex items-center">
-          <h1 className="text-4xl">🔥</h1>
-          <div className="p-4">
-            <h1 className="font-semibold text-xl">Portfolio API</h1>
-            <h4 className="text-xs">By 💢 <a href="https://lowscarlet.my.id/" target="_blank">LowScarlet</a></h4>
+      <div className="flex flex-col gap-4 bg-base-300 h-full">
+        <div className="flex justify-between">
+          <div className="flex items-center">
+            <h1 className="text-4xl">🔥</h1>
+            <div className="p-4">
+              <h1 className="font-semibold text-xl">Portfolio API</h1>
+              <h4 className="text-xs">By 💢 <a href="https://lowscarlet.my.id/" target="_blank">LowScarlet</a></h4>
+            </div>
+          </div>
+          <div className="md:hidden">
+            <button
+              className="text-2xl btn btn-circle btn-ghost"
+              onClick={() => setIsOpen(true)}
+            >
+              <IoClose />
+            </button>
           </div>
         </div>
         <div className="grow">
@@ -57,18 +68,20 @@ export default function Drawer({
         {
           auth?.user ? (
             <div className="dropdown-top dropdown">
-              <div tabIndex={0} role="button" className="flex justify-between items-center gap-2 px-2 py-1 rounded-md w-full btn-ghost">
-                <div className="avatar">
-                  <div className="rounded-full w-10">
-                    <UserAvatar
-                      width={500}
-                      height={500}
-                    />
+              <div tabIndex={0} role="button" className="flex justify-between items-center px-2 py-1 rounded-md w-full btn-ghost">
+                <div className="flex gap-2">
+                  <div className="avatar">
+                    <div className="rounded-full w-10">
+                      <UserAvatar
+                        width={500}
+                        height={500}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <h1 className="font-semibold text-sm">{auth.user.username}</h1>
-                  <h1 className="text-xs">{auth.user.role}</h1>
+                  <div>
+                    <h1 className="font-semibold text-sm">{auth.user.username}</h1>
+                    <h1 className="text-xs">{auth.user.role}</h1>
+                  </div>
                 </div>
                 <div className="pe-4 ps-8">
                   <IoMdSettings />
