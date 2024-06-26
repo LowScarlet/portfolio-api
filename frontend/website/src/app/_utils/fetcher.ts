@@ -1,5 +1,13 @@
 import axios from "axios";
 
+const handleAxiosError = (error: any) => {
+  if (axios.isAxiosError(error) && error.response) {
+    return new Error(error.response.data.message);
+  } else {
+    return new Error('An unexpected error occurred');
+  }
+}
+
 export const fetcher = async (url: string) => {
   try {
     const response = await axios.get(url, {
@@ -7,15 +15,10 @@ export const fetcher = async (url: string) => {
         'Content-Type': 'application/json',
       },
     });
-
-    const fetchResOutput = response.data;
-    return fetchResOutput;
+    
+    return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message);
-    } else {
-      throw new Error('An unexpected error occurred');
-    }
+    throw handleAxiosError(error)
   }
 };
 
@@ -28,13 +31,8 @@ export const fetcherClient = async (url: string, accessToken: string | undefined
       },
     });
 
-    const fetchResOutput = response.data;
-    return fetchResOutput;
+    return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message);
-    } else {
-      throw new Error('An unexpected error occurred');
-    }
+    throw handleAxiosError(error)
   }
 };

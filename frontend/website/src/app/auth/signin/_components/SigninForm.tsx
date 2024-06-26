@@ -2,31 +2,31 @@
 
 import { setToken } from '@/app/auth/_utils/token'
 import Link from 'next/link'
-import { FormEvent, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { FormEvent, useState } from 'react'
 import { FaUser } from "react-icons/fa"
 import { MdEmail, MdPassword } from 'react-icons/md'
 import { toast } from 'react-toastify'
+import { handleAuth, useAuth } from '../../_models/auth/Auth'
 import AltButtons from './AltButtons'
-import { useAuth } from '@/app/auth/_context/AuthContext'
-import { handleAuth } from '../../_utils/handleAuth'
-import { useRouter } from 'next/navigation'
+import LoadingScreen from '@/app/_components/LoadingScreen'
 
+const defaultFormData = { username: '', email: '', password: '' }
+const defaultBadError = { username: '', email: '', password: '' }
 
 const SigninForm = () => {
   const router = useRouter()
   const { setAuth } = useAuth()
 
-  const defaultFormData = { username: '', email: '', password: '' }
-  const defaultBadError = { username: '', email: '', password: '' }
-
   const [formBy, setFormBy] = useState(true)
 
   const [signinLoading, setSigninLoading] = useState(false)
+  const [successLoading, setSuccessLoading] = useState<boolean | null>(false)
 
   const [formData, setFormData] = useState(defaultFormData)
   const [badError, setBadError] = useState(defaultBadError)
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prevData) => ({
       ...prevData,
@@ -43,6 +43,7 @@ const SigninForm = () => {
     e.preventDefault()
 
     setSigninLoading(true)
+    setSuccessLoading(null)
     setBadError(defaultBadError)
 
     try {
@@ -52,7 +53,7 @@ const SigninForm = () => {
 
       if (status === 200) {
         if (!token || !auth) {
-          toast.error("An unexpected error occurred 2")
+          toast.error("An unexpected error occurred (key: token and auth)")
           return
         }
         const { accessToken, refreshToken } = token
@@ -70,6 +71,7 @@ const SigninForm = () => {
           })
           toast.success(message)
           router.push('/app')
+          setSuccessLoading(true)
         })
       } else {
         if (validationErrors) {
@@ -81,12 +83,18 @@ const SigninForm = () => {
           })
         }
         toast.error(message)
+        setSuccessLoading(null)
       }
     } catch (error) {
-      toast.error("An unexpected error occurred3 ")
+      console.log(error)
+      toast.error("An unexpected error occurred (key: try and catch)")
     } finally {
       setSigninLoading(false)
     }
+  }
+
+  if (successLoading) {
+    return (<LoadingScreen />)
   }
 
   return (
@@ -109,7 +117,7 @@ const SigninForm = () => {
                     name={formBy ? 'username' : 'email'}
                     type={formBy ? 'text' : 'email'}
                     value={formBy ? formData.username : formData.email}
-                    onChange={handleFormChange}
+                    onChange={handleInputChange}
                     required
                     placeholder={formBy ? 'Username...' : 'Email...'}
                     className="input-bordered w-full input"
@@ -142,7 +150,7 @@ const SigninForm = () => {
                   name="password"
                   type="password"
                   value={formData.password}
-                  onChange={handleFormChange}
+                  onChange={handleInputChange}
                   required
                   placeholder="Password.."
                   className="input-bordered w-full input"

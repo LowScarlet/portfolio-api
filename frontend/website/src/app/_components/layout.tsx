@@ -4,7 +4,7 @@ import NextTopLoader from "nextjs-toploader";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import "../globals.css";
-import { AuthContextInterface } from "../auth/_interface/AuthContextInterface";
+import { AuthContextInterface } from "../auth/_models/interface/AuthContextInterface";
 import { AuthProvider } from "../auth/_context/AuthContext";
 import LoadingScreen from "./LoadingScreen";
 import { useUser } from "../app/_models/client/user/User";

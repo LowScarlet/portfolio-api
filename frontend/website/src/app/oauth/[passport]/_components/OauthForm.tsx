@@ -2,12 +2,10 @@
 
 import { setToken } from '@/app/auth/_utils/token'
 import { toast } from 'react-toastify'
-import { useAuth } from '@/app/auth/_context/AuthContext'
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { handleAuth } from '@/app/auth/_utils/handleAuth'
 import Link from 'next/link'
-
+import { handleAuth, useAuth } from '@/app/auth/_models/auth/Auth'
 
 const OauthForm = ({
   passport
@@ -49,7 +47,7 @@ const OauthForm = ({
 
       if (status === 200) {
         if (!token || !auth) {
-          toast.error("An unexpected error occurred")
+          toast.error("An unexpected error occurred (key: token and auth)")
           return
         }
         const { accessToken, refreshToken } = token
@@ -66,13 +64,13 @@ const OauthForm = ({
             }
           })
           toast.success(message)
-          window.location.reload()
         })
       } else {
         toast.error(message)
       }
     } catch (error) {
-      toast.error("An unexpected error occurred 2")
+      console.log(error)
+      toast.error("An unexpected error occurred (key: try and catch)")
     } finally {
       setLoading(false)
     }

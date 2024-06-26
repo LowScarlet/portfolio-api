@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from "@/app/auth/_context/AuthContext";
+import { useAuth } from "@/app/auth/_models/auth/Auth";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { FaUser } from "react-icons/fa6";

@@ -1,8 +1,8 @@
-import useSWR from "swr";
+import { fetcherClient } from "@/app/_utils/fetcher";
 import { getCookie } from 'cookies-next';
-import { fetcherClient } from "@/app/app/_utils/fetcher";
-import { PortfolioInterface, PortfolioInterface_ValidationErrors } from "../../rest/PortfolioInterface";
-import { PortfolioProfileInterface } from "../../rest/PortfolioProfileInterface";
+import useSWR from "swr";
+import { PortfolioInterface, PortfolioInterface_ValidationErrors } from "../../interface/PortfolioInterface";
+import { PortfolioProfileInterface } from "../../interface/PortfolioProfileInterface";
 
 interface BadRequest {
   message: string,
@@ -11,9 +11,9 @@ interface BadRequest {
 
 type Output = { portfolio: (PortfolioInterface & { PortfolioProfile: PortfolioProfileInterface }) } & BadRequest;
 
-export function usePortfolio(id: string, query = '') {
+export function usePortfolio(id: string) {
   const accessToken = getCookie('accessToken')
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/portfolios?id=${id}&${query}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/portfolios?id=${id}`;
 
   const { data, error } = useSWR<Output>(url, () => fetcherClient(url, accessToken));
 

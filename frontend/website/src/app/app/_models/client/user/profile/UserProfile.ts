@@ -1,9 +1,9 @@
 import useSWR from "swr";
 import { getCookie } from 'cookies-next';
 import axios from "axios";
-import { UserInterface_ValidationErrors } from "../../../rest/UserInterface";
-import { UserProfileInterface } from "../../../rest/UserProfileInterface";
-import { fetcherClient } from "@/app/app/_utils/fetcher";
+import { UserInterface_ValidationErrors } from "../../../interface/UserInterface";
+import { UserProfileInterface } from "../../../interface/UserProfileInterface";
+import { fetcherClient } from "@/app/_utils/fetcher";
 
 interface BadRequest {
   message: string,
@@ -12,9 +12,9 @@ interface BadRequest {
 
 type Output = { userProfile: UserProfileInterface } & BadRequest;
 
-export function useUserProfile(query = '') {
+export function useUserProfile() {
   const accessToken = getCookie('accessToken')
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/user/profile?${query}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/user/profile`;
 
   const { data, error } = useSWR<Output>(url, () => fetcherClient(url, accessToken));
 

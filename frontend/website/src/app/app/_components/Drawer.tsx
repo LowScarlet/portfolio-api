@@ -7,8 +7,8 @@ import { IoMdSettings } from "react-icons/io";
 import { LuFileJson } from "react-icons/lu";
 import { MdDashboard, MdQuestionAnswer } from "react-icons/md";
 import UserAvatar from "./models/UserAvatar";
-import { useAuth } from "@/app/auth/_context/AuthContext";
 import { Transition } from "@headlessui/react";
+import { useAuth } from "@/app/auth/_models/auth/Auth";
 
 export default function Drawer({
   isOpen,
@@ -55,7 +55,7 @@ export default function Drawer({
           </ul>
         </div>
         {
-          auth ? (
+          auth?.user ? (
             <div className="dropdown-top dropdown">
               <div tabIndex={0} role="button" className="flex justify-between items-center gap-2 px-2 py-1 rounded-md w-full btn-ghost">
                 <div className="avatar">
@@ -67,8 +67,8 @@ export default function Drawer({
                   </div>
                 </div>
                 <div>
-                  <h1 className="font-semibold text-sm">{auth.user?.username}</h1>
-                  <h1 className="text-xs">{auth.user?.role}</h1>
+                  <h1 className="font-semibold text-sm">{auth.user.username}</h1>
+                  <h1 className="text-xs">{auth.user.role}</h1>
                 </div>
                 <div className="pe-4 ps-8">
                   <IoMdSettings />

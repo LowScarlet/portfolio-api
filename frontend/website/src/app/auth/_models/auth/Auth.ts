@@ -1,6 +1,8 @@
+import { useContext } from "react"
+import { AuthContext } from "../../_context/AuthContext"
 import axios from "axios";
-import { TokenInterface } from "../_interface/TokenInterface";
-import { ReadonlyURLSearchParams } from "next/navigation";
+import { TokenInterface } from "../interface/TokenInterface";
+import { rateLimitWarning } from "@/app/_utils/utils";
 
 interface HandlerAuthInterface {
   status: number;
@@ -29,6 +31,14 @@ const authType = {
   OAUTH_GOOGLE: 'api/oauth/google/exchange',
 } as const;
 
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error("Where The Provider???? ~LowScarlet")
+  }
+  return context
+}
+
 export const handleAuth = async ({
   type,
   formData,
@@ -44,12 +54,9 @@ export const handleAuth = async ({
       url = `${url}?${params}`
     }
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/${url}`,
-      formData || null,
-      {
-        timeout: 5000,
-      }
-    );
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/${url}`, formData || null, {
+      timeout: 5000,
+    });
 
     const { status, data } = response;
     const { message, data: dataFetch } = data;
@@ -81,19 +88,9 @@ export const handleAuth = async ({
         if (status === 429) {
           const { resetTime } = data;
 
-          const now = new Date();
-          const diffMs = new Date(resetTime).getTime() - now.getTime();
-
-          if (diffMs <= 0) {
-            throw new Error('IP ban expired');
-          }
-
-          const diffMinutes = Math.floor(diffMs / (1000 * 60));
-          const diffSeconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-
           return {
             status,
-            message: `Your IP has been banned for the next ${diffMinutes} minutes and ${diffSeconds} seconds!`
+            message: rateLimitWarning(resetTime)
           };
         }
 
@@ -107,7 +104,6 @@ export const handleAuth = async ({
           };
         }
       }
-      throw new Error('An unknown error occurred');
     }
     throw new Error('An unknown error occurred');
   }

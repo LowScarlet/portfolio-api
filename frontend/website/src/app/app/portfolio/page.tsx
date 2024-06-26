@@ -6,6 +6,7 @@ import { FaSearch } from "react-icons/fa";
 import { LuFileJson } from "react-icons/lu";
 import DefaultModal from "@/app/_components/modals/DefaultModal";
 import { useState } from "react";
+import CreatePortfolioForm from "./_components/CreatePortfolioForm";
 
 export default function Portfolio(): JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,7 +38,7 @@ export default function Portfolio(): JSX.Element {
           isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}
         >
-          test
+          <CreatePortfolioForm/>
         </DefaultModal>
       </div>
     </>

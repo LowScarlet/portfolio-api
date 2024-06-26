@@ -4,8 +4,8 @@ import Link from "next/link";
 import { BsFillPinFill } from "react-icons/bs";
 import { FaEye, FaEyeSlash, FaPlus, FaRunning, FaUser } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa6";
-import { getInitials } from "../../_utils/utils";
-import { useUserPortfolios } from "../../_models/client/user/portfolios/Portfolios";
+import { getInitials } from "../../../_utils/utils";
+import { useUserPortfolios } from "../../_models/client/user/portfolios/UserPortfolios";
 
 export default function PortfolioList(): JSX.Element {
 

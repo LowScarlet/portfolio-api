@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import MainPageMiddleware from './app/app/_utils/middleware';
-import AuthMiddleware from './app/auth/_utils/middleware';
+import MainPageMiddleware from './app/app/middleware';
+import AuthMiddleware from './app/auth/middleware';
 
 // Main
 export default async function mainMiddleware(request: NextRequest) {

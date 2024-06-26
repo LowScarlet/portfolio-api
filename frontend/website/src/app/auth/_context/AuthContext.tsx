@@ -1,14 +1,14 @@
 'use client'
 
 import React, { Dispatch, SetStateAction, createContext, useContext, useState } from "react"
-import { AuthContextInterface } from "../_interface/AuthContextInterface"
+import { AuthContextInterface } from "../_models/interface/AuthContextInterface"
 
 interface AuthContextType {
   auth: AuthContextInterface | null
   setAuth: Dispatch<SetStateAction<AuthContextInterface | null>>
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({
   children,
@@ -24,12 +24,4 @@ export const AuthProvider = ({
       {children}
     </AuthContext.Provider>
   )
-}
-
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error("Where The Provider???? ~LowScarlet")
-  }
-  return context
 }

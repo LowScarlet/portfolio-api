@@ -7,19 +7,20 @@ import { FormEvent, useState } from 'react'
 import { FaUser } from "react-icons/fa"
 import { MdEmail, MdPassword } from 'react-icons/md'
 import { toast } from 'react-toastify'
-import { useAuth } from '../../_context/AuthContext'
 import AltButtons from '../../signin/_components/AltButtons'
-import { handleAuth } from '../../_utils/handleAuth'
+import { handleAuth, useAuth } from '../../_models/auth/Auth'
+import LoadingScreen from '@/app/_components/LoadingScreen'
+
+const defaultFormData = { username: '', email: '', password: '' }
+const defaultBadError = { username: '', email: '', password: '' }
 
 const SignupForm = () => {
   const router = useRouter()
 
   const { setAuth } = useAuth()
 
-  const defaultFormData = { username: '', email: '', password: '' }
-  const defaultBadError = { username: '', email: '', password: '' }
-
   const [signinLoading, setSigninLoading] = useState(false)
+  const [successLoading, setSuccessLoading] = useState<boolean | null>(false)
 
   const [formData, setFormData] = useState(defaultFormData)
   const [badError, setBadError] = useState(defaultBadError)
@@ -36,6 +37,7 @@ const SignupForm = () => {
     e.preventDefault()
 
     setSigninLoading(true)
+    setSuccessLoading(null)
     setBadError(defaultBadError)
 
     try {
@@ -45,7 +47,7 @@ const SignupForm = () => {
 
       if (status === 200) {
         if (!token || !auth) {
-          toast.error("An unexpected error occurred")
+          toast.error("An unexpected error occurred (key: token and auth)")
           return
         }
         const { accessToken, refreshToken } = token
@@ -62,6 +64,8 @@ const SignupForm = () => {
             }
           })
           toast.success(message)
+          router.push('/app')
+          setSuccessLoading(true)
         })
       } else {
         if (validationErrors) {
@@ -73,12 +77,18 @@ const SignupForm = () => {
           })
         }
         toast.error(message)
+        setSuccessLoading(null)
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
+      console.log(error)
+      toast.error("An unexpected error occurred (key: try and catch)")
     } finally {
       setSigninLoading(false)
     }
+  }
+
+  if (successLoading) {
+    return (<LoadingScreen />)
   }
 
   return (

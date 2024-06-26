@@ -1,8 +1,8 @@
-import { UserInterface, UserInterface_ValidationErrors } from "../../rest/UserInterface";
+import { fetcherClient } from "@/app/_utils/fetcher";
 import { getCookie } from 'cookies-next';
-import { UserProfileInterface } from "../../rest/UserProfileInterface";
 import useSWR from "swr";
-import { fetcherClient } from "@/app/app/_utils/fetcher";
+import { UserInterface, UserInterface_ValidationErrors } from "../../interface/UserInterface";
+import { UserProfileInterface } from "../../interface/UserProfileInterface";
 
 interface BadRequest {
   message: string,
@@ -11,9 +11,9 @@ interface BadRequest {
 
 type Output = { user: UserInterface & { UserProfile: UserProfileInterface } } & BadRequest;
 
-export function useUser(query = '') {
+export function useUser() {
   const accessToken = getCookie('accessToken')
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/user?${query}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/client/user`;
 
   const { data, error } = useSWR<Output>(url, () => fetcherClient(url, accessToken));
 

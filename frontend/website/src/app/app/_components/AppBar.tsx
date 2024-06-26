@@ -1,6 +1,5 @@
 'use client'
 
-import { useAuth } from "@/app/auth/_context/AuthContext";
 import { deleteToken } from "@/app/auth/_utils/token";
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -8,6 +7,7 @@ import { FaSearch } from "react-icons/fa"
 import { FaBars, FaBarsStaggered } from "react-icons/fa6"
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md"
 import UserAvatar from "./models/UserAvatar";
+import { useAuth } from "@/app/auth/_models/auth/Auth";
 
 export default function AppBar({
   isOpen,

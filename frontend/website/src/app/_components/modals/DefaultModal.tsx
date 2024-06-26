@@ -38,15 +38,15 @@ export default function DefaultModal({
   return (<>
     <Transition appear show={isOpen}>
       <Dialog as="div" className="relative z-50 focus:outline-none" onClose={close}>
-        <ModalTransitionChild>
-          <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-        </ModalTransitionChild>
-        <div className="z-10 fixed inset-0 w-screen overflow-y-auto">
-          <div className="flex justify-center items-center p-4 min-h-full">
-            {children}
-          </div>
+        <div className="fixed inset-0 bg-base-300/80" aria-hidden="true" />
+        <div className="fixed inset-0 flex justify-center items-center p-4 w-screen overflow-y-auto" onClick={() => setIsOpen(false)}>
+          <ModalTransitionChild>
+            <div className="relative bg-base-200 shadow-lg rounded-lg" onClick={(e) => e.stopPropagation()}>
+              {children}
+            </div>
+          </ModalTransitionChild>
         </div>
       </Dialog>
-    </Transition >
+    </Transition>
   </>);
 }
